@@ -33,6 +33,7 @@
   ],
   "dependencies": {
     "@bmb-inc/types": "^0.0.11",
+    "@bmb-inc/utils": "^0.0.2",
     "@types/node": "^24.0.3",
     "typescript": "^5.8.3",
     "zod": "^3.25.67"
