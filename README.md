@@ -5,6 +5,7 @@ This monorepo contains shared packages for BMB Inc projects and services.
 ## 📦 Packages
 
 - **[@bmb-inc/types](./packages/types)** - Common TypeScript types and schema definitions
+- **[@bmb-inc/utils](./packages/utils)** - Common utils for BMB Inc related projects.
 
 ### 🚧 Future Packages
 - `@bmb-inc/services` - SOAP and REST service integrations  
