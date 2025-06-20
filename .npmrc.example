@@ -1,0 +1,8 @@
+# Example .npmrc configuration for GitHub Packages
+# Copy this to .npmrc and replace YOUR_GITHUB_TOKEN with your actual token
+
+@bmb:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
+
+# For CI/CD environments, use:
+# //npm.pkg.github.com/:_authToken=${NPM_TOKEN} 
