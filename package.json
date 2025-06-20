@@ -1,0 +1,19 @@
+{
+  "packageManager": "yarn@4.3.1",
+  "description": "Common types and utilities for BMB Inc projects/tools.",
+  "version": "0.0.1",
+  "author": "BMB Inc",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@types/node": "^24.0.3",
+    "typescript": "^5.8.3",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2"
+  }
+}

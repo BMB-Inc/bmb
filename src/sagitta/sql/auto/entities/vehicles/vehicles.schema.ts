@@ -1,0 +1,150 @@
+import { z } from "zod/v4";
+
+export const vehiclesSchema = z.object({
+  ACVSTAMT: z.string().optional(),
+  ADDITIONALPIPCOVERAGE: z.string().optional(),
+  AGREEDAMOUNTYESNO: z.string().optional(),
+  ALTERED: z.string().optional(),
+  ALTEREDVALUE: z.number().optional(),
+  ANNUALPIPPREMIUM: z.number().optional(),
+  ANNUALRECEIPTS: z.number().optional(),
+  ANTILOCK: z.string().optional(),
+  ANTITHEFT: z.string().optional(),
+  AUTOIDCARD: z.string().optional(),
+  BODY: z.string().optional(),
+  CLIENTS_ID: z.number().optional(),
+  COLLDED: z.string().optional(),
+  COLLISIONDEDUCTIBLE: z
+    .number({
+      error: "Collision deductible amount is required.",
+    })
+    .optional(),
+  COLLISIONPREMIUM: z.number().optional(),
+  COMPANYVEHICLENUMBER: z.coerce
+    .number({ error: "Company vehicle number is required." })
+    .optional()
+    .transform((value) => (value ? value.toString() : null)),
+  COMPDED: z.string().optional(),
+  COMPREHENSIVEDEDUCTIBLE: z
+    .number({
+      error: "Comprehensive deductible amount is required.",
+    })
+    .optional(),
+  COMPREHENSIVEPREMIUM: z.number().optional(),
+  COSTNEW: z.coerce.number({ error: "Cost new is required." }).optional(),
+  COUNTY: z.string().optional(),
+  COVERAGECHECKOFF: z.string().optional(),
+  DATEOFF: z.date().optional(),
+  DRISEQ: z.number().optional(),
+  EXCLUDEDDRIVER1: z.string().optional(),
+  EXCLUDEDDRIVER2: z.string().optional(),
+  EXCLUDEDDRIVER3: z.string().optional(),
+  FARM: z.string().optional(),
+  FARMZONE: z.string().optional(),
+  FIREANDTHEFTCOVERAGE: z.string().optional(),
+  FIRECOVERAGE: z.string().optional(),
+  FIREPREMIUM: z.number().optional(),
+  FIRETHEFTPREMIUM: z.number().optional(),
+  FIRETHEFTWINDPREMIUM: z.number().optional(),
+  FIRETHEFTWINDSTORMCOVERAGE: z.string().optional(),
+  FLEET: z.string().optional(),
+  GARAGECITY: z
+    .string()
+    .min(1, { error: "Garage city is required." })
+    .optional(),
+  GARAGESTATE: z
+    .string()
+    .min(1, { error: "Garage state is required." })
+    .optional(),
+  GLASSCOVERAGE: z.string().optional(),
+  GLASSPREMIUM: z.number().optional(),
+  GRSVEHWEIGHTGRSCLASSWEIGHT: z.number().optional(),
+  LEASED: z.string().optional(),
+  LEASEDTONAME: z.string().optional(),
+  LEASEMOS: z.string().optional(),
+  LIAB: z.string().optional(),
+  LIABILITYPREMIUM: z.number().optional(),
+  LICENSEPLATE: z.string().optional(),
+  LIMITEDSPECIFIEDPERILPREMIUM: z.number().optional(),
+  LMTDSPECIFIEDPERILCOV: z.string().optional(),
+  LMTDSPECIFIEDPERILDED: z.number().optional(),
+  LOCSEQ: z.number().optional(),
+  MAKE: z.string().min(1, { error: "Make is required." }).optional(),
+  MEDICALPAYMENTSCOVERAGE: z.string().nullish(),
+  MEDICALPAYMENTSPREMIUM: z.number().optional(),
+  MODEL: z.string().min(1, { error: "Model is required." }).optional(),
+  MOTOR: z.string().optional(),
+  NEARZONE: z.string().optional(),
+  NEW: z.string().optional(),
+  NJMEADDR: z.string().optional(),
+  NJMEDCITY: z.string().optional(),
+  NJMEDEMAIL: z.string().optional(),
+  NJMEDFAX: z.string().optional(),
+  NJMEDNAME: z.string().optional(),
+  NJMEDSTATE: z.string().optional(),
+  NJMEDZIP: z.string().optional(),
+  NJMEDZIPEXT: z.string().optional(),
+  PASSRSTRNT: z.string().optional(),
+  PIPCOVERAGE: z.string().nullish(),
+  PIPPREMIUM: z.number().optional(),
+  POLICIES_ID: z.number().optional(),
+  PRIMARYCLASS: z.string().optional(),
+  PRIMRATELIAB: z.number().optional(),
+  PRIMRATEPD: z.number().optional(),
+  RADIUSUSE: z.string().optional(),
+  RATINGCREDIT: z.string().optional(),
+  REGISTRANTADDRESS: z.string().optional(),
+  REGISTRANTCITY: z.string().optional(),
+  REGISTRANTFEIN: z.string().optional(),
+  REGISTRANTNAME: z.string().optional(),
+  REGISTRANTSTATE: z.string().optional(),
+  REGISTRANTZIPCODE: z.number().optional(),
+  REGISTRANTZIPEXT: z.number().optional(),
+  RENTALREIMBURSEMENT: z.string().nullish(),
+  RENTALREIMBURSEMENTPREMIUM: z.number().optional(),
+  SEATING: z.string().optional(),
+  SECONDARYNAME: z.string().optional(),
+  SECONDCLASS: z.string().optional(),
+  SECONDRATE: z.number().optional(),
+  SELFPROPELLED: z.string().optional(),
+  SPEC: z.string().nullish(),
+  SPECIALCLASS: z.string().optional(),
+  SPECIALDED: z.string().optional(),
+  SPECIALUSE: z.string().optional(),
+  SPECIFIEDPERILSDEDUCTIBLE: z.number().optional(),
+  SPECIFIEDPERILSPREMIUM: z.number().optional(),
+  STATE: z.string().optional(),
+  STATEDAMOUNT: z.string().optional(),
+  SURCHARGE: z.number().optional(),
+  TAX: z.number().optional(),
+  TAXTOWN: z.string().optional(),
+  TERRITORY: z.string().optional(),
+  TOTALVEHPREMIUM: z.number().optional(),
+  TOWINGANDLABORCOVERAGE: z.string().nullish(),
+  TOWINGLABORPREMIUM: z.number().optional(),
+  UNDERINSUREDMOTORISTCOVERAGE: z.string().nullish(),
+  UNDERINSUREDMOTORISTPREMIUM: z.number().optional(),
+  UNINSUREDMOTORISTCOVERAGE: z.string().optional(),
+  UNINSUREDMOTORISTPREMIUM: z.number().optional(),
+  USE: z.string().optional(),
+  USEOFLEASEDVEHICLE: z.string().optional(),
+  VEHICLE: z.string().optional(),
+  VEHICLEIDENTIFICATIONNO: z.string().min(1, { error: "VIN is required." }),
+  VEHICLES_ID: z.number().optional(),
+  VEHSEQ: z.string().optional(),
+  VEHTYPE: z.string().optional(),
+  YEAR: z.coerce
+    .number({ error: "Year is required." })
+    .min(1800, { error: "Please pick a valid year." })
+    .transform((value) => value.toString())
+    .optional(),
+  ZIPCODE: z.coerce
+    .number({ error: "Zip Code is required." })
+    .max(99999)
+    .transform((value) => value.toString())
+    .optional(),
+  ZIPPLUS4: z.string().optional(),
+  ZONECOMBINATION: z.string().optional(),
+});
+
+export type VehiclesSchema = z.infer<typeof vehiclesSchema>;
