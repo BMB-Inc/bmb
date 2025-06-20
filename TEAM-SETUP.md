@@ -118,7 +118,7 @@ To verify everything is working:
 
 ```bash
 # This should show BMB packages if setup is correct
-npm search @bmb --registry=https://npm.pkg.github.com
+npm search @bmb-inc --registry=https://npm.pkg.github.com
 ```
 
 ## 📞 Getting Help
