@@ -1,5 +1,5 @@
 {
-  "name": "@bmb/monorepo",
+  "name": "@bmb-inc/monorepo",
   "description": "BMB Inc monorepo containing shared packages and services.",
   "version": "0.0.1",
   "private": true,

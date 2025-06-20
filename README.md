@@ -4,12 +4,12 @@ This monorepo contains shared packages for BMB Inc projects and services.
 
 ## 📦 Packages
 
-- **[@bmb/types](./packages/types)** - Common TypeScript types and schema definitions
+- **[@bmb-inc/types](./packages/types)** - Common TypeScript types and schema definitions
 
 ### 🚧 Future Packages
-- `@bmb/services` - SOAP and REST service integrations  
-- `@bmb/utils` - Common utilities
-- `@bmb/config` - Configuration management
+- `@bmb-inc/services` - SOAP and REST service integrations  
+- `@bmb-inc/utils` - Common utilities
+- `@bmb-inc/config` - Configuration management
 - And more...
 
 ## 🏗️ Project Structure
@@ -17,11 +17,11 @@ This monorepo contains shared packages for BMB Inc projects and services.
 ```
 bmb/
 ├── packages/
-│   ├── types/              # @bmb/types - schemas and types
+│   ├── types/              # @bmb-inc/types - schemas and types
 │   │   ├── src/
 │   │   ├── package.json
 │   │   └── dist/
-│   └── services/           # @bmb/services - future services
+│   └── services/           # @bmb-inc/services - future services
 │       └── soap/           # SOAP integrations (example)
 ├── package.json            # Workspace coordinator
 └── README.md              # This file
@@ -41,21 +41,21 @@ yarn build:all
 
 ### Build Specific Package
 ```bash
-yarn build  # Builds @bmb/types
+yarn build  # Builds @bmb-inc/types
 ```
 
 ### Publish Packages
 ```bash
-yarn publish:types  # Publish @bmb/types
+yarn publish:types  # Publish @bmb-inc/types
 ```
 
 ## 📋 Adding New Packages
 
-When adding new packages like `@bmb/services`:
+When adding new packages like `@bmb-inc/services`:
 
 1. Create the package directory: `packages/services/`
-2. Add `package.json` with proper `@bmb/` scoped naming
-3. Reference other packages using `"@bmb/types": "workspace:*"`
+2. Add `package.json` with proper `@bmb-inc/` scoped naming
+3. Reference other packages using `"@bmb-inc/types": "workspace:*"`
 4. Update root `package.json` workspace scripts
 
 See [MONOREPO-SETUP.md](./MONOREPO-SETUP.md) for detailed instructions.
@@ -69,7 +69,7 @@ All packages are **private to BMB organization**:
 
 ## 📖 Package Documentation
 
-- [@bmb/types Documentation](./packages/types/README.md)
+- [@bmb-inc/types Documentation](./packages/types/README.md)
 
 ---
 

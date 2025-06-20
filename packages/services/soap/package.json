@@ -1,5 +1,5 @@
 {
-  "name": "@bmb/services",
+  "name": "@bmb-inc/services",
   "version": "0.0.1",
   "description": "SOAP service integrations for BMB",
   "main": "dist/index.js",
@@ -13,7 +13,7 @@
     "@bmb-inc:registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
-    "@bmb/types": "workspace:*"
+    "@bmb-inc/types": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.8.3"

@@ -25,22 +25,22 @@ packages/
 
 ## Naming Convention
 
-- Package names should use the `@bmb/` scope
-- Service packages: `@bmb/services/[service-name]`
-- Utility packages: `@bmb/[package-name]`
+- Package names should use the `@bmb-inc/` scope
+- Service packages: `@bmb-inc/services/[service-name]`
+- Utility packages: `@bmb-inc/[package-name]`
 
 ## Examples of Future Packages
 
-- `@bmb/services/soap` - SOAP service integrations
-- `@bmb/services/rest` - REST API services  
-- `@bmb/utils` - Common utilities
-- `@bmb/config` - Configuration management
-- `@bmb/logger` - Logging utilities
+- `@bmb-inc/services/soap` - SOAP service integrations
+- `@bmb-inc/services/rest` - REST API services  
+- `@bmb-inc/utils` - Common utilities
+- `@bmb-inc/config` - Configuration management
+- `@bmb-inc/logger` - Logging utilities
 
 ## Development
 
 Each package should have its own:
-- `package.json` with proper `@bmb/` scoped naming
+- `package.json` with proper `@bmb-inc/` scoped naming
 - TypeScript configuration
 - Build scripts
 - Tests 

@@ -1,4 +1,4 @@
-# @bmb/types
+# @bmb-inc/types
 
 Common TypeScript types and schema definitions for BMB Inc projects and tools.
 
@@ -18,9 +18,9 @@ Create or update your `.npmrc` file in your project root:
 ### 2. Install the package
 
 ```bash
-npm install @bmb/types
+npm install @bmb-inc/types
 # or
-yarn add @bmb/types
+yarn add @bmb-inc/types
 ```
 
 ## Usage
@@ -39,7 +39,7 @@ import {
   PoliciesSchema,
   
   // And many more...
-} from '@bmb/types';
+} from '@bmb-inc/types';
 
 // Use the schemas for validation
 const client = ClientsSchema.parse(rawClientData);

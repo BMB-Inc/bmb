@@ -50,14 +50,14 @@ Once setup is complete, you can install BMB packages:
 
 ```bash
 # Install the types package
-npm install @bmb/types
+npm install @bmb-inc/types
 # or
-yarn add @bmb/types
+yarn add @bmb-inc/types
 
 # Install services package (when available)
-npm install @bmb/services
+npm install @bmb-inc/services
 # or  
-yarn add @bmb/services
+yarn add @bmb-inc/services
 ```
 
 ## 💻 Using BMB Packages
@@ -70,7 +70,7 @@ import {
   ClientsSchema, 
   PoliciesSchema,
   DriversSchema 
-} from '@bmb/types';
+} from '@bmb-inc/types';
 
 // Use the schemas for validation
 const client = ClientsSchema.parse(clientData);
@@ -80,8 +80,8 @@ const policy = PoliciesSchema.parse(policyData);
 ### Future Services Package
 
 ```typescript
-// When @bmb/services is available
-import { SoapClient } from '@bmb/services';
+// When @bmb-inc/services is available
+import { SoapClient } from '@bmb-inc/services';
 
 const soapClient = new SoapClient('https://api.example.com');
 const client = await soapClient.getClient('12345');
@@ -92,9 +92,9 @@ const client = await soapClient.getClient('12345');
 To get the latest versions:
 
 ```bash
-npm update @bmb/types
+npm update @bmb-inc/types
 # or
-yarn upgrade @bmb/types
+yarn upgrade @bmb-inc/types
 ```
 
 ## 🆘 Troubleshooting
