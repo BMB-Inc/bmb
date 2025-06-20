@@ -1,0 +1,28 @@
+{
+  "name": "@bmb-inc/utils",
+  "version": "0.0.1",
+  "description": "Utility packages for BMB Inc.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./dates": {
+      "types": "./dist/dates/index.d.ts",
+      "default": "./dist/dates/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "@bmb-inc:registry": "https://npm.pkg.github.com"
+  }
+}

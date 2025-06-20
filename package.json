@@ -15,11 +15,13 @@
     "url": "git+https://github.com/bmb-inc/bmb.git"
   },
   "scripts": {
-    "build": "yarn workspace @bmb-inc/types build",
     "build:all": "yarn workspaces foreach run build",
     "clean": "yarn workspace @bmb-inc/types clean",
     "clean:all": "yarn workspaces foreach run clean",
-    "publish:types": "yarn workspace @bmb-inc/types npm publish"
+    "publish:types": "yarn workspace @bmb-inc/types publish",
+    "build:types": "yarn workspace @bmb-inc/types build",
+    "publish:utils": "yarn workspace @bmb-inc/utils publish",
+    "build:utils": "yarn workspace @bmb-inc/utils build"
   },
   "keywords": [
     "bmb",

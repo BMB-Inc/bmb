@@ -67,11 +67,88 @@ Create `packages/services/soap/package.json`:
 }
 ```
 
-### 4. Package Naming Conventions
+### 4. TypeScript Configuration
+
+#### Create TypeScript Config
+
+Create `packages/services/soap/tsconfig.json`:
+
+```json
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}
+```
+
+#### Root TypeScript Config
+
+Update root `tsconfig.json` to support workspace packages:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@bmb-inc/types": ["./src"],
+      "@bmb-inc/types/*": ["./src/*"],
+      "@bmb-inc/services/*": ["./packages/services/*/src"],
+      "@bmb-inc/utils/*": ["./packages/utils/*/src"]
+    }
+  }
+}
+```
+
+#### Package Source Structure
+
+Create the source directory structure:
+
+```bash
+mkdir -p packages/services/soap/src
+touch packages/services/soap/src/index.ts
+```
+
+#### TypeScript Build Scripts
+
+Add these scripts to your package's `package.json`:
+
+```json
+{
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  }
+}
+```
+
+### 5. Package Naming Conventions
 
 - **Types**: `@bmb-inc/types`
 - **Services**: `@bmb-inc/services/[service-name]`  
-- **Utilities**: `@bmb-inc/[utility-name]`
+- **Utilities**: `@bmb-inc/utils/[utility-name]`
 - **Configuration**: `@bmb-inc/config`
 
 ## Benefits of This Structure
