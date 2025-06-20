@@ -1,7 +1,7 @@
 {
-  "name": "@bmb/types",
+  "name": "@bmb-inc/types",
   "description": "Common TypeScript types and schema definitions for BMB Inc projects.",
-  "version": "0.0.1",
+  "version": "0.0.11",
   "author": "BMB Inc",
   "license": "MIT",
   "main": "dist/index.js",
@@ -16,8 +16,7 @@
     "url": "git+https://github.com/bmb-inc/bmb.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
-    "@bmb:registry": "https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
     "build": "tsc",
@@ -33,6 +32,7 @@
     "typescript"
   ],
   "dependencies": {
+    "@bmb-inc/types": "^0.0.11",
     "@types/node": "^24.0.3",
     "typescript": "^5.8.3",
     "zod": "^3.25.67"

@@ -27,7 +27,7 @@ touch .npmrc
 Add this content to `.npmrc`:
 
 ```
-@bmb:registry=https://npm.pkg.github.com
+@bmb-inc:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN_HERE
 ```
 

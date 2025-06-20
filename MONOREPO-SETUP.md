@@ -59,7 +59,7 @@ Create `packages/services/soap/package.json`:
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",
-    "@bmb:registry": "https://npm.pkg.github.com"
+    "@bmb-inc:registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
     "@bmb/types": "workspace:*"
