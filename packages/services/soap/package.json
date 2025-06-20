@@ -12,9 +12,6 @@
     "registry": "https://npm.pkg.github.com",
     "@bmb-inc:registry": "https://npm.pkg.github.com"
   },
-  "dependencies": {
-    "@bmb-inc/types": "workspace:*"
-  },
   "devDependencies": {
     "typescript": "^5.8.3"
   }
