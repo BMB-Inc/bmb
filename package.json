@@ -18,6 +18,7 @@
     "build:all": "yarn workspaces foreach --all --topological-dev run build",
     "clean:all": "yarn workspaces foreach --all --topological-dev run clean",
     "publish:all": "yarn workspaces foreach --all --no-private version patch && yarn workspaces foreach --all --no-private npm publish",
+    "build:types": "yarn workspace @bmb-inc/types build",
     "publish:types": "yarn workspace @bmb-inc/types version patch && yarn workspace @bmb-inc/types npm publish",
     "publish:constants": "yarn workspace @bmb-inc/constants version patch && yarn workspace @bmb-inc/constants npm publish",
     "publish:utils": "yarn workspace @bmb-inc/utils version patch && yarn workspace @bmb-inc/utils npm publish",
