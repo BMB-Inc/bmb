@@ -17,6 +17,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bmb-inc/monorepo@workspace:."
   dependencies:
+    "@types/node": "npm:^24.0.3"
+    ts-node: "npm:^10.9.2"
     typescript: "npm:^5.8.3"
     zod: "npm:^3.25.67"
   languageName: unknown
@@ -29,11 +31,8 @@ __metadata:
     "@bmb-inc/constants": "workspace:*"
     "@bmb-inc/types": "workspace:*"
     "@bmb-inc/utils": "workspace:*"
-    "@types/node": "npm:^22.0.0"
     fast-xml-parser: "npm:^5.2.5"
     soap: "npm:^1.1.12"
-    ts-node: "npm:^10.9.2"
-    typescript: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
 
@@ -41,9 +40,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bmb-inc/types@workspace:packages/types"
   dependencies:
-    "@types/node": "npm:^24.0.3"
-    ts-node: "npm:^10.9.2"
-    typescript: "npm:^5.8.3"
     zod: "npm:^3.25.67"
   languageName: unknown
   linkType: soft
@@ -51,8 +47,6 @@ __metadata:
 "@bmb-inc/utils@workspace:*, @bmb-inc/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@bmb-inc/utils@workspace:packages/utils"
-  dependencies:
-    typescript: "npm:^5.8.3"
   languageName: unknown
   linkType: soft
 
@@ -130,15 +124,6 @@ __metadata:
   version: 1.0.4
   resolution: "@tsconfig/node16@npm:1.0.4"
   checksum: 10c0/05f8f2734e266fb1839eb1d57290df1664fe2aa3b0fdd685a9035806daa635f7519bf6d5d9b33f6e69dd545b8c46bd6e2b5c79acb2b1f146e885f7f11a42a5bb
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^22.0.0":
-  version: 22.15.32
-  resolution: "@types/node@npm:22.15.32"
-  dependencies:
-    undici-types: "npm:~6.21.0"
-  checksum: 10c0/63a2fa52adf1134d1b3bee8b1862d4b8e4550fffc190551068d3d41a41d9e5c0c8f1cb81faa18767b260637360f662115c26c5e4e7718868ead40c4a57cbc0e3
   languageName: node
   linkType: hard
 
@@ -646,13 +631,6 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10c0/39117e346ff8ebd87ae1510b3a77d5d92dae5a89bde588c747d25da5c146603a99c8ee588c7ef80faaf123d89ed46f6dbd918d534d641083177d5fac38b8a1cb
-  languageName: node
-  linkType: hard
-
-"undici-types@npm:~6.21.0":
-  version: 6.21.0
-  resolution: "undici-types@npm:6.21.0"
-  checksum: 10c0/c01ed51829b10aa72fc3ce64b747f8e74ae9b60eafa19a7b46ef624403508a54c526ffab06a14a26b3120d055e1104d7abe7c9017e83ced038ea5cf52f8d5e04
   languageName: node
   linkType: hard
 

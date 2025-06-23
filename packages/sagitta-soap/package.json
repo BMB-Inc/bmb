@@ -1,6 +1,6 @@
 {
   "name": "@bmb-inc/sagitta-soap",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "SOAP service integrations for BMB",
   "type": "module",
   "main": "dist/index.js",
@@ -14,11 +14,6 @@
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
-  },
-  "devDependencies": {
-    "@types/node": "^22.0.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
   },
   "repository": {
     "type": "git",

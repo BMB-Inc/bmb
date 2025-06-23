@@ -25,7 +25,7 @@ const authHeader: SagittaAuthHeader = {
   Onlinecode: process.env.SAGITTA_ONLINECODE,
 };
 
-class SagittaSoapClient {
+export class SagittaSoapClient {
   private client: SoapClient | null = null;
   private authHeader: SagittaAuthHeader | null = null;
   private parser: XMLParser;
@@ -398,7 +398,7 @@ class SagittaSoapClient {
     return criteria.join(" AND ");
   }
 
-  transformSoapPoliciesToSQLPolicies(
+  private transformSoapPoliciesToSQLPolicies(
     soapPolicies: SoapPoliciesSchema | SoapPoliciesSchema[]
   ): Partial<PoliciesSchema>[] {
     if (Array.isArray(soapPolicies)) {
@@ -428,20 +428,3 @@ class SagittaSoapClient {
     }
   }
 }
-
-// Example usage (commented out to prevent immediate execution)
-async function main() {
-  try {
-    // 1. Create client with authentication
-    const client = await SagittaSoapClient.create(undefined, authHeader);
-    const result = await client.getPolicies({
-      policyNumber: "0000946359",
-    });
-    // 2. Example PassThroughReq call with proper authentication
-    console.log("SOAP Result:", JSON.stringify(result, null, 2));
-  } catch (error) {
-    console.error("Error:", error);
-  }
-}
-
-main();
