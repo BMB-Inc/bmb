@@ -1,13 +1,19 @@
 {
   "name": "@bmb-inc/sagitta-soap",
-  "version": "0.0.20",
+  "version": "0.0.25",
   "description": "SOAP service integrations for BMB",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "package.json"
+  ],
   "scripts": {
     "build": "tsc",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "dev": "tsx --env-file=../../.env ./src/soap/soapClient.ts"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

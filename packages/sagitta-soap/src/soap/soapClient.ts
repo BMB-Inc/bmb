@@ -365,7 +365,11 @@ export class SagittaSoapClient {
     const criteria = this.buildCriteria(args);
     const statement = `SELECT POLICIES *CRITERIA* WITH ${criteria}`;
     const result = await this.callPassThroughReq<SoapPoliciesSchema>(statement);
-    return this.transformSoapPoliciesToSQLPolicies(result);
+    const formattedResult = this.arrayCheck({
+      data: result,
+      arrayAllowed: true,
+    });
+    return this.transformSoapPoliciesToSQLPolicies(formattedResult);
   }
 
   private buildCriteria(args: {
@@ -381,13 +385,13 @@ export class SagittaSoapClient {
       criteria.push(`POLICY.NUMBER=${args.policyNumber}`);
     }
     if (args.clientCd) {
-      criteria.push(`CLIENTS.ID=${args.clientCd}`);
+      criteria.push(`CLIENT.CODE=${args.clientCd}`);
     }
     if (args.coverageCd) {
-      criteria.push(`COVCODE=${args.coverageCd}`);
+      criteria.push(`COV.CODE=${args.coverageCd}`);
     }
     if (args.departmentCd) {
-      criteria.push(`DEPARTMENT_CODE=${args.departmentCd}`);
+      criteria.push(`DEPT.CODE=${args.departmentCd}`);
     }
     if (args.effectiveDate) {
       criteria.push(`EFF.DATE=${args.effectiveDate}`);
@@ -401,6 +405,7 @@ export class SagittaSoapClient {
   private transformSoapPoliciesToSQLPolicies(
     soapPolicies: SoapPoliciesSchema | SoapPoliciesSchema[]
   ): Partial<PoliciesSchema>[] {
+    console.log("soapPolicies", soapPolicies);
     if (Array.isArray(soapPolicies)) {
       return soapPolicies.map((soapPolicy): PoliciesSchema => {
         return {
@@ -409,8 +414,8 @@ export class SagittaSoapClient {
           COVCODE: getCoverageCodeById(soapPolicy.CoverageCd).coverageCode,
           POLICYNUMBER: soapPolicy.PolicyNumber,
           DEPARTMENT_CODE: soapPolicy?.DepartmentCd?.toString(),
-          EXPDATE: oaDateToJsDate(soapPolicy.ExpirationDate),
-          EFFDATE: oaDateToJsDate(soapPolicy.EffectiveDate),
+          EXPDATE: oaDateToJsDate(soapPolicy.PolicyExpirationDt),
+          EFFDATE: oaDateToJsDate(soapPolicy.PolicyEffectiveDt),
         };
       });
     } else {
@@ -421,8 +426,8 @@ export class SagittaSoapClient {
           COVCODE: getCoverageCodeById(soapPolicies.CoverageCd).coverageCode,
           POLICYNUMBER: soapPolicies.PolicyNumber,
           DEPARTMENT_CODE: soapPolicies?.DepartmentCd?.toString(),
-          EXPDATE: oaDateToJsDate(soapPolicies.ExpirationDate),
-          EFFDATE: oaDateToJsDate(soapPolicies.EffectiveDate),
+          EXPDATE: oaDateToJsDate(soapPolicies.PolicyExpirationDt),
+          EFFDATE: oaDateToJsDate(soapPolicies.PolicyEffectiveDt),
         },
       ];
     }

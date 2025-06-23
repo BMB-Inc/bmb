@@ -16,8 +16,6 @@ export const soapPoliciesSchema = z.object({
   InsurerName: z.number().nullable().optional(),
   CoverageCd: z.number(),
   CoverageCode: z.enum(CoverageCode).nullable().optional(),
-  EffectiveDate: z.number(),
-  ExpirationDate: z.number(),
   PolicyContractTermCd: z.string().nullable().optional(),
   PolicyEffectiveDt: z.number(),
   PolicyEffectiveLocalStandardTimeInd: z.number().nullable().optional(),
