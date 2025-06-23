@@ -1,6 +1,6 @@
 {
   "name": "@bmb-inc/utils",
-  "version": "0.0.17",
+  "version": "0.0.19",
   "description": "Utility packages for BMB Inc.",
   "type": "module",
   "main": "dist/index.js",

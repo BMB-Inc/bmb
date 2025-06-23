@@ -15,7 +15,7 @@
     "url": "git+https://github.com/bmb-inc/bmb.git"
   },
   "scripts": {
-    "build:all": "yarn workspaces foreach --all --topological-dev run build",
+    "build:all": "yarn workspaces foreach --all --topological run build",
     "clean:all": "yarn workspaces foreach --all --topological-dev run clean",
     "publish:all": "yarn workspaces foreach --all --no-private version patch && yarn workspaces foreach --all --no-private npm publish",
     "build:types": "yarn workspace @bmb-inc/types build",

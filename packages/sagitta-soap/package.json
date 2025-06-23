@@ -1,6 +1,6 @@
 {
   "name": "@bmb-inc/sagitta-soap",
-  "version": "0.0.18",
+  "version": "0.0.20",
   "description": "SOAP service integrations for BMB",
   "type": "module",
   "main": "dist/index.js",
