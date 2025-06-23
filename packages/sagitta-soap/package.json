@@ -1,0 +1,34 @@
+{
+  "name": "@bmb-inc/sagitta-soap",
+  "version": "0.0.16",
+  "description": "SOAP service integrations for BMB",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "start": "node dist/index.js",
+    "dev": "node --env-file=../../.env --loader ts-node/esm src/index.ts",
+    "build:run": "npm run build && npm run start"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bmb-inc/bmb.git"
+  },
+  "dependencies": {
+    "@bmb-inc/constants": "workspace:*",
+    "@bmb-inc/types": "workspace:*",
+    "@bmb-inc/utils": "workspace:*",
+    "fast-xml-parser": "^5.2.5",
+    "soap": "^1.1.12"
+  }
+}

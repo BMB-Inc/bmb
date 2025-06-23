@@ -17,8 +17,11 @@
     "paths": {
       "@bmb-inc/types": ["./packages/types/src"],
       "@bmb-inc/types/*": ["./packages/types/src/*"],
-      "@bmb-inc/services/*": ["./packages/services/*/src"],
-      "@bmb-inc/utils/*": ["./packages/utils/*/src"]
+      "@bmb-inc/constants": ["./packages/constants/src"],
+      "@bmb-inc/constants/*": ["./packages/constants/src/*"],
+      "@bmb-inc/sagitta-soap/*": ["./packages/sagitta-soap/*/src"],
+      "@bmb-inc/utils": ["./packages/utils/src"],
+      "@bmb-inc/utils/*": ["./packages/utils/src/*"]
     }
   },
   "include": ["packages/**/*"],

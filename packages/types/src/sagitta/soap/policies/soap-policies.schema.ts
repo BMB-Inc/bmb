@@ -1,5 +1,5 @@
 import z from "zod/v4";
-import { CoverageCode } from "./policies.schema";
+import { CoverageCode } from "../../sql/policies";
 
 export const producerPolicySoapSchema = z.object({
   Producer1Cd: z.string().nullable().optional(),
@@ -14,14 +14,14 @@ export const soapPoliciesSchema = z.object({
   ClientCd: z.number().nullable().optional(),
   PolicyRemarkText: z.string().nullable().optional(),
   InsurerName: z.number().nullable().optional(),
-  CoverageCd: z.number().nullable().optional(),
+  CoverageCd: z.number(),
   CoverageCode: z.enum(CoverageCode).nullable().optional(),
-  EffectiveDate: z.date().nullable().optional(),
-  ExpirationDate: z.date().nullable().optional(),
+  EffectiveDate: z.number(),
+  ExpirationDate: z.number(),
   PolicyContractTermCd: z.string().nullable().optional(),
-  PolicyEffectiveDt: z.number().nullable().optional(),
+  PolicyEffectiveDt: z.number(),
   PolicyEffectiveLocalStandardTimeInd: z.number().nullable().optional(),
-  PolicyExpirationDt: z.number().nullable().optional(),
+  PolicyExpirationDt: z.number(),
   PolicyExpirationLocalStandardTimeInd: z.number().nullable().optional(),
   PolicyOriginalInceptionDt: z.number().nullable().optional(),
   BillTypeCd: z.string().nullable().optional(),
@@ -45,4 +45,7 @@ export const soapPoliciesSchema = z.object({
   PayeeCd: z.string().nullable().optional(),
   PolicyDesc: z.string().nullable().optional(),
   PolicyId: z.string().nullable().optional(),
+  "@_sagitem": z.number(),
 });
+
+export type SoapPoliciesSchema = z.infer<typeof soapPoliciesSchema>;

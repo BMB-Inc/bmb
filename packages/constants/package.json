@@ -1,0 +1,21 @@
+{
+  "name": "@bmb-inc/constants",
+  "version": "0.0.17",
+  "description": "Constants for BMB",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "dependencies": {
+    "@bmb-inc/types": "workspace:*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bmb-inc/bmb.git"
+  }
+}

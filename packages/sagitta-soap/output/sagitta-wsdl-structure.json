@@ -1,0 +1,5068 @@
+{
+  "Transporter": {
+    "TransporterSoap": {
+      "PassThroughReq": {
+        "input": {
+          "XMLinput": {}
+        },
+        "output": {
+          "PassThroughReqResult": "s:string"
+        }
+      },
+      "PassThroughImp": {
+        "input": {
+          "XMLinput": {}
+        },
+        "output": {
+          "PassThroughImpResult": "s:string"
+        }
+      },
+      "rolodexContains": {
+        "input": {
+          "searchCriteria": "s:string"
+        },
+        "output": {
+          "rolodexContainsResult": {
+            "ErrorMsg": "s:string",
+            "TotalHits": "s:int",
+            "TotalReturned": "s:int",
+            "containsArray": {
+              "containsArray[]": {
+                "ID": "s:int",
+                "ClientName": "s:string",
+                "ClientCd": "s:string",
+                "StreetAddress": {
+                  "Addr1": "s:string",
+                  "Addr2": "s:string",
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "City": "s:string",
+                "StateProvCd": "s:string",
+                "PostalCode": "s:string",
+                "ContactName": "s:string",
+                "Policy": {
+                  "Policies[]": {
+                    "PolicyNumber": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "PolicySerial": {
+                  "PolSerial[]": {
+                    "PolicySerialNumber": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "Telephone": {
+                  "TelephoneNumber1": "s:string",
+                  "TelephoneNumber2": "s:string",
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "ClaimantName": "s:string",
+                "FaxNumber": "s:string",
+                "BillToCode": "s:string",
+                "Prod": {
+                  "Producer1Cd": "s:string",
+                  "Producer2Cd": "s:string",
+                  "Producer3Cd": "s:string",
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "Serv": {
+                  "Servicer1Cd": "s:string",
+                  "Servicer2Cd": "s:string",
+                  "Servicer3Cd": "s:string",
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "Stat": {
+                  "Status[]": {
+                    "Stat": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "Archived": "s:string",
+                "ContactMethod": "s:string",
+                "SIC1Cd": "s:string",
+                "SourceCd": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "rolodexStartsWith": {
+        "input": {
+          "searchCriteria": "s:string"
+        },
+        "output": {
+          "rolodexStartsWithResult": {
+            "ErrorMsg": "s:string",
+            "TotalHits": "s:int",
+            "TotalReturned": "s:int",
+            "startsWithArray": {
+              "startsWithArray[]": {
+                "ID": "s:int",
+                "ClientCd": "s:string",
+                "ClientName": "s:string",
+                "Addr1": "s:string",
+                "City": "s:string",
+                "StateProvCd": "s:string",
+                "PostalCode": "s:string",
+                "Producer1Cd": "s:string",
+                "Servicer1Cd": "s:string",
+                "Archived": "s:string",
+                "ContactMethod": "s:string",
+                "Note": "s:string",
+                "SIC1Cd": "s:string",
+                "SourceCd": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "clientInsert": {
+        "input": {
+          "ClientImportRecord": {
+            "Guid": "s:string",
+            "ClientName": "s:string",
+            "DivisionNumber": "s:int",
+            "DivisionNumberWithLeadingZero": "s:string",
+            "BillToCd": "s:string",
+            "ReferenceCd": "s:string",
+            "Addr1": "s:string",
+            "Addr2": "s:string",
+            "PostCd": {
+              "PostalCode": "s:string",
+              "PostalExtensionCode": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "City": "s:string",
+            "StateProvCd": "s:string",
+            "Phone1Number": "s:long",
+            "Phone1ExtensionNumber": "s:int",
+            "Phone2Number": "s:long",
+            "Phone2ExtensionNumber": "s:int",
+            "FaxNumber": "s:string",
+            "ContactMethod": "s:string",
+            "EmailAddr": "s:string",
+            "WebSiteLink": "s:string",
+            "ProducerCd": {
+              "Producer1Cd": "s:string",
+              "Producer2Cd": "s:string",
+              "Producer3Cd": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "ServicerCd": {
+              "Servicer1Cd": "s:string",
+              "Servicer2Cd": "s:string",
+              "Servicer3Cd": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CatCd": {
+              "Cat1Cd": "s:string",
+              "Cat2Cd": "s:string",
+              "Cat3Cd": "s:string",
+              "Cat4Cd": "s:string",
+              "Cat5Cd": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "StatusCd": {
+              "StatusCdValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "SicCd": {
+              "SicCdValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "PNaicsCode": "s:string",
+            "NaicsCode": {
+              "NaicsCdValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CommentaryRemarkText": "s:string",
+            "CreditTerms": "s:string",
+            "NetCommissionPct": "s:decimal",
+            "SourceCd": "s:string",
+            "SourceDt": "s:dateTime",
+            "LegalEntityCd": "s:string",
+            "FEIN": "s:int",
+            "DateBusinessStarted": "s:dateTime",
+            "InspectionContact": "s:string",
+            "InspectionPhoneNumber": "s:long",
+            "InspectionPhoneExtensionNumber": "s:int",
+            "BusinessNature": {
+              "BusinessNatureValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "AccountingContact": "s:string",
+            "AccountingPhoneNumber": "s:long",
+            "AccountingPhoneExtensionNumber": "s:int",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "clientInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "clientUpdate": {
+        "input": {
+          "ClientUpdateRecord": {
+            "Guid": "s:string",
+            "SagittaId": "s:long",
+            "ClientName": "s:string",
+            "DivisionNumber": "s:int",
+            "DivisionNumberWithLeadingZero": "s:string",
+            "DivisionNumberIsEmpty": "s:boolean",
+            "BillToCd": "s:string",
+            "BillToCdIsEmpty": "s:boolean",
+            "ReferenceCd": "s:string",
+            "ReferenceCdIsEmpty": "s:boolean",
+            "Addr1": "s:string",
+            "Addr2": "s:string",
+            "Addr2IsEmpty": "s:boolean",
+            "PostCd": {
+              "PostalCode": "s:string",
+              "PostalCodeIsEmpty": "s:boolean",
+              "PostalExtensionCode": "s:string",
+              "PostalExtensionCodeIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "City": "s:string",
+            "StateProvCd": "s:string",
+            "Phone1Number": "s:long",
+            "Phone1NumberIsEmpty": "s:boolean",
+            "Phone1ExtensionNumber": "s:int",
+            "Phone1ExtensionNumberIsEmpty": "s:boolean",
+            "Phone2Number": "s:long",
+            "Phone2NumberIsEmpty": "s:boolean",
+            "Phone2ExtensionNumber": "s:int",
+            "Phone2ExtensionNumberIsEmpty": "s:boolean",
+            "FaxNumber": "s:string",
+            "FaxNumberIsEmpty": "s:boolean",
+            "ContactMethod": "s:string",
+            "ContactMethodIsEmpty": "s:boolean",
+            "EmailAddr": "s:string",
+            "EmailAddrIsEmpty": "s:boolean",
+            "WebSiteLink": "s:string",
+            "WebSiteLinkIsEmpty": "s:boolean",
+            "ProducerCd": {
+              "Producer1Cd": "s:string",
+              "Producer2Cd": "s:string",
+              "Producer2CdIsEmpty": "s:boolean",
+              "Producer3Cd": "s:string",
+              "Producer3CdIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "ServicerCd": {
+              "Servicer1Cd": "s:string",
+              "Servicer2Cd": "s:string",
+              "Servicer2CdIsEmpty": "s:boolean",
+              "Servicer3Cd": "s:string",
+              "Servicer3CdIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CatCd": {
+              "Cat1Cd": "s:string",
+              "Cat1CdIsEmpty": "s:boolean",
+              "Cat2Cd": "s:string",
+              "Cat2CdIsEmpty": "s:boolean",
+              "Cat3Cd": "s:string",
+              "Cat3CdIsEmpty": "s:boolean",
+              "Cat4Cd": "s:string",
+              "Cat4CdIsEmpty": "s:boolean",
+              "Cat5Cd": "s:string",
+              "Cat5CdIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "StatusCd": {
+              "StatusCdValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "StatusCdValueIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "SicCd": {
+              "SicCdValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "SicCdValueIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "NaicsCd": {
+              "NaicsCdValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "NaicsCdValueIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "PNaicsCd": "s:string",
+            "PNaicsCdIsEmpty": "s:boolean",
+            "CommentaryRemarkText": "s:string",
+            "CommentaryRemarkTextIsEmpty": "s:boolean",
+            "CreditTerms": "s:string",
+            "NetCommissionPct": "s:decimal",
+            "NetCommissionPctIsEmpty": "s:boolean",
+            "SourceCd": "s:string",
+            "SourceCdIsEmpty": "s:boolean",
+            "SourceDt": "s:dateTime",
+            "SourceDtIsEmpty": "s:boolean",
+            "LegalEntityCd": "s:string",
+            "LegalEntityCdIsEmpty": "s:boolean",
+            "FEIN": "s:long",
+            "FEINIsEmpty": "s:boolean",
+            "DateBusinessStarted": "s:dateTime",
+            "DateBusinessStartedIsEmpty": "s:boolean",
+            "InspectionContact": "s:string",
+            "InspectionContactIsEmpty": "s:boolean",
+            "InspectionPhoneNumber": "s:long",
+            "InspectionPhoneNumberIsEmpty": "s:boolean",
+            "InspectionPhoneExtensionNumber": "s:int",
+            "InspectionPhoneExtensionNumberIsEmpty": "s:boolean",
+            "BusinessNature": {
+              "BusinessNatureValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "BusinessNatureValueIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "AccountingContact": "s:string",
+            "AccountingContactIsEmpty": "s:boolean",
+            "AccountingPhoneNumber": "s:long",
+            "AccountingPhoneNumberIsEmpty": "s:boolean",
+            "AccountingPhoneExtensionNumber": "s:int",
+            "AccountingPhoneExtensionNumberIsEmpty": "s:boolean",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "clientUpdateResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "policyInsert": {
+        "input": {
+          "PolicyImportRecord": {
+            "Guid": "s:string",
+            "ClientInfo": {
+              "ClientId": "s:long",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "TransactionInformation": {
+              "TransactionType": "InsertTransactionType|s:string|NBS,RWL",
+              "TransactionDate": "s:dateTime",
+              "FollowupDays": "s:int",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "PolicyNumber": "s:string",
+            "BillToCd": "s:string",
+            "ClientCd": "s:string",
+            "NamedInsured": "s:string",
+            "PolicyRemarkText": {
+              "PolicyRemarkValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InsurerName": "s:string",
+            "CoverageCd": "s:string",
+            "PolicyContractTermCd": "s:string",
+            "PolicyEffectiveDt": "s:dateTime",
+            "PolicyEffectiveLocalStandardTimeInd": "s:dateTime",
+            "PolicyExpirationDt": "s:dateTime",
+            "PolicyExpirationLocalStandardTimeInd": "s:dateTime",
+            "PolicyOriginalInceptionDt": "s:dateTime",
+            "BinderEffectiveDt": "s:dateTime",
+            "BinderStartTimeInd": "s:dateTime",
+            "BinderExpirationDt": "s:dateTime",
+            "BinderExpirationTimeInd": "s:dateTime",
+            "BillTypeCd": "s:string",
+            "BinderPurposeCd": "s:string",
+            "BOREffectiveDt": "s:dateTime",
+            "BORExpirationDt": "s:dateTime",
+            "LastCommissionPct": "s:string",
+            "Producer": {
+              "Producer1Cd": "s:string",
+              "Producer2Cd": "s:string",
+              "Producer3Cd": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "DivisionCd": "s:int",
+            "DivisionCodeWithLeadingZero": "s:string",
+            "StateProvCd": "s:string",
+            "AuditTermCd": "s:string",
+            "ServicerCd": "s:string",
+            "DepartmentCd": "s:string",
+            "SICCd": "s:string",
+            "DateBusinessStarted": "s:dateTime",
+            "EstimatedAnnualPremium": "s:decimal",
+            "EstimatedAnnualCommission": "s:decimal",
+            "EstimatedAnnualCommissionPct": "s:decimal",
+            "NatureBusinessCd": {
+              "NatureBusinessValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "GeneralInfoRemarkText": {
+              "GeneralInfoRemarkValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "PersonalSupplementalInfo": {
+              "NumCurrentAddrYrs": "s:int",
+              "PreviousAddr1": "s:string",
+              "PreviousAddr2": "s:string",
+              "PreviousPostalCd": {
+                "PreviousPostalCode": "s:string",
+                "PreviousPostalExtensionCode": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "PreviousCity": "s:string",
+              "PreviousStateProvCd": "s:string",
+              "CurrentResidenceDt": "s:dateTime",
+              "PreviousResidenceDt": "s:dateTime",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InsuredInfo": {
+              "BirthDt": "s:dateTime",
+              "TaxId": "s:int",
+              "NumResidentsInHousehold": "s:int",
+              "NamedIndividuals": "s:int",
+              "MaritalStatusCd": "s:string",
+              "OccupationClassCd": "s:string",
+              "OccupationDesc": "s:string",
+              "LengthTimeEmployed": "s:int",
+              "HouseholdIncomeAmt": "s:int",
+              "CommercialName": "s:string",
+              "LengthTimeWithPreviousEmployer": "s:int",
+              "LengthTimeCurrentOccupation": "s:int",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "General1QuestionInfo": {
+              "NumVehsInHousehold": "s:int",
+              "LengthTimeKnownByAgentBroker": "s:int",
+              "AutoClubMemberYesNoCd": "YesNoVal|s:string|Y,N",
+              "UMPDRejectionYesNoCd": "YesNoVal|s:string|Y,N",
+              "UnderinsMotoristRejectionYesNoCd": "YesNoVal|s:string|Y,N",
+              "AnyLossesAccidentsConvictionsIndYesNoCd": "YesNoVal|s:string|Y,N",
+              "ResidenceOwnedRentedCd": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CoInsuredInfo": {
+              "CoInsuredBirthDt": "s:dateTime",
+              "CoInsuredTaxId": "s:long",
+              "CoInsuredMaritalStatusCd": "s:string",
+              "CoInsuredOccupationClassCd": "s:string",
+              "CoInsuredOccupationDesc": "s:string",
+              "CoInsuredLengthTimeWithCurrentEmployer": "s:int",
+              "CoInsuredCommercialName": "s:string",
+              "CoInsuredLengthTimeWithPreviousEmployer": "s:int",
+              "CoInsuredLengthTimeCurrentOccupation": "s:int",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "BusinessIncomeTypeBusinessCd": "s:string",
+            "PolicyTypeCd": "s:string",
+            "PayeeCd": "s:string",
+            "PolicyDesc": "s:string",
+            "PolicySource": "s:string",
+            "CarrierProducerSubCode": "s:string",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "policyInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "policyUpdate": {
+        "input": {
+          "PolicyUpdateRecord": {
+            "Guid": "s:string",
+            "ClientInfo": {
+              "ClientId": "s:long",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "TransactionInformation": {
+              "TransactionType": "UpdateTransactionType|s:string|PCH,XLC,REI,RWL,REW,PAD,RWX",
+              "TransactionDescription": "s:string",
+              "TransactionDate": "s:dateTime",
+              "FollowupDays": "s:int",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "PolicyId": "s:long",
+            "PolicyNumber": "s:string",
+            "PolicyNumberIsEmpty": "s:boolean",
+            "BillToCd": "s:string",
+            "ClientCd": "s:string",
+            "NamedInsured": "s:string",
+            "NamedInsuredIsEmpty": "s:boolean",
+            "PolicyRemarkText": {
+              "PolicyRemarkValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "PolicyRemarkValueIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InsurerName": "s:string",
+            "CoverageCd": "s:string",
+            "PolicyContractTermCd": "s:string",
+            "NewRenewInd": "StatusVal|s:string|NEW,REN",
+            "PolicyEffectiveDt": "s:dateTime",
+            "PolicyEffectiveLocalStandardTimeInd": "s:dateTime",
+            "PolicyExpirationDt": "s:dateTime",
+            "PolicyExpirationLocalStandardTimeInd": "s:dateTime",
+            "PolicyOriginalInceptionDt": "s:dateTime",
+            "BinderEffectiveDt": "s:dateTime",
+            "BinderEffectiveDtIsEmpty": "s:boolean",
+            "BinderStartTimeInd": "s:dateTime",
+            "BinderStartTimeIndIsEmpty": "s:boolean",
+            "BinderExpirationDt": "s:dateTime",
+            "BinderExpirationDtIsEmpty": "s:boolean",
+            "BinderExpirationTimeInd": "s:dateTime",
+            "BinderExpirationTimeIndIsEmpty": "s:boolean",
+            "BillTypeCd": "s:string",
+            "BinderPurposeCd": "s:string",
+            "BinderPurposeCdIsEmpty": "s:boolean",
+            "BOREffectiveDt": "s:dateTime",
+            "BOREffectiveDtIsEmpty": "s:boolean",
+            "BORExpirationDt": "s:dateTime",
+            "BORExpirationDtIsEmpty": "s:boolean",
+            "LastCommissionPct": "s:string",
+            "LastCommissionPctIsEmpty": "s:boolean",
+            "CancellationTypeCd": "s:string",
+            "CancDt": "s:dateTime",
+            "CancReasonCd": "s:string",
+            "CancEvidence": "s:string",
+            "CancNonrenewRenewDt": "s:dateTime",
+            "CancLastDt": "s:dateTime",
+            "CancLastDtIsEmpty": "s:boolean",
+            "Producer": {
+              "Producer1Cd": "s:string",
+              "Producer2Cd": "s:string",
+              "Producer2CdIsEmpty": "s:boolean",
+              "Producer3Cd": "s:string",
+              "Producer3CdIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "DivisionCd": "s:int",
+            "DivisionCodeWithLeadingZero": "s:string",
+            "StateProvCd": "s:string",
+            "StateProvCdIsEmpty": "s:boolean",
+            "AuditTermCd": "s:string",
+            "AuditTermCdIsEmpty": "s:boolean",
+            "ServicerCd": "s:string",
+            "DepartmentCd": "s:string",
+            "ReinstateDt": "s:dateTime",
+            "ReinstateReasonCd": "s:string",
+            "SICCd": "s:string",
+            "SICCdIsEmpty": "s:boolean",
+            "DateBusinessStarted": "s:dateTime",
+            "DateBusinessStartedIsEmpty": "s:boolean",
+            "EstimatedAnnualPremium": "s:decimal",
+            "EstimatedAnnualPremiumIsEmpty": "s:boolean",
+            "EstimatedAnnualCommission": "s:decimal",
+            "EstimatedAnnualCommissionIsEmpty": "s:boolean",
+            "EstimatedAnnualCommissionPct": "s:decimal",
+            "EstimatedAnnualCommissionPctIsEmpty": "s:boolean",
+            "NatureBusinessCd": {
+              "NatureBusinessValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "NatureBusinessValueIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "GeneralInfoRemarkText": {
+              "GeneralInfoRemarkValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "GeneralInfoRemarkValueIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "PersonalSupplementalInfo": {
+              "NumCurrentAddrYrs": "s:int",
+              "NumCurrentAddrYrsIsEmpty": "s:boolean",
+              "PreviousAddr1": "s:string",
+              "PreviousAddr1IsEmpty": "s:boolean",
+              "PreviousAddr2": "s:string",
+              "PreviousAddr2IsEmpty": "s:boolean",
+              "PreviousPostalCd": {
+                "PreviousPostalCode": "s:string",
+                "PreviousPostalCodeIsEmpty": "s:boolean",
+                "PreviousPostalExtensionCode": "s:string",
+                "PreviousPostalExtensionCodeIsEmpty": "s:boolean",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "PreviousCity": "s:string",
+              "PreviousCityIsEmpty": "s:boolean",
+              "PreviousStateProvCd": "s:string",
+              "PreviousStateProvCdIsEmpty": "s:boolean",
+              "CurrentResidenceDt": "s:dateTime",
+              "CurrentResidenceDtIsEmpty": "s:boolean",
+              "PreviousResidenceDt": "s:dateTime",
+              "PreviousResidenceDtIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InsuredInfo": {
+              "BirthDt": "s:dateTime",
+              "BirthDtIsEmpty": "s:boolean",
+              "TaxId": "s:int",
+              "TaxIdIsEmpty": "s:boolean",
+              "NumResidentsInHousehold": "s:int",
+              "NumResidentsInHouseholdIsEmpty": "s:boolean",
+              "NamedIndividuals": "s:int",
+              "NamedIndividualsIsEmpty": "s:boolean",
+              "MaritalStatusCd": "s:string",
+              "MaritalStatusCdIsEmpty": "s:boolean",
+              "OccupationClassCd": "s:string",
+              "OccupationClassCdIsEmpty": "s:boolean",
+              "OccupationDesc": "s:string",
+              "OccupationDescIsEmpty": "s:boolean",
+              "LengthTimeEmployed": "s:int",
+              "LengthTimeEmployedIsEmpty": "s:boolean",
+              "HouseholdIncomeAmt": "s:int",
+              "HouseholdIncomeAmtIsEmpty": "s:boolean",
+              "CommercialName": "s:string",
+              "CommercialNameIsEmpty": "s:boolean",
+              "LengthTimeWithPreviousEmployer": "s:int",
+              "LengthTimeWithPreviousEmployerIsEmpty": "s:boolean",
+              "LengthTimeCurrentOccupation": "s:int",
+              "LengthTimeCurrentOccupationIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "General1QuestionInfo": {
+              "NumVehsInHousehold": "s:int",
+              "NumVehsInHouseholdIsEmpty": "s:boolean",
+              "LengthTimeKnownByAgentBroker": "s:int",
+              "LengthTimeKnownByAgentBrokerIsEmpty": "s:boolean",
+              "AutoClubMemberYesNoCd": "YesNoVal|s:string|Y,N",
+              "AutoClubMemberYesNoCdIsEmpty": "s:boolean",
+              "UMPDRejectionYesNoCd": "YesNoVal|s:string|Y,N",
+              "UMPDRejectionYesNoCdIsEmpty": "s:boolean",
+              "UnderinsMotoristRejectionYesNoCd": "YesNoVal|s:string|Y,N",
+              "UnderinsMotoristRejectionYesNoCdIsEmpty": "s:boolean",
+              "AnyLossesAccidentsConvictionsIndYesNoCd": "YesNoVal|s:string|Y,N",
+              "AnyLossesAccidentsConvictionsIndYesNoCdIsEmpty": "s:boolean",
+              "ResidenceOwnedRentedCd": "s:string",
+              "ResidenceOwnedRentedCdIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CoInsuredInfo": {
+              "CoInsuredBirthDt": "s:dateTime",
+              "CoInsuredBirthDtIsEmpty": "s:boolean",
+              "CoInsuredTaxId": "s:long",
+              "CoInsuredTaxIdIsEmpty": "s:boolean",
+              "CoInsuredMaritalStatusCd": "s:string",
+              "CoInsuredMaritalStatusCdIsEmpty": "s:boolean",
+              "CoInsuredOccupationClassCd": "s:string",
+              "CoInsuredOccupationClassCdIsEmpty": "s:boolean",
+              "CoInsuredOccupationDesc": "s:string",
+              "CoInsuredOccupationDescIsEmpty": "s:boolean",
+              "CoInsuredLengthTimeWithCurrentEmployer": "s:int",
+              "CoInsuredLengthTimeWithCurrentEmployerIsEmpty": "s:boolean",
+              "CoInsuredCommercialName": "s:string",
+              "CoInsuredCommercialNameIsEmpty": "s:boolean",
+              "CoInsuredLengthTimeWithPreviousEmployer": "s:int",
+              "CoInsuredLengthTimeWithPreviousEmployerIsEmpty": "s:boolean",
+              "CoInsuredLengthTimeCurrentOccupation": "s:int",
+              "CoInsuredLengthTimeCurrentOccupationIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "BusinessIncomeTypeBusinessCd": "s:string",
+            "BusinessIncomeTypeBusinessCdIsEmpty": "s:boolean",
+            "PolicyTypeCd": "s:string",
+            "PolicyTypeCdIsEmpty": "s:boolean",
+            "PayeeCd": "s:string",
+            "PolicyDesc": "s:string",
+            "PolicyDescIsEmpty": "s:boolean",
+            "PolicySource": "s:string",
+            "PolicySourceIsEmpty": "s:boolean",
+            "CarrierProducerSubCode": "s:string",
+            "CarrierProducerSubCodeIsEmpty": "s:boolean",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "policyUpdateResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "policyDelete": {
+        "input": {
+          "Guid": "s:string",
+          "PolicyId": "s:long",
+          "StaffUser": "s:string"
+        },
+        "output": {
+          "policyDeleteResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "commissionStatementInsert": {
+        "input": {
+          "CommissionStatementRecord": {
+            "Guid": "s:string",
+            "Org": "s:string",
+            "StatementDt": "s:dateTime",
+            "DepositDt": "s:dateTime",
+            "CheckNumber": "s:string",
+            "ClientId": "s:long",
+            "ClientName": "s:string",
+            "PolicyId": "s:long",
+            "PolicyNumber": "s:string",
+            "Division": "s:long",
+            "DivisionWithLeadingZero": "s:string",
+            "CoverageCd": "s:string",
+            "PolicyEffectiveDt": "s:dateTime",
+            "PolicyExpirationDt": "s:dateTime",
+            "TransactionEffectiveDt": "s:dateTime",
+            "TransactionTypeCd": "s:string",
+            "GrossPremiumAmt": "s:decimal",
+            "CommissionPct": "s:decimal",
+            "CommissionAmt": "s:decimal",
+            "OverrideInd": "s:boolean",
+            "ProducerInfo": {
+              "ProducerInfo[]": {
+                "ProducerCd": "s:string",
+                "ProducerPct": "s:decimal",
+                "ProducerAmt": "s:decimal",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "StatementAssociation": "s:string",
+            "RecordStatementEntryId": "s:string",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "commissionStatementInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "cashReceiptInsert": {
+        "input": {
+          "CashReceiptRecord": {
+            "Guid": "s:string",
+            "Division": "s:string",
+            "Bank": "s:string",
+            "Type": "s:string",
+            "DepositDt": "s:dateTime",
+            "IntClientCd": "s:string",
+            "ExtClientCd": "s:string",
+            "CheckNo": "s:string",
+            "CheckAmt": "s:decimal",
+            "CheckComment": "s:string",
+            "InvoiceInformation": {
+              "InvoiceInformation[]": {
+                "InvoiceNo": "s:string",
+                "InvoiceAmt": "s:decimal",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "GLInformation": {
+              "GLInformation[]": {
+                "GLAccountNo": "s:string",
+                "GLAmount": "s:decimal",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "BatchNo": "s:string",
+            "COADivFlag": "s:string",
+            "PayeeCode": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "cashReceiptInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "customProcessUsher": {
+        "input": {
+          "CustomProcessUsherRecord": {
+            "usherName": "s:string",
+            "waitForResponse": "s:string",
+            "UsherInformation": {
+              "UsherInformation[]": {
+                "usherKey": "s:string",
+                "usherData": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "customProcessUsherResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "invoiceInsert": {
+        "input": {
+          "invoiceRecord": {
+            "Guid": "s:string",
+            "PolicyId": "s:long",
+            "PolicyNumber": "s:string",
+            "PolicyTransCd": "s:string",
+            "PolicyTransEffDt": "s:dateTime",
+            "BillToCd": "s:string",
+            "BillMethod": "PolBillMethod|s:string|A,C",
+            "InvoiceEffDt": "s:dateTime",
+            "Division": "s:string",
+            "DepartmentCd": "s:string",
+            "ServicerCd": "s:string",
+            "CoverageCd": "s:string",
+            "NetPct": "s:decimal",
+            "NetBillBrokerOption": "s:string",
+            "DueDate": "s:dateTime",
+            "InvoiceStatus": "s:string",
+            "SuppressAutoPost": "s:boolean",
+            "InstallmentNumber": "s:long",
+            "Comments": "s:string",
+            "InternalComments": "s:string",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "IntegrateProdCredit": "s:string",
+            "PayeeData": {
+              "PayeeData[]": {
+                "InsurerCd": "s:string",
+                "PayeeCd": "s:string",
+                "PayeePct": "s:decimal",
+                "PayeeAmt": "s:decimal",
+                "AgencyPct": "s:decimal",
+                "AgencyAmt": "s:decimal",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "ProducerData": {
+              "ProducerData[]": {
+                "ProducerCd": "s:string",
+                "ProducerCommissionType": "ProducerCommissionType|s:string|S,P,F",
+                "ProducerPct": "s:decimal",
+                "ProducerAmt": "s:decimal",
+                "RelPayFlag": "s:string",
+                "ProdTypeCd": "s:string",
+                "ProdCrPct": "s:decimal",
+                "NetImpact": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "TransactionData": {
+              "PrimaryTransactionCd": "s:string",
+              "PremiumAmt": "s:decimal",
+              "AddlTransactions": {
+                "AddlTransactions[]": {
+                  "TransactionCd": "s:string",
+                  "TransAmount": "s:decimal",
+                  "CoverageCd": "s:string",
+                  "PayeeCd": "s:string",
+                  "AgencyPct": "s:decimal",
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "invoiceInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "paymentInsert": {
+        "input": {
+          "paymentRecord": {
+            "Guid": "s:string",
+            "Division": "s:string",
+            "VendorCode": "s:string",
+            "BankCode": "s:string",
+            "CheckDate": "s:dateTime",
+            "PeriodEndDate": "s:dateTime",
+            "CheckNumber": "s:string",
+            "CheckAmount": "s:decimal",
+            "CheckComment": "s:string",
+            "UseVendorAlternateAddress": "s:boolean",
+            "VendorAlternateAddressLineNo": "s:long",
+            "UseVendorTempAddress": "s:boolean",
+            "VendorTempAddress": {
+              "Name1": "s:string",
+              "Name2": "s:string",
+              "Address1": "s:string",
+              "Address2": "s:string",
+              "City": "s:string",
+              "StateProvinceCode": "s:string",
+              "PostalCode": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InvoicePostings": {
+              "InvoicePostingsInsert[]": {
+                "PayableId": "s:string",
+                "PostAmount": "s:decimal",
+                "SplitAdjust": "SplitAdjust|s:string|S,A",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "ExecuteImmediateUpdate": "s:boolean",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "paymentInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "paymentUpdate": {
+        "input": {
+          "paymentRecord": {
+            "Guid": "s:string",
+            "PaymentId": "s:string",
+            "BankCode": "s:string",
+            "CheckDate": "s:dateTime",
+            "PeriodEndDate": "s:dateTime",
+            "CheckNumber": "s:string",
+            "CheckNumberIsEmpty": "s:boolean",
+            "CheckComment": "s:string",
+            "CheckCommentIsEmpty": "s:boolean",
+            "UseVendorDefaultAddress": "s:boolean",
+            "UseVendorAlternateAddress": "s:boolean",
+            "VendorAlternateAddressLineNo": "s:long",
+            "UseVendorTempAddress": "s:boolean",
+            "VendorTempAddress": {
+              "Name1": "s:string",
+              "Name2": "s:string",
+              "Address1": "s:string",
+              "Address2": "s:string",
+              "City": "s:string",
+              "StateProvinceCode": "s:string",
+              "PostalCode": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InvoicePostings": {
+              "InvoicePostingsUpdate[]": {
+                "PayableId": "s:string",
+                "PostAmount": "s:decimal",
+                "SplitAdjust": "SplitAdjust|s:string|S,A",
+                "DeleteInvoicePosting": "s:boolean",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "ExecuteImmediateUpdate": "s:boolean",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "paymentUpdateResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "insurerReceiptInsert": {
+        "input": {
+          "insurerReceiptRecord": {
+            "Guid": "s:string",
+            "Division": "s:string",
+            "VendorCode": "s:string",
+            "BankCode": "s:string",
+            "DepositDate": "s:dateTime",
+            "PeriodEndDate": "s:dateTime",
+            "CheckNumber": "s:string",
+            "CheckAmount": "s:decimal",
+            "CheckComment": "s:string",
+            "HoldRelease": "HoldRelease|s:string|H,R",
+            "ExecuteImmediatePost": "s:boolean",
+            "InsurerReceivablePostings": {
+              "InsurerReceivablePostingsInsert[]": {
+                "InsurerReceivableId": "s:string",
+                "PostAmount": "s:decimal",
+                "SplitAdjust": "SplitAdjust|s:string|S,A",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "insurerReceiptInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "insurerReceiptUpdate": {
+        "input": {
+          "insurerReceiptRecord": {
+            "Guid": "s:string",
+            "InsurerReceiptId": "s:string",
+            "BankCode": "s:string",
+            "DepositDate": "s:dateTime",
+            "PeriodEndDate": "s:dateTime",
+            "CheckNumber": "s:string",
+            "CheckAmount": "s:decimal",
+            "CheckAmountIsEmpty": "s:boolean",
+            "CheckComment": "s:string",
+            "CheckCommentIsEmpty": "s:boolean",
+            "HoldRelease": "HoldRelease|s:string|H,R",
+            "ExecuteImmediatePost": "s:boolean",
+            "InsurerReceivablePostings": {
+              "InsurerReceivablePostingsUpdate[]": {
+                "InsurerReceivableId": "s:string",
+                "PostAmount": "s:decimal",
+                "SplitAdjust": "SplitAdjust|s:string|S,A",
+                "DeleteInsurerReceivablePosting": "s:boolean",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "insurerReceiptUpdateResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "insurerReceiptDelete": {
+        "input": {
+          "insurerReceiptRecord": {
+            "Guid": "s:string",
+            "InsurerReceiptId": "s:string",
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "insurerReceiptDeleteResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "vendorPayableInsert": {
+        "input": {
+          "vendorPayableRecord": {
+            "Guid": "s:string",
+            "Division": "s:string",
+            "VendorCode": "s:string",
+            "InvoiceNo": "s:string",
+            "Status": "HoldRelease|s:string|H,R",
+            "InvoiceAmount": "s:decimal",
+            "InvoiceDate": "s:dateTime",
+            "PeriodEndDate": "s:dateTime",
+            "PayableDate": "s:dateTime",
+            "CreditTerms": "s:string",
+            "Req1099": "YesNoVal|s:string|Y,N",
+            "APGLAccount": "s:string",
+            "PONumber": "s:string",
+            "BatchNo": "s:string",
+            "InvoiceRemarks": "s:string",
+            "GLPostings": {
+              "GLPostings[]": {
+                "GLAccount": "s:string",
+                "GLAmount": "s:decimal",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "BankCode": "s:string",
+            "CheckDate": "s:dateTime",
+            "CheckPEDate": "s:dateTime",
+            "CheckNumber": "s:string",
+            "CheckComment": "s:string",
+            "UseVendorAlternateAddress": "s:boolean",
+            "VendorAlternateAddressLineNo": "s:long",
+            "UseVendorTempAddress": "s:boolean",
+            "VendorTempAddress": {
+              "Name1": "s:string",
+              "Name2": "s:string",
+              "Address1": "s:string",
+              "Address2": "s:string",
+              "City": "s:string",
+              "StateProvinceCode": "s:string",
+              "PostalCode": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "Comments": "s:string",
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "ExecuteImmediateUpdate": "s:boolean",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "vendorPayableInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "vendorPayableUpdate": {
+        "input": {
+          "vendorPayableRecord": {
+            "Guid": "s:string",
+            "PayableId": "s:string",
+            "Status": "HoldRelease|s:string|H,R",
+            "InvoiceAmount": "s:decimal",
+            "PayableDate": "s:dateTime",
+            "CreditTerms": "s:string",
+            "CreditTermsIsEmpty": "s:boolean",
+            "Req1099": "YesNoVal|s:string|Y,N",
+            "PONumber": "s:string",
+            "PONumberIsEmpty": "s:boolean",
+            "BatchNo": "s:string",
+            "BatchNoIsEmpty": "s:boolean",
+            "InvoiceRemarks": "s:string",
+            "InvoiceRemarksIsEmpty": "s:boolean",
+            "GLPostings": {
+              "GLPostings[]": {
+                "GLAccount": "s:string",
+                "GLAmount": "s:decimal",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "BankCode": "s:string",
+            "CheckDate": "s:dateTime",
+            "CheckPEDate": "s:dateTime",
+            "CheckNumber": "s:string",
+            "CheckNumberIsEmpty": "s:boolean",
+            "CheckComment": "s:string",
+            "CheckCommentIsEmpty": "s:boolean",
+            "UseVendorDefaultAddress": "s:boolean",
+            "UseVendorAlternateAddress": "s:boolean",
+            "VendorAlternateAddressLineNo": "s:long",
+            "UseVendorTempAddress": "s:boolean",
+            "VendorTempAddress": {
+              "Name1": "s:string",
+              "Name2": "s:string",
+              "Address1": "s:string",
+              "Address2": "s:string",
+              "City": "s:string",
+              "StateProvinceCode": "s:string",
+              "PostalCode": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "Comments": "s:string",
+            "CommentsIsEmpty": "s:boolean",
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "ExecuteImmediateUpdate": "s:boolean",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "vendorPayableUpdateResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "customFindCPPolicy": {
+        "input": {
+          "customFindCPPolicyCriteriaRecord": {
+            "PolicyNumber": "s:string",
+            "ClientCode": "s:string",
+            "PolicyEffectiveDate": "s:dateTime",
+            "PayeeCode": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "customFindCPPolicyResult": {
+            "CPPolicyRecords": {
+              "customFindCPPolicyRecord[]": {
+                "PolicyKey": "s:string",
+                "PolicyNumber": "s:string",
+                "ClientCode": "s:string",
+                "PolicyEffectiveDate": "s:string",
+                "PayeeCode": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "Messages": {
+              "string[]": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "RecordCount": "s:int",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "customGetCPPolicy": {
+        "input": {
+          "PolicyKey": "s:string"
+        },
+        "output": {
+          "customGetCPPolicyResult": {
+            "PolicyKey": "s:string",
+            "Messages": {
+              "string[]": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CPPolicyClientsKeys": {
+              "ClientKey": "s:string",
+              "BilltoKey": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CPPolicyRecord": {
+              "Pol_Seq_Num_": "s:string",
+              "WrComm": "s:string",
+              "WrPrem": "s:string",
+              "WrPrdComm": "s:string",
+              "B_Typ": "s:string",
+              "CNR_Date": "s:string",
+              "Key__to__Clients": "s:string",
+              "Cov": "s:string",
+              "Dept": "s:string",
+              "Div_": "s:string",
+              "Eff_Date": "s:string",
+              "Entry_Date": "s:string",
+              "Exp_Date": "s:string",
+              "Major__Code": "s:string",
+              "Payee": "s:string",
+              "PayeeName": "s:string",
+              "P_Source": "s:string",
+              "PServ": "s:string",
+              "Policy__Number": "s:string",
+              "St": "s:string",
+              "Term": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CPClientsData": {
+              "customCPClientsData[]": {
+                "CLIENTS_Text": "s:string",
+                "C_Address1": "s:string",
+                "C_Address2": "s:string",
+                "C_City": "s:string",
+                "Client_Code": "s:string",
+                "Client__Name": "s:string",
+                "Div": "s:string",
+                "C_St": "s:string",
+                "Zip__Code": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CPPremiumsLines": {
+              "customCPPremiumsLine[]": {
+                "Client__Code": "s:string",
+                "Last__Entry__Date": "s:string",
+                "LOE_Date": "s:string",
+                "Major__Line": "s:string",
+                "PremSeq_Num_": "s:string",
+                "PolSeq_Num_": "s:string",
+                "Trn": "s:string",
+                "AgcyComm": "s:string",
+                "Agt_Pct": "s:string",
+                "Key__to__Insurer__Receivables": "s:string",
+                "BillTo__Item__ID": "s:string",
+                "Cov": "s:string",
+                "Key__to__Coverages": "s:string",
+                "CovDescription": "s:string",
+                "Dept": "s:string",
+                "Ins": "s:string",
+                "Ins_Name": "s:string",
+                "Key__to__Insurors": "s:string",
+                "Invoice_Num_": "s:string",
+                "Payee": "s:string",
+                "Prd_Comm": "s:string",
+                "Prd": "s:string",
+                "Prd_Name": "s:string",
+                "Prd_Pct": "s:string",
+                "Sales_ID": "s:string",
+                "Staff_Code": "s:string",
+                "Staff__Name": "s:string",
+                "Trans_Amt": "s:string",
+                "Eff_Date": "s:string",
+                "Ent_Date": "s:string",
+                "Ann_Date": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CPSalesLines": {
+              "customCPSalesLine[]": {
+                "Sales_ID": "s:string",
+                "Region": "s:string",
+                "Div": "s:string",
+                "Invoice_Status": "s:string",
+                "Client_ID": "s:string",
+                "Billto_ID": "s:string",
+                "Invoice_No": "s:string",
+                "Invoice_Date": "s:string",
+                "Policy_ID": "s:string",
+                "Premium_ID": "s:string",
+                "Payee_Code": "s:string",
+                "Eff_Date": "s:string",
+                "Dept": "s:string",
+                "Trn": "s:string",
+                "Cov": "s:string",
+                "Trans_Amt": "s:string",
+                "AgcyComm_Amt": "s:string",
+                "Payables_ID": "s:string",
+                "Payables_Status": "s:string",
+                "Multi_Payee": "s:string",
+                "AR_Balance": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CPPayablesLines": {
+              "customCPPayablesLine[]": {
+                "Payables_ID": "s:string",
+                "Type": "s:string",
+                "Div": "s:string",
+                "Vendor_Code": "s:string",
+                "Invoice_No": "s:string",
+                "Invoice_Date": "s:string",
+                "Invoice_Amt": "s:string",
+                "Pay_Date": "s:string",
+                "Pay_Status": "s:string",
+                "AP_Balance": "s:string",
+                "Check_No": "s:string",
+                "Check_Date": "s:string",
+                "Policy_No": "s:string",
+                "Bank_Code": "s:string",
+                "Sales_ID": "s:string",
+                "Payment_ID": "s:string",
+                "CB_PremID": "s:string",
+                "AB_PremID": "s:string",
+                "Client_Code": "s:string",
+                "Bill_Type": "s:string",
+                "TRN_Date": "s:string",
+                "TRN_Amt": "s:string",
+                "TRN_Status": "s:string",
+                "TRN_Code": "s:string",
+                "TRN_RefNo": "s:string",
+                "Custm_PolID": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CPPayeesData": {
+              "customCPPayeesData[]": {
+                "Payee__Code": "s:string",
+                "Payee__Name": "s:string",
+                "Phone1": "s:string",
+                "Phone2": "s:string",
+                "Agency_Code": "s:string",
+                "Date__Off": "s:string",
+                "Date__Off__Remarks": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CPPayeeAddressesData": {
+              "customCPPayeeAddressesData[]": {
+                "Payee__Code": "s:string",
+                "Payee__Name1": "s:string",
+                "Payee__Name2": "s:string",
+                "Address1": "s:string",
+                "Address2": "s:string",
+                "City": "s:string",
+                "State": "s:string",
+                "Zip": "s:string",
+                "Type": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "invoiceVoid": {
+        "input": {
+          "invoiceVoidRecord": {
+            "Guid": "s:string",
+            "InvoiceId": "s:string",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "invoiceVoidResult": {
+            "Success": "s:boolean",
+            "InvoiceId": "s:string",
+            "VoidInvoiceId": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InvoiceInfo": {
+              "InvoiceId": "s:string",
+              "PolicyId": "s:long",
+              "PolicyNumber": "s:string",
+              "EffectiveDt": "s:dateTime",
+              "EntryDt": "s:dateTime",
+              "ClientCd": "s:string",
+              "BillToCd": "s:string",
+              "Division": "s:string",
+              "DepartmentCd": "s:string",
+              "DueDt": "s:dateTime",
+              "ServicerCd": "s:string",
+              "Comments": "s:string",
+              "TransactionData": {
+                "InvoiceTransactionData[]": {
+                  "TransactionCd": "s:string",
+                  "CoverageCd": "s:string",
+                  "TransactionAmt": "s:decimal",
+                  "AgencyAmt": "s:decimal",
+                  "AgencyPct": "s:decimal",
+                  "ProducerCd": "s:string",
+                  "ProducerAmt": "s:decimal",
+                  "ProducerPct": "s:decimal",
+                  "InsurerCd": "s:string",
+                  "PayeeCd": "s:string",
+                  "ProducerType": "s:string",
+                  "Netimpact": "s:string",
+                  "ProdCreditPct": "s:decimal",
+                  "ProdCreditAmt": "s:decimal",
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "invoiceDelete": {
+        "input": {
+          "invoiceDeleteRecord": {
+            "Guid": "s:string",
+            "InvoiceId": "s:string",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "invoiceDeleteResult": {
+            "Success": "s:boolean",
+            "InvoiceId": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "invoicePost": {
+        "input": {
+          "invoicePostRecord": {
+            "Guid": "s:string",
+            "InvoiceId": "s:string",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "invoicePostResult": {
+            "Success": "s:boolean",
+            "InvoiceId": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "invoiceGetByCriteriaV1": {
+        "input": {
+          "invoiceGetByCriteria": {
+            "InvoiceId": {
+              "string[]": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "PolicyId": {
+              "long[]": "s:long",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InvoiceStatus": {
+              "string[]": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "BillToCd": {
+              "string[]": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "ClientCd": {
+              "string[]": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "StartInvoiceDate": "s:dateTime",
+            "EndInvoiceDate": "s:dateTime",
+            "StartInvoiceEffDate": "s:dateTime",
+            "EndInvoiceEffDate": "s:dateTime",
+            "DueDateSort": "SortType|s:string|Ascending,Descending",
+            "FirstResult": "s:int",
+            "MaxResults": "s:int",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "invoiceGetByCriteriaV1Result": {
+            "NumberOfResults": "s:long",
+            "InvoiceInfo": {
+              "InvoiceInfoByCriteriaV1[]": {
+                "InvoiceId": "s:string",
+                "InvoiceNumber": "s:string",
+                "InvoiceStatus": "s:string",
+                "Balance": "s:decimal",
+                "PolicyId": "s:string",
+                "PolicyNumber": "s:string",
+                "PolicyTransactionCd": "s:string",
+                "PolicyTransactionEffectiveDt": "s:dateTime",
+                "InvoiceEffectiveDt": "s:dateTime",
+                "EntryDt": "s:dateTime",
+                "ClientCd": "s:string",
+                "BillToCd": "s:string",
+                "Division": "s:string",
+                "DepartmentCd": "s:string",
+                "DueDt": "s:dateTime",
+                "ServicerCd": "s:string",
+                "Comments": "s:string",
+                "TransactionData": {
+                  "InvoiceTransactionInfo[]": {
+                    "TransactionCd": "s:string",
+                    "TransactionAmt": "s:decimal",
+                    "CoverageCd": "s:string",
+                    "PayeeCd": "s:string",
+                    "InsurerCd": "s:string",
+                    "AgencyAmt": "s:decimal",
+                    "ProducerCd": "s:string",
+                    "ProducerDivision": "s:string",
+                    "ProducerAmt": "s:decimal",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "PaymentData": {
+                  "InvoicePaymentInfo[]": {
+                    "PaymentMethod": "s:string",
+                    "PaymentAmt": "s:decimal",
+                    "CheckNum": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "ProducerPaymentData": {
+                  "ProducerPaymentInfo[]": {
+                    "ProducerCheckNum": "s:string",
+                    "ProducerCheckDt": "s:dateTime",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "invoiceGetPdf": {
+        "input": {
+          "invoicePdfRecord": {
+            "InvoiceId": "s:string",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "invoiceGetPdfResult": {
+            "Success": "s:boolean",
+            "InvoiceId": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "EncodedInvoicePDF": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "importResults": {
+        "input": {
+          "Guid": "s:string"
+        },
+        "output": {
+          "importResultsResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "insurerDisbursementInsert": {
+        "input": {
+          "insurerDisbursementRecord": {
+            "Guid": "s:string",
+            "Division": "s:string",
+            "BankCode": "s:string",
+            "DisburseDate": "s:dateTime",
+            "PeriodEndDate": "s:dateTime",
+            "VendorCode": "s:string",
+            "CheckNumber": "s:string",
+            "CheckAmount": "s:decimal",
+            "CheckComment": "s:string",
+            "HoldRelease": "HoldRelease|s:string|H,R",
+            "UseVendorTempAddress": "s:boolean",
+            "UseVendorAlternateAddress": "s:boolean",
+            "VendorAlternateAddressLineNo": "s:string",
+            "ExecuteImmediatePost": "s:boolean",
+            "VendorTempAddress": {
+              "Name1": "s:string",
+              "Name2": "s:string",
+              "Address1": "s:string",
+              "Address2": "s:string",
+              "City": "s:string",
+              "StateProvinceCode": "s:string",
+              "PostalCode": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InsurerReceivablePostings": {
+              "InsurerReceivablePostingsInsert[]": {
+                "InsurerReceivableId": "s:string",
+                "PostAmount": "s:decimal",
+                "SplitAdjust": "SplitAdjust|s:string|S,A",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "insurerDisbursementInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "insurerDisbursementUpdate": {
+        "input": {
+          "insurerDisbursementRecord": {
+            "Guid": "s:string",
+            "InsurerDisbursementId": "s:string",
+            "BankCode": "s:string",
+            "DisburseDate": "s:dateTime",
+            "PeriodEndDate": "s:dateTime",
+            "CheckNumber": "s:string",
+            "CheckNumberIsEmpty": "s:boolean",
+            "CheckAmount": "s:decimal",
+            "CheckAmountIsEmpty": "s:boolean",
+            "CheckComment": "s:string",
+            "CheckCommentIsEmpty": "s:boolean",
+            "HoldRelease": "HoldRelease|s:string|H,R",
+            "UseVendorTempAddress": "s:boolean",
+            "UseVendorAlternateAddress": "s:boolean",
+            "UseVendorDefaultAddress": "s:boolean",
+            "VendorAlternateAddressLineNo": "s:string",
+            "ExecuteImmediatePost": "s:boolean",
+            "VendorTempAddress": {
+              "Name1": "s:string",
+              "Name2": "s:string",
+              "Address1": "s:string",
+              "Address2": "s:string",
+              "City": "s:string",
+              "StateProvinceCode": "s:string",
+              "PostalCode": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InsurerReceivablePostings": {
+              "InsurerReceivablePostingsUpdate[]": {
+                "InsurerReceivableId": "s:string",
+                "PostAmount": "s:decimal",
+                "SplitAdjust": "SplitAdjust|s:string|S,A",
+                "DeleteInsurerReceivablePosting": "s:boolean",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "insurerDisbursementUpdateResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "insurerDisbursementDelete": {
+        "input": {
+          "insurerDisbursementRecord": {
+            "Guid": "s:string",
+            "InsurerDisbursementId": "s:string",
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "insurerDisbursementDeleteResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      }
+    },
+    "TransporterSoap12": {
+      "PassThroughReq": {
+        "input": {
+          "XMLinput": {}
+        },
+        "output": {
+          "PassThroughReqResult": "s:string"
+        }
+      },
+      "PassThroughImp": {
+        "input": {
+          "XMLinput": {}
+        },
+        "output": {
+          "PassThroughImpResult": "s:string"
+        }
+      },
+      "rolodexContains": {
+        "input": {
+          "searchCriteria": "s:string"
+        },
+        "output": {
+          "rolodexContainsResult": {
+            "ErrorMsg": "s:string",
+            "TotalHits": "s:int",
+            "TotalReturned": "s:int",
+            "containsArray": {
+              "containsArray[]": {
+                "ID": "s:int",
+                "ClientName": "s:string",
+                "ClientCd": "s:string",
+                "StreetAddress": {
+                  "Addr1": "s:string",
+                  "Addr2": "s:string",
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "City": "s:string",
+                "StateProvCd": "s:string",
+                "PostalCode": "s:string",
+                "ContactName": "s:string",
+                "Policy": {
+                  "Policies[]": {
+                    "PolicyNumber": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "PolicySerial": {
+                  "PolSerial[]": {
+                    "PolicySerialNumber": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "Telephone": {
+                  "TelephoneNumber1": "s:string",
+                  "TelephoneNumber2": "s:string",
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "ClaimantName": "s:string",
+                "FaxNumber": "s:string",
+                "BillToCode": "s:string",
+                "Prod": {
+                  "Producer1Cd": "s:string",
+                  "Producer2Cd": "s:string",
+                  "Producer3Cd": "s:string",
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "Serv": {
+                  "Servicer1Cd": "s:string",
+                  "Servicer2Cd": "s:string",
+                  "Servicer3Cd": "s:string",
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "Stat": {
+                  "Status[]": {
+                    "Stat": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "Archived": "s:string",
+                "ContactMethod": "s:string",
+                "SIC1Cd": "s:string",
+                "SourceCd": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "rolodexStartsWith": {
+        "input": {
+          "searchCriteria": "s:string"
+        },
+        "output": {
+          "rolodexStartsWithResult": {
+            "ErrorMsg": "s:string",
+            "TotalHits": "s:int",
+            "TotalReturned": "s:int",
+            "startsWithArray": {
+              "startsWithArray[]": {
+                "ID": "s:int",
+                "ClientCd": "s:string",
+                "ClientName": "s:string",
+                "Addr1": "s:string",
+                "City": "s:string",
+                "StateProvCd": "s:string",
+                "PostalCode": "s:string",
+                "Producer1Cd": "s:string",
+                "Servicer1Cd": "s:string",
+                "Archived": "s:string",
+                "ContactMethod": "s:string",
+                "Note": "s:string",
+                "SIC1Cd": "s:string",
+                "SourceCd": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "clientInsert": {
+        "input": {
+          "ClientImportRecord": {
+            "Guid": "s:string",
+            "ClientName": "s:string",
+            "DivisionNumber": "s:int",
+            "DivisionNumberWithLeadingZero": "s:string",
+            "BillToCd": "s:string",
+            "ReferenceCd": "s:string",
+            "Addr1": "s:string",
+            "Addr2": "s:string",
+            "PostCd": {
+              "PostalCode": "s:string",
+              "PostalExtensionCode": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "City": "s:string",
+            "StateProvCd": "s:string",
+            "Phone1Number": "s:long",
+            "Phone1ExtensionNumber": "s:int",
+            "Phone2Number": "s:long",
+            "Phone2ExtensionNumber": "s:int",
+            "FaxNumber": "s:string",
+            "ContactMethod": "s:string",
+            "EmailAddr": "s:string",
+            "WebSiteLink": "s:string",
+            "ProducerCd": {
+              "Producer1Cd": "s:string",
+              "Producer2Cd": "s:string",
+              "Producer3Cd": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "ServicerCd": {
+              "Servicer1Cd": "s:string",
+              "Servicer2Cd": "s:string",
+              "Servicer3Cd": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CatCd": {
+              "Cat1Cd": "s:string",
+              "Cat2Cd": "s:string",
+              "Cat3Cd": "s:string",
+              "Cat4Cd": "s:string",
+              "Cat5Cd": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "StatusCd": {
+              "StatusCdValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "SicCd": {
+              "SicCdValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "PNaicsCode": "s:string",
+            "NaicsCode": {
+              "NaicsCdValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CommentaryRemarkText": "s:string",
+            "CreditTerms": "s:string",
+            "NetCommissionPct": "s:decimal",
+            "SourceCd": "s:string",
+            "SourceDt": "s:dateTime",
+            "LegalEntityCd": "s:string",
+            "FEIN": "s:int",
+            "DateBusinessStarted": "s:dateTime",
+            "InspectionContact": "s:string",
+            "InspectionPhoneNumber": "s:long",
+            "InspectionPhoneExtensionNumber": "s:int",
+            "BusinessNature": {
+              "BusinessNatureValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "AccountingContact": "s:string",
+            "AccountingPhoneNumber": "s:long",
+            "AccountingPhoneExtensionNumber": "s:int",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "clientInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "clientUpdate": {
+        "input": {
+          "ClientUpdateRecord": {
+            "Guid": "s:string",
+            "SagittaId": "s:long",
+            "ClientName": "s:string",
+            "DivisionNumber": "s:int",
+            "DivisionNumberWithLeadingZero": "s:string",
+            "DivisionNumberIsEmpty": "s:boolean",
+            "BillToCd": "s:string",
+            "BillToCdIsEmpty": "s:boolean",
+            "ReferenceCd": "s:string",
+            "ReferenceCdIsEmpty": "s:boolean",
+            "Addr1": "s:string",
+            "Addr2": "s:string",
+            "Addr2IsEmpty": "s:boolean",
+            "PostCd": {
+              "PostalCode": "s:string",
+              "PostalCodeIsEmpty": "s:boolean",
+              "PostalExtensionCode": "s:string",
+              "PostalExtensionCodeIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "City": "s:string",
+            "StateProvCd": "s:string",
+            "Phone1Number": "s:long",
+            "Phone1NumberIsEmpty": "s:boolean",
+            "Phone1ExtensionNumber": "s:int",
+            "Phone1ExtensionNumberIsEmpty": "s:boolean",
+            "Phone2Number": "s:long",
+            "Phone2NumberIsEmpty": "s:boolean",
+            "Phone2ExtensionNumber": "s:int",
+            "Phone2ExtensionNumberIsEmpty": "s:boolean",
+            "FaxNumber": "s:string",
+            "FaxNumberIsEmpty": "s:boolean",
+            "ContactMethod": "s:string",
+            "ContactMethodIsEmpty": "s:boolean",
+            "EmailAddr": "s:string",
+            "EmailAddrIsEmpty": "s:boolean",
+            "WebSiteLink": "s:string",
+            "WebSiteLinkIsEmpty": "s:boolean",
+            "ProducerCd": {
+              "Producer1Cd": "s:string",
+              "Producer2Cd": "s:string",
+              "Producer2CdIsEmpty": "s:boolean",
+              "Producer3Cd": "s:string",
+              "Producer3CdIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "ServicerCd": {
+              "Servicer1Cd": "s:string",
+              "Servicer2Cd": "s:string",
+              "Servicer2CdIsEmpty": "s:boolean",
+              "Servicer3Cd": "s:string",
+              "Servicer3CdIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CatCd": {
+              "Cat1Cd": "s:string",
+              "Cat1CdIsEmpty": "s:boolean",
+              "Cat2Cd": "s:string",
+              "Cat2CdIsEmpty": "s:boolean",
+              "Cat3Cd": "s:string",
+              "Cat3CdIsEmpty": "s:boolean",
+              "Cat4Cd": "s:string",
+              "Cat4CdIsEmpty": "s:boolean",
+              "Cat5Cd": "s:string",
+              "Cat5CdIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "StatusCd": {
+              "StatusCdValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "StatusCdValueIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "SicCd": {
+              "SicCdValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "SicCdValueIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "NaicsCd": {
+              "NaicsCdValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "NaicsCdValueIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "PNaicsCd": "s:string",
+            "PNaicsCdIsEmpty": "s:boolean",
+            "CommentaryRemarkText": "s:string",
+            "CommentaryRemarkTextIsEmpty": "s:boolean",
+            "CreditTerms": "s:string",
+            "NetCommissionPct": "s:decimal",
+            "NetCommissionPctIsEmpty": "s:boolean",
+            "SourceCd": "s:string",
+            "SourceCdIsEmpty": "s:boolean",
+            "SourceDt": "s:dateTime",
+            "SourceDtIsEmpty": "s:boolean",
+            "LegalEntityCd": "s:string",
+            "LegalEntityCdIsEmpty": "s:boolean",
+            "FEIN": "s:long",
+            "FEINIsEmpty": "s:boolean",
+            "DateBusinessStarted": "s:dateTime",
+            "DateBusinessStartedIsEmpty": "s:boolean",
+            "InspectionContact": "s:string",
+            "InspectionContactIsEmpty": "s:boolean",
+            "InspectionPhoneNumber": "s:long",
+            "InspectionPhoneNumberIsEmpty": "s:boolean",
+            "InspectionPhoneExtensionNumber": "s:int",
+            "InspectionPhoneExtensionNumberIsEmpty": "s:boolean",
+            "BusinessNature": {
+              "BusinessNatureValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "BusinessNatureValueIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "AccountingContact": "s:string",
+            "AccountingContactIsEmpty": "s:boolean",
+            "AccountingPhoneNumber": "s:long",
+            "AccountingPhoneNumberIsEmpty": "s:boolean",
+            "AccountingPhoneExtensionNumber": "s:int",
+            "AccountingPhoneExtensionNumberIsEmpty": "s:boolean",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "clientUpdateResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "policyInsert": {
+        "input": {
+          "PolicyImportRecord": {
+            "Guid": "s:string",
+            "ClientInfo": {
+              "ClientId": "s:long",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "TransactionInformation": {
+              "TransactionType": "InsertTransactionType|s:string|NBS,RWL",
+              "TransactionDate": "s:dateTime",
+              "FollowupDays": "s:int",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "PolicyNumber": "s:string",
+            "BillToCd": "s:string",
+            "ClientCd": "s:string",
+            "NamedInsured": "s:string",
+            "PolicyRemarkText": {
+              "PolicyRemarkValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InsurerName": "s:string",
+            "CoverageCd": "s:string",
+            "PolicyContractTermCd": "s:string",
+            "PolicyEffectiveDt": "s:dateTime",
+            "PolicyEffectiveLocalStandardTimeInd": "s:dateTime",
+            "PolicyExpirationDt": "s:dateTime",
+            "PolicyExpirationLocalStandardTimeInd": "s:dateTime",
+            "PolicyOriginalInceptionDt": "s:dateTime",
+            "BinderEffectiveDt": "s:dateTime",
+            "BinderStartTimeInd": "s:dateTime",
+            "BinderExpirationDt": "s:dateTime",
+            "BinderExpirationTimeInd": "s:dateTime",
+            "BillTypeCd": "s:string",
+            "BinderPurposeCd": "s:string",
+            "BOREffectiveDt": "s:dateTime",
+            "BORExpirationDt": "s:dateTime",
+            "LastCommissionPct": "s:string",
+            "Producer": {
+              "Producer1Cd": "s:string",
+              "Producer2Cd": "s:string",
+              "Producer3Cd": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "DivisionCd": "s:int",
+            "DivisionCodeWithLeadingZero": "s:string",
+            "StateProvCd": "s:string",
+            "AuditTermCd": "s:string",
+            "ServicerCd": "s:string",
+            "DepartmentCd": "s:string",
+            "SICCd": "s:string",
+            "DateBusinessStarted": "s:dateTime",
+            "EstimatedAnnualPremium": "s:decimal",
+            "EstimatedAnnualCommission": "s:decimal",
+            "EstimatedAnnualCommissionPct": "s:decimal",
+            "NatureBusinessCd": {
+              "NatureBusinessValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "GeneralInfoRemarkText": {
+              "GeneralInfoRemarkValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "PersonalSupplementalInfo": {
+              "NumCurrentAddrYrs": "s:int",
+              "PreviousAddr1": "s:string",
+              "PreviousAddr2": "s:string",
+              "PreviousPostalCd": {
+                "PreviousPostalCode": "s:string",
+                "PreviousPostalExtensionCode": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "PreviousCity": "s:string",
+              "PreviousStateProvCd": "s:string",
+              "CurrentResidenceDt": "s:dateTime",
+              "PreviousResidenceDt": "s:dateTime",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InsuredInfo": {
+              "BirthDt": "s:dateTime",
+              "TaxId": "s:int",
+              "NumResidentsInHousehold": "s:int",
+              "NamedIndividuals": "s:int",
+              "MaritalStatusCd": "s:string",
+              "OccupationClassCd": "s:string",
+              "OccupationDesc": "s:string",
+              "LengthTimeEmployed": "s:int",
+              "HouseholdIncomeAmt": "s:int",
+              "CommercialName": "s:string",
+              "LengthTimeWithPreviousEmployer": "s:int",
+              "LengthTimeCurrentOccupation": "s:int",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "General1QuestionInfo": {
+              "NumVehsInHousehold": "s:int",
+              "LengthTimeKnownByAgentBroker": "s:int",
+              "AutoClubMemberYesNoCd": "YesNoVal|s:string|Y,N",
+              "UMPDRejectionYesNoCd": "YesNoVal|s:string|Y,N",
+              "UnderinsMotoristRejectionYesNoCd": "YesNoVal|s:string|Y,N",
+              "AnyLossesAccidentsConvictionsIndYesNoCd": "YesNoVal|s:string|Y,N",
+              "ResidenceOwnedRentedCd": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CoInsuredInfo": {
+              "CoInsuredBirthDt": "s:dateTime",
+              "CoInsuredTaxId": "s:long",
+              "CoInsuredMaritalStatusCd": "s:string",
+              "CoInsuredOccupationClassCd": "s:string",
+              "CoInsuredOccupationDesc": "s:string",
+              "CoInsuredLengthTimeWithCurrentEmployer": "s:int",
+              "CoInsuredCommercialName": "s:string",
+              "CoInsuredLengthTimeWithPreviousEmployer": "s:int",
+              "CoInsuredLengthTimeCurrentOccupation": "s:int",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "BusinessIncomeTypeBusinessCd": "s:string",
+            "PolicyTypeCd": "s:string",
+            "PayeeCd": "s:string",
+            "PolicyDesc": "s:string",
+            "PolicySource": "s:string",
+            "CarrierProducerSubCode": "s:string",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "policyInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "policyUpdate": {
+        "input": {
+          "PolicyUpdateRecord": {
+            "Guid": "s:string",
+            "ClientInfo": {
+              "ClientId": "s:long",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "TransactionInformation": {
+              "TransactionType": "UpdateTransactionType|s:string|PCH,XLC,REI,RWL,REW,PAD,RWX",
+              "TransactionDescription": "s:string",
+              "TransactionDate": "s:dateTime",
+              "FollowupDays": "s:int",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "PolicyId": "s:long",
+            "PolicyNumber": "s:string",
+            "PolicyNumberIsEmpty": "s:boolean",
+            "BillToCd": "s:string",
+            "ClientCd": "s:string",
+            "NamedInsured": "s:string",
+            "NamedInsuredIsEmpty": "s:boolean",
+            "PolicyRemarkText": {
+              "PolicyRemarkValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "PolicyRemarkValueIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InsurerName": "s:string",
+            "CoverageCd": "s:string",
+            "PolicyContractTermCd": "s:string",
+            "NewRenewInd": "StatusVal|s:string|NEW,REN",
+            "PolicyEffectiveDt": "s:dateTime",
+            "PolicyEffectiveLocalStandardTimeInd": "s:dateTime",
+            "PolicyExpirationDt": "s:dateTime",
+            "PolicyExpirationLocalStandardTimeInd": "s:dateTime",
+            "PolicyOriginalInceptionDt": "s:dateTime",
+            "BinderEffectiveDt": "s:dateTime",
+            "BinderEffectiveDtIsEmpty": "s:boolean",
+            "BinderStartTimeInd": "s:dateTime",
+            "BinderStartTimeIndIsEmpty": "s:boolean",
+            "BinderExpirationDt": "s:dateTime",
+            "BinderExpirationDtIsEmpty": "s:boolean",
+            "BinderExpirationTimeInd": "s:dateTime",
+            "BinderExpirationTimeIndIsEmpty": "s:boolean",
+            "BillTypeCd": "s:string",
+            "BinderPurposeCd": "s:string",
+            "BinderPurposeCdIsEmpty": "s:boolean",
+            "BOREffectiveDt": "s:dateTime",
+            "BOREffectiveDtIsEmpty": "s:boolean",
+            "BORExpirationDt": "s:dateTime",
+            "BORExpirationDtIsEmpty": "s:boolean",
+            "LastCommissionPct": "s:string",
+            "LastCommissionPctIsEmpty": "s:boolean",
+            "CancellationTypeCd": "s:string",
+            "CancDt": "s:dateTime",
+            "CancReasonCd": "s:string",
+            "CancEvidence": "s:string",
+            "CancNonrenewRenewDt": "s:dateTime",
+            "CancLastDt": "s:dateTime",
+            "CancLastDtIsEmpty": "s:boolean",
+            "Producer": {
+              "Producer1Cd": "s:string",
+              "Producer2Cd": "s:string",
+              "Producer2CdIsEmpty": "s:boolean",
+              "Producer3Cd": "s:string",
+              "Producer3CdIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "DivisionCd": "s:int",
+            "DivisionCodeWithLeadingZero": "s:string",
+            "StateProvCd": "s:string",
+            "StateProvCdIsEmpty": "s:boolean",
+            "AuditTermCd": "s:string",
+            "AuditTermCdIsEmpty": "s:boolean",
+            "ServicerCd": "s:string",
+            "DepartmentCd": "s:string",
+            "ReinstateDt": "s:dateTime",
+            "ReinstateReasonCd": "s:string",
+            "SICCd": "s:string",
+            "SICCdIsEmpty": "s:boolean",
+            "DateBusinessStarted": "s:dateTime",
+            "DateBusinessStartedIsEmpty": "s:boolean",
+            "EstimatedAnnualPremium": "s:decimal",
+            "EstimatedAnnualPremiumIsEmpty": "s:boolean",
+            "EstimatedAnnualCommission": "s:decimal",
+            "EstimatedAnnualCommissionIsEmpty": "s:boolean",
+            "EstimatedAnnualCommissionPct": "s:decimal",
+            "EstimatedAnnualCommissionPctIsEmpty": "s:boolean",
+            "NatureBusinessCd": {
+              "NatureBusinessValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "NatureBusinessValueIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "GeneralInfoRemarkText": {
+              "GeneralInfoRemarkValue": {
+                "string[]": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "GeneralInfoRemarkValueIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "PersonalSupplementalInfo": {
+              "NumCurrentAddrYrs": "s:int",
+              "NumCurrentAddrYrsIsEmpty": "s:boolean",
+              "PreviousAddr1": "s:string",
+              "PreviousAddr1IsEmpty": "s:boolean",
+              "PreviousAddr2": "s:string",
+              "PreviousAddr2IsEmpty": "s:boolean",
+              "PreviousPostalCd": {
+                "PreviousPostalCode": "s:string",
+                "PreviousPostalCodeIsEmpty": "s:boolean",
+                "PreviousPostalExtensionCode": "s:string",
+                "PreviousPostalExtensionCodeIsEmpty": "s:boolean",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "PreviousCity": "s:string",
+              "PreviousCityIsEmpty": "s:boolean",
+              "PreviousStateProvCd": "s:string",
+              "PreviousStateProvCdIsEmpty": "s:boolean",
+              "CurrentResidenceDt": "s:dateTime",
+              "CurrentResidenceDtIsEmpty": "s:boolean",
+              "PreviousResidenceDt": "s:dateTime",
+              "PreviousResidenceDtIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InsuredInfo": {
+              "BirthDt": "s:dateTime",
+              "BirthDtIsEmpty": "s:boolean",
+              "TaxId": "s:int",
+              "TaxIdIsEmpty": "s:boolean",
+              "NumResidentsInHousehold": "s:int",
+              "NumResidentsInHouseholdIsEmpty": "s:boolean",
+              "NamedIndividuals": "s:int",
+              "NamedIndividualsIsEmpty": "s:boolean",
+              "MaritalStatusCd": "s:string",
+              "MaritalStatusCdIsEmpty": "s:boolean",
+              "OccupationClassCd": "s:string",
+              "OccupationClassCdIsEmpty": "s:boolean",
+              "OccupationDesc": "s:string",
+              "OccupationDescIsEmpty": "s:boolean",
+              "LengthTimeEmployed": "s:int",
+              "LengthTimeEmployedIsEmpty": "s:boolean",
+              "HouseholdIncomeAmt": "s:int",
+              "HouseholdIncomeAmtIsEmpty": "s:boolean",
+              "CommercialName": "s:string",
+              "CommercialNameIsEmpty": "s:boolean",
+              "LengthTimeWithPreviousEmployer": "s:int",
+              "LengthTimeWithPreviousEmployerIsEmpty": "s:boolean",
+              "LengthTimeCurrentOccupation": "s:int",
+              "LengthTimeCurrentOccupationIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "General1QuestionInfo": {
+              "NumVehsInHousehold": "s:int",
+              "NumVehsInHouseholdIsEmpty": "s:boolean",
+              "LengthTimeKnownByAgentBroker": "s:int",
+              "LengthTimeKnownByAgentBrokerIsEmpty": "s:boolean",
+              "AutoClubMemberYesNoCd": "YesNoVal|s:string|Y,N",
+              "AutoClubMemberYesNoCdIsEmpty": "s:boolean",
+              "UMPDRejectionYesNoCd": "YesNoVal|s:string|Y,N",
+              "UMPDRejectionYesNoCdIsEmpty": "s:boolean",
+              "UnderinsMotoristRejectionYesNoCd": "YesNoVal|s:string|Y,N",
+              "UnderinsMotoristRejectionYesNoCdIsEmpty": "s:boolean",
+              "AnyLossesAccidentsConvictionsIndYesNoCd": "YesNoVal|s:string|Y,N",
+              "AnyLossesAccidentsConvictionsIndYesNoCdIsEmpty": "s:boolean",
+              "ResidenceOwnedRentedCd": "s:string",
+              "ResidenceOwnedRentedCdIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CoInsuredInfo": {
+              "CoInsuredBirthDt": "s:dateTime",
+              "CoInsuredBirthDtIsEmpty": "s:boolean",
+              "CoInsuredTaxId": "s:long",
+              "CoInsuredTaxIdIsEmpty": "s:boolean",
+              "CoInsuredMaritalStatusCd": "s:string",
+              "CoInsuredMaritalStatusCdIsEmpty": "s:boolean",
+              "CoInsuredOccupationClassCd": "s:string",
+              "CoInsuredOccupationClassCdIsEmpty": "s:boolean",
+              "CoInsuredOccupationDesc": "s:string",
+              "CoInsuredOccupationDescIsEmpty": "s:boolean",
+              "CoInsuredLengthTimeWithCurrentEmployer": "s:int",
+              "CoInsuredLengthTimeWithCurrentEmployerIsEmpty": "s:boolean",
+              "CoInsuredCommercialName": "s:string",
+              "CoInsuredCommercialNameIsEmpty": "s:boolean",
+              "CoInsuredLengthTimeWithPreviousEmployer": "s:int",
+              "CoInsuredLengthTimeWithPreviousEmployerIsEmpty": "s:boolean",
+              "CoInsuredLengthTimeCurrentOccupation": "s:int",
+              "CoInsuredLengthTimeCurrentOccupationIsEmpty": "s:boolean",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "BusinessIncomeTypeBusinessCd": "s:string",
+            "BusinessIncomeTypeBusinessCdIsEmpty": "s:boolean",
+            "PolicyTypeCd": "s:string",
+            "PolicyTypeCdIsEmpty": "s:boolean",
+            "PayeeCd": "s:string",
+            "PolicyDesc": "s:string",
+            "PolicyDescIsEmpty": "s:boolean",
+            "PolicySource": "s:string",
+            "PolicySourceIsEmpty": "s:boolean",
+            "CarrierProducerSubCode": "s:string",
+            "CarrierProducerSubCodeIsEmpty": "s:boolean",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "policyUpdateResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "policyDelete": {
+        "input": {
+          "Guid": "s:string",
+          "PolicyId": "s:long",
+          "StaffUser": "s:string"
+        },
+        "output": {
+          "policyDeleteResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "commissionStatementInsert": {
+        "input": {
+          "CommissionStatementRecord": {
+            "Guid": "s:string",
+            "Org": "s:string",
+            "StatementDt": "s:dateTime",
+            "DepositDt": "s:dateTime",
+            "CheckNumber": "s:string",
+            "ClientId": "s:long",
+            "ClientName": "s:string",
+            "PolicyId": "s:long",
+            "PolicyNumber": "s:string",
+            "Division": "s:long",
+            "DivisionWithLeadingZero": "s:string",
+            "CoverageCd": "s:string",
+            "PolicyEffectiveDt": "s:dateTime",
+            "PolicyExpirationDt": "s:dateTime",
+            "TransactionEffectiveDt": "s:dateTime",
+            "TransactionTypeCd": "s:string",
+            "GrossPremiumAmt": "s:decimal",
+            "CommissionPct": "s:decimal",
+            "CommissionAmt": "s:decimal",
+            "OverrideInd": "s:boolean",
+            "ProducerInfo": {
+              "ProducerInfo[]": {
+                "ProducerCd": "s:string",
+                "ProducerPct": "s:decimal",
+                "ProducerAmt": "s:decimal",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "StatementAssociation": "s:string",
+            "RecordStatementEntryId": "s:string",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "commissionStatementInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "cashReceiptInsert": {
+        "input": {
+          "CashReceiptRecord": {
+            "Guid": "s:string",
+            "Division": "s:string",
+            "Bank": "s:string",
+            "Type": "s:string",
+            "DepositDt": "s:dateTime",
+            "IntClientCd": "s:string",
+            "ExtClientCd": "s:string",
+            "CheckNo": "s:string",
+            "CheckAmt": "s:decimal",
+            "CheckComment": "s:string",
+            "InvoiceInformation": {
+              "InvoiceInformation[]": {
+                "InvoiceNo": "s:string",
+                "InvoiceAmt": "s:decimal",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "GLInformation": {
+              "GLInformation[]": {
+                "GLAccountNo": "s:string",
+                "GLAmount": "s:decimal",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "BatchNo": "s:string",
+            "COADivFlag": "s:string",
+            "PayeeCode": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "cashReceiptInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "customProcessUsher": {
+        "input": {
+          "CustomProcessUsherRecord": {
+            "usherName": "s:string",
+            "waitForResponse": "s:string",
+            "UsherInformation": {
+              "UsherInformation[]": {
+                "usherKey": "s:string",
+                "usherData": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "customProcessUsherResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "invoiceInsert": {
+        "input": {
+          "invoiceRecord": {
+            "Guid": "s:string",
+            "PolicyId": "s:long",
+            "PolicyNumber": "s:string",
+            "PolicyTransCd": "s:string",
+            "PolicyTransEffDt": "s:dateTime",
+            "BillToCd": "s:string",
+            "BillMethod": "PolBillMethod|s:string|A,C",
+            "InvoiceEffDt": "s:dateTime",
+            "Division": "s:string",
+            "DepartmentCd": "s:string",
+            "ServicerCd": "s:string",
+            "CoverageCd": "s:string",
+            "NetPct": "s:decimal",
+            "NetBillBrokerOption": "s:string",
+            "DueDate": "s:dateTime",
+            "InvoiceStatus": "s:string",
+            "SuppressAutoPost": "s:boolean",
+            "InstallmentNumber": "s:long",
+            "Comments": "s:string",
+            "InternalComments": "s:string",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "IntegrateProdCredit": "s:string",
+            "PayeeData": {
+              "PayeeData[]": {
+                "InsurerCd": "s:string",
+                "PayeeCd": "s:string",
+                "PayeePct": "s:decimal",
+                "PayeeAmt": "s:decimal",
+                "AgencyPct": "s:decimal",
+                "AgencyAmt": "s:decimal",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "ProducerData": {
+              "ProducerData[]": {
+                "ProducerCd": "s:string",
+                "ProducerCommissionType": "ProducerCommissionType|s:string|S,P,F",
+                "ProducerPct": "s:decimal",
+                "ProducerAmt": "s:decimal",
+                "RelPayFlag": "s:string",
+                "ProdTypeCd": "s:string",
+                "ProdCrPct": "s:decimal",
+                "NetImpact": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "TransactionData": {
+              "PrimaryTransactionCd": "s:string",
+              "PremiumAmt": "s:decimal",
+              "AddlTransactions": {
+                "AddlTransactions[]": {
+                  "TransactionCd": "s:string",
+                  "TransAmount": "s:decimal",
+                  "CoverageCd": "s:string",
+                  "PayeeCd": "s:string",
+                  "AgencyPct": "s:decimal",
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "invoiceInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "paymentInsert": {
+        "input": {
+          "paymentRecord": {
+            "Guid": "s:string",
+            "Division": "s:string",
+            "VendorCode": "s:string",
+            "BankCode": "s:string",
+            "CheckDate": "s:dateTime",
+            "PeriodEndDate": "s:dateTime",
+            "CheckNumber": "s:string",
+            "CheckAmount": "s:decimal",
+            "CheckComment": "s:string",
+            "UseVendorAlternateAddress": "s:boolean",
+            "VendorAlternateAddressLineNo": "s:long",
+            "UseVendorTempAddress": "s:boolean",
+            "VendorTempAddress": {
+              "Name1": "s:string",
+              "Name2": "s:string",
+              "Address1": "s:string",
+              "Address2": "s:string",
+              "City": "s:string",
+              "StateProvinceCode": "s:string",
+              "PostalCode": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InvoicePostings": {
+              "InvoicePostingsInsert[]": {
+                "PayableId": "s:string",
+                "PostAmount": "s:decimal",
+                "SplitAdjust": "SplitAdjust|s:string|S,A",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "ExecuteImmediateUpdate": "s:boolean",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "paymentInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "paymentUpdate": {
+        "input": {
+          "paymentRecord": {
+            "Guid": "s:string",
+            "PaymentId": "s:string",
+            "BankCode": "s:string",
+            "CheckDate": "s:dateTime",
+            "PeriodEndDate": "s:dateTime",
+            "CheckNumber": "s:string",
+            "CheckNumberIsEmpty": "s:boolean",
+            "CheckComment": "s:string",
+            "CheckCommentIsEmpty": "s:boolean",
+            "UseVendorDefaultAddress": "s:boolean",
+            "UseVendorAlternateAddress": "s:boolean",
+            "VendorAlternateAddressLineNo": "s:long",
+            "UseVendorTempAddress": "s:boolean",
+            "VendorTempAddress": {
+              "Name1": "s:string",
+              "Name2": "s:string",
+              "Address1": "s:string",
+              "Address2": "s:string",
+              "City": "s:string",
+              "StateProvinceCode": "s:string",
+              "PostalCode": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InvoicePostings": {
+              "InvoicePostingsUpdate[]": {
+                "PayableId": "s:string",
+                "PostAmount": "s:decimal",
+                "SplitAdjust": "SplitAdjust|s:string|S,A",
+                "DeleteInvoicePosting": "s:boolean",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "ExecuteImmediateUpdate": "s:boolean",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "paymentUpdateResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "insurerReceiptInsert": {
+        "input": {
+          "insurerReceiptRecord": {
+            "Guid": "s:string",
+            "Division": "s:string",
+            "VendorCode": "s:string",
+            "BankCode": "s:string",
+            "DepositDate": "s:dateTime",
+            "PeriodEndDate": "s:dateTime",
+            "CheckNumber": "s:string",
+            "CheckAmount": "s:decimal",
+            "CheckComment": "s:string",
+            "HoldRelease": "HoldRelease|s:string|H,R",
+            "ExecuteImmediatePost": "s:boolean",
+            "InsurerReceivablePostings": {
+              "InsurerReceivablePostingsInsert[]": {
+                "InsurerReceivableId": "s:string",
+                "PostAmount": "s:decimal",
+                "SplitAdjust": "SplitAdjust|s:string|S,A",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "insurerReceiptInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "insurerReceiptUpdate": {
+        "input": {
+          "insurerReceiptRecord": {
+            "Guid": "s:string",
+            "InsurerReceiptId": "s:string",
+            "BankCode": "s:string",
+            "DepositDate": "s:dateTime",
+            "PeriodEndDate": "s:dateTime",
+            "CheckNumber": "s:string",
+            "CheckAmount": "s:decimal",
+            "CheckAmountIsEmpty": "s:boolean",
+            "CheckComment": "s:string",
+            "CheckCommentIsEmpty": "s:boolean",
+            "HoldRelease": "HoldRelease|s:string|H,R",
+            "ExecuteImmediatePost": "s:boolean",
+            "InsurerReceivablePostings": {
+              "InsurerReceivablePostingsUpdate[]": {
+                "InsurerReceivableId": "s:string",
+                "PostAmount": "s:decimal",
+                "SplitAdjust": "SplitAdjust|s:string|S,A",
+                "DeleteInsurerReceivablePosting": "s:boolean",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "insurerReceiptUpdateResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "insurerReceiptDelete": {
+        "input": {
+          "insurerReceiptRecord": {
+            "Guid": "s:string",
+            "InsurerReceiptId": "s:string",
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "insurerReceiptDeleteResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "vendorPayableInsert": {
+        "input": {
+          "vendorPayableRecord": {
+            "Guid": "s:string",
+            "Division": "s:string",
+            "VendorCode": "s:string",
+            "InvoiceNo": "s:string",
+            "Status": "HoldRelease|s:string|H,R",
+            "InvoiceAmount": "s:decimal",
+            "InvoiceDate": "s:dateTime",
+            "PeriodEndDate": "s:dateTime",
+            "PayableDate": "s:dateTime",
+            "CreditTerms": "s:string",
+            "Req1099": "YesNoVal|s:string|Y,N",
+            "APGLAccount": "s:string",
+            "PONumber": "s:string",
+            "BatchNo": "s:string",
+            "InvoiceRemarks": "s:string",
+            "GLPostings": {
+              "GLPostings[]": {
+                "GLAccount": "s:string",
+                "GLAmount": "s:decimal",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "BankCode": "s:string",
+            "CheckDate": "s:dateTime",
+            "CheckPEDate": "s:dateTime",
+            "CheckNumber": "s:string",
+            "CheckComment": "s:string",
+            "UseVendorAlternateAddress": "s:boolean",
+            "VendorAlternateAddressLineNo": "s:long",
+            "UseVendorTempAddress": "s:boolean",
+            "VendorTempAddress": {
+              "Name1": "s:string",
+              "Name2": "s:string",
+              "Address1": "s:string",
+              "Address2": "s:string",
+              "City": "s:string",
+              "StateProvinceCode": "s:string",
+              "PostalCode": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "Comments": "s:string",
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "ExecuteImmediateUpdate": "s:boolean",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "vendorPayableInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "vendorPayableUpdate": {
+        "input": {
+          "vendorPayableRecord": {
+            "Guid": "s:string",
+            "PayableId": "s:string",
+            "Status": "HoldRelease|s:string|H,R",
+            "InvoiceAmount": "s:decimal",
+            "PayableDate": "s:dateTime",
+            "CreditTerms": "s:string",
+            "CreditTermsIsEmpty": "s:boolean",
+            "Req1099": "YesNoVal|s:string|Y,N",
+            "PONumber": "s:string",
+            "PONumberIsEmpty": "s:boolean",
+            "BatchNo": "s:string",
+            "BatchNoIsEmpty": "s:boolean",
+            "InvoiceRemarks": "s:string",
+            "InvoiceRemarksIsEmpty": "s:boolean",
+            "GLPostings": {
+              "GLPostings[]": {
+                "GLAccount": "s:string",
+                "GLAmount": "s:decimal",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "BankCode": "s:string",
+            "CheckDate": "s:dateTime",
+            "CheckPEDate": "s:dateTime",
+            "CheckNumber": "s:string",
+            "CheckNumberIsEmpty": "s:boolean",
+            "CheckComment": "s:string",
+            "CheckCommentIsEmpty": "s:boolean",
+            "UseVendorDefaultAddress": "s:boolean",
+            "UseVendorAlternateAddress": "s:boolean",
+            "VendorAlternateAddressLineNo": "s:long",
+            "UseVendorTempAddress": "s:boolean",
+            "VendorTempAddress": {
+              "Name1": "s:string",
+              "Name2": "s:string",
+              "Address1": "s:string",
+              "Address2": "s:string",
+              "City": "s:string",
+              "StateProvinceCode": "s:string",
+              "PostalCode": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "Comments": "s:string",
+            "CommentsIsEmpty": "s:boolean",
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "ExecuteImmediateUpdate": "s:boolean",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "vendorPayableUpdateResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "customFindCPPolicy": {
+        "input": {
+          "customFindCPPolicyCriteriaRecord": {
+            "PolicyNumber": "s:string",
+            "ClientCode": "s:string",
+            "PolicyEffectiveDate": "s:dateTime",
+            "PayeeCode": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "customFindCPPolicyResult": {
+            "CPPolicyRecords": {
+              "customFindCPPolicyRecord[]": {
+                "PolicyKey": "s:string",
+                "PolicyNumber": "s:string",
+                "ClientCode": "s:string",
+                "PolicyEffectiveDate": "s:string",
+                "PayeeCode": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "Messages": {
+              "string[]": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "RecordCount": "s:int",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "customGetCPPolicy": {
+        "input": {
+          "PolicyKey": "s:string"
+        },
+        "output": {
+          "customGetCPPolicyResult": {
+            "PolicyKey": "s:string",
+            "Messages": {
+              "string[]": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CPPolicyClientsKeys": {
+              "ClientKey": "s:string",
+              "BilltoKey": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CPPolicyRecord": {
+              "Pol_Seq_Num_": "s:string",
+              "WrComm": "s:string",
+              "WrPrem": "s:string",
+              "WrPrdComm": "s:string",
+              "B_Typ": "s:string",
+              "CNR_Date": "s:string",
+              "Key__to__Clients": "s:string",
+              "Cov": "s:string",
+              "Dept": "s:string",
+              "Div_": "s:string",
+              "Eff_Date": "s:string",
+              "Entry_Date": "s:string",
+              "Exp_Date": "s:string",
+              "Major__Code": "s:string",
+              "Payee": "s:string",
+              "PayeeName": "s:string",
+              "P_Source": "s:string",
+              "PServ": "s:string",
+              "Policy__Number": "s:string",
+              "St": "s:string",
+              "Term": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CPClientsData": {
+              "customCPClientsData[]": {
+                "CLIENTS_Text": "s:string",
+                "C_Address1": "s:string",
+                "C_Address2": "s:string",
+                "C_City": "s:string",
+                "Client_Code": "s:string",
+                "Client__Name": "s:string",
+                "Div": "s:string",
+                "C_St": "s:string",
+                "Zip__Code": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CPPremiumsLines": {
+              "customCPPremiumsLine[]": {
+                "Client__Code": "s:string",
+                "Last__Entry__Date": "s:string",
+                "LOE_Date": "s:string",
+                "Major__Line": "s:string",
+                "PremSeq_Num_": "s:string",
+                "PolSeq_Num_": "s:string",
+                "Trn": "s:string",
+                "AgcyComm": "s:string",
+                "Agt_Pct": "s:string",
+                "Key__to__Insurer__Receivables": "s:string",
+                "BillTo__Item__ID": "s:string",
+                "Cov": "s:string",
+                "Key__to__Coverages": "s:string",
+                "CovDescription": "s:string",
+                "Dept": "s:string",
+                "Ins": "s:string",
+                "Ins_Name": "s:string",
+                "Key__to__Insurors": "s:string",
+                "Invoice_Num_": "s:string",
+                "Payee": "s:string",
+                "Prd_Comm": "s:string",
+                "Prd": "s:string",
+                "Prd_Name": "s:string",
+                "Prd_Pct": "s:string",
+                "Sales_ID": "s:string",
+                "Staff_Code": "s:string",
+                "Staff__Name": "s:string",
+                "Trans_Amt": "s:string",
+                "Eff_Date": "s:string",
+                "Ent_Date": "s:string",
+                "Ann_Date": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CPSalesLines": {
+              "customCPSalesLine[]": {
+                "Sales_ID": "s:string",
+                "Region": "s:string",
+                "Div": "s:string",
+                "Invoice_Status": "s:string",
+                "Client_ID": "s:string",
+                "Billto_ID": "s:string",
+                "Invoice_No": "s:string",
+                "Invoice_Date": "s:string",
+                "Policy_ID": "s:string",
+                "Premium_ID": "s:string",
+                "Payee_Code": "s:string",
+                "Eff_Date": "s:string",
+                "Dept": "s:string",
+                "Trn": "s:string",
+                "Cov": "s:string",
+                "Trans_Amt": "s:string",
+                "AgcyComm_Amt": "s:string",
+                "Payables_ID": "s:string",
+                "Payables_Status": "s:string",
+                "Multi_Payee": "s:string",
+                "AR_Balance": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CPPayablesLines": {
+              "customCPPayablesLine[]": {
+                "Payables_ID": "s:string",
+                "Type": "s:string",
+                "Div": "s:string",
+                "Vendor_Code": "s:string",
+                "Invoice_No": "s:string",
+                "Invoice_Date": "s:string",
+                "Invoice_Amt": "s:string",
+                "Pay_Date": "s:string",
+                "Pay_Status": "s:string",
+                "AP_Balance": "s:string",
+                "Check_No": "s:string",
+                "Check_Date": "s:string",
+                "Policy_No": "s:string",
+                "Bank_Code": "s:string",
+                "Sales_ID": "s:string",
+                "Payment_ID": "s:string",
+                "CB_PremID": "s:string",
+                "AB_PremID": "s:string",
+                "Client_Code": "s:string",
+                "Bill_Type": "s:string",
+                "TRN_Date": "s:string",
+                "TRN_Amt": "s:string",
+                "TRN_Status": "s:string",
+                "TRN_Code": "s:string",
+                "TRN_RefNo": "s:string",
+                "Custm_PolID": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CPPayeesData": {
+              "customCPPayeesData[]": {
+                "Payee__Code": "s:string",
+                "Payee__Name": "s:string",
+                "Phone1": "s:string",
+                "Phone2": "s:string",
+                "Agency_Code": "s:string",
+                "Date__Off": "s:string",
+                "Date__Off__Remarks": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CPPayeeAddressesData": {
+              "customCPPayeeAddressesData[]": {
+                "Payee__Code": "s:string",
+                "Payee__Name1": "s:string",
+                "Payee__Name2": "s:string",
+                "Address1": "s:string",
+                "Address2": "s:string",
+                "City": "s:string",
+                "State": "s:string",
+                "Zip": "s:string",
+                "Type": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "invoiceVoid": {
+        "input": {
+          "invoiceVoidRecord": {
+            "Guid": "s:string",
+            "InvoiceId": "s:string",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "invoiceVoidResult": {
+            "Success": "s:boolean",
+            "InvoiceId": "s:string",
+            "VoidInvoiceId": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InvoiceInfo": {
+              "InvoiceId": "s:string",
+              "PolicyId": "s:long",
+              "PolicyNumber": "s:string",
+              "EffectiveDt": "s:dateTime",
+              "EntryDt": "s:dateTime",
+              "ClientCd": "s:string",
+              "BillToCd": "s:string",
+              "Division": "s:string",
+              "DepartmentCd": "s:string",
+              "DueDt": "s:dateTime",
+              "ServicerCd": "s:string",
+              "Comments": "s:string",
+              "TransactionData": {
+                "InvoiceTransactionData[]": {
+                  "TransactionCd": "s:string",
+                  "CoverageCd": "s:string",
+                  "TransactionAmt": "s:decimal",
+                  "AgencyAmt": "s:decimal",
+                  "AgencyPct": "s:decimal",
+                  "ProducerCd": "s:string",
+                  "ProducerAmt": "s:decimal",
+                  "ProducerPct": "s:decimal",
+                  "InsurerCd": "s:string",
+                  "PayeeCd": "s:string",
+                  "ProducerType": "s:string",
+                  "Netimpact": "s:string",
+                  "ProdCreditPct": "s:decimal",
+                  "ProdCreditAmt": "s:decimal",
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "invoiceDelete": {
+        "input": {
+          "invoiceDeleteRecord": {
+            "Guid": "s:string",
+            "InvoiceId": "s:string",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "invoiceDeleteResult": {
+            "Success": "s:boolean",
+            "InvoiceId": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "invoicePost": {
+        "input": {
+          "invoicePostRecord": {
+            "Guid": "s:string",
+            "InvoiceId": "s:string",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "invoicePostResult": {
+            "Success": "s:boolean",
+            "InvoiceId": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "invoiceGetByCriteriaV1": {
+        "input": {
+          "invoiceGetByCriteria": {
+            "InvoiceId": {
+              "string[]": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "PolicyId": {
+              "long[]": "s:long",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InvoiceStatus": {
+              "string[]": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "BillToCd": {
+              "string[]": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "ClientCd": {
+              "string[]": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "StartInvoiceDate": "s:dateTime",
+            "EndInvoiceDate": "s:dateTime",
+            "StartInvoiceEffDate": "s:dateTime",
+            "EndInvoiceEffDate": "s:dateTime",
+            "DueDateSort": "SortType|s:string|Ascending,Descending",
+            "FirstResult": "s:int",
+            "MaxResults": "s:int",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "invoiceGetByCriteriaV1Result": {
+            "NumberOfResults": "s:long",
+            "InvoiceInfo": {
+              "InvoiceInfoByCriteriaV1[]": {
+                "InvoiceId": "s:string",
+                "InvoiceNumber": "s:string",
+                "InvoiceStatus": "s:string",
+                "Balance": "s:decimal",
+                "PolicyId": "s:string",
+                "PolicyNumber": "s:string",
+                "PolicyTransactionCd": "s:string",
+                "PolicyTransactionEffectiveDt": "s:dateTime",
+                "InvoiceEffectiveDt": "s:dateTime",
+                "EntryDt": "s:dateTime",
+                "ClientCd": "s:string",
+                "BillToCd": "s:string",
+                "Division": "s:string",
+                "DepartmentCd": "s:string",
+                "DueDt": "s:dateTime",
+                "ServicerCd": "s:string",
+                "Comments": "s:string",
+                "TransactionData": {
+                  "InvoiceTransactionInfo[]": {
+                    "TransactionCd": "s:string",
+                    "TransactionAmt": "s:decimal",
+                    "CoverageCd": "s:string",
+                    "PayeeCd": "s:string",
+                    "InsurerCd": "s:string",
+                    "AgencyAmt": "s:decimal",
+                    "ProducerCd": "s:string",
+                    "ProducerDivision": "s:string",
+                    "ProducerAmt": "s:decimal",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "PaymentData": {
+                  "InvoicePaymentInfo[]": {
+                    "PaymentMethod": "s:string",
+                    "PaymentAmt": "s:decimal",
+                    "CheckNum": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "ProducerPaymentData": {
+                  "ProducerPaymentInfo[]": {
+                    "ProducerCheckNum": "s:string",
+                    "ProducerCheckDt": "s:dateTime",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "invoiceGetPdf": {
+        "input": {
+          "invoicePdfRecord": {
+            "InvoiceId": "s:string",
+            "SpecialInput1": "s:string",
+            "SpecialInput2": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "invoiceGetPdfResult": {
+            "Success": "s:boolean",
+            "InvoiceId": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "EncodedInvoicePDF": "s:string",
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "importResults": {
+        "input": {
+          "Guid": "s:string"
+        },
+        "output": {
+          "importResultsResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "insurerDisbursementInsert": {
+        "input": {
+          "insurerDisbursementRecord": {
+            "Guid": "s:string",
+            "Division": "s:string",
+            "BankCode": "s:string",
+            "DisburseDate": "s:dateTime",
+            "PeriodEndDate": "s:dateTime",
+            "VendorCode": "s:string",
+            "CheckNumber": "s:string",
+            "CheckAmount": "s:decimal",
+            "CheckComment": "s:string",
+            "HoldRelease": "HoldRelease|s:string|H,R",
+            "UseVendorTempAddress": "s:boolean",
+            "UseVendorAlternateAddress": "s:boolean",
+            "VendorAlternateAddressLineNo": "s:string",
+            "ExecuteImmediatePost": "s:boolean",
+            "VendorTempAddress": {
+              "Name1": "s:string",
+              "Name2": "s:string",
+              "Address1": "s:string",
+              "Address2": "s:string",
+              "City": "s:string",
+              "StateProvinceCode": "s:string",
+              "PostalCode": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InsurerReceivablePostings": {
+              "InsurerReceivablePostingsInsert[]": {
+                "InsurerReceivableId": "s:string",
+                "PostAmount": "s:decimal",
+                "SplitAdjust": "SplitAdjust|s:string|S,A",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "insurerDisbursementInsertResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "insurerDisbursementUpdate": {
+        "input": {
+          "insurerDisbursementRecord": {
+            "Guid": "s:string",
+            "InsurerDisbursementId": "s:string",
+            "BankCode": "s:string",
+            "DisburseDate": "s:dateTime",
+            "PeriodEndDate": "s:dateTime",
+            "CheckNumber": "s:string",
+            "CheckNumberIsEmpty": "s:boolean",
+            "CheckAmount": "s:decimal",
+            "CheckAmountIsEmpty": "s:boolean",
+            "CheckComment": "s:string",
+            "CheckCommentIsEmpty": "s:boolean",
+            "HoldRelease": "HoldRelease|s:string|H,R",
+            "UseVendorTempAddress": "s:boolean",
+            "UseVendorAlternateAddress": "s:boolean",
+            "UseVendorDefaultAddress": "s:boolean",
+            "VendorAlternateAddressLineNo": "s:string",
+            "ExecuteImmediatePost": "s:boolean",
+            "VendorTempAddress": {
+              "Name1": "s:string",
+              "Name2": "s:string",
+              "Address1": "s:string",
+              "Address2": "s:string",
+              "City": "s:string",
+              "StateProvinceCode": "s:string",
+              "PostalCode": "s:string",
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "InsurerReceivablePostings": {
+              "InsurerReceivablePostingsUpdate[]": {
+                "InsurerReceivableId": "s:string",
+                "PostAmount": "s:decimal",
+                "SplitAdjust": "SplitAdjust|s:string|S,A",
+                "DeleteInsurerReceivablePosting": "s:boolean",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "insurerDisbursementUpdateResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      },
+      "insurerDisbursementDelete": {
+        "input": {
+          "insurerDisbursementRecord": {
+            "Guid": "s:string",
+            "InsurerDisbursementId": "s:string",
+            "CustomTrapdoor": {
+              "CustomTrapdoor[]": {
+                "CustomKey": "s:string",
+                "CustomData": {
+                  "CustomData[]": {
+                    "CustomField": "s:string",
+                    "CustomValue": "s:string",
+                    "targetNSAlias": "tns",
+                    "targetNamespace": "http://amsservices.com/"
+                  },
+                  "targetNSAlias": "tns",
+                  "targetNamespace": "http://amsservices.com/"
+                },
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        },
+        "output": {
+          "insurerDisbursementDeleteResult": {
+            "Success": "s:boolean",
+            "SagittaId": "s:long",
+            "SagittaCode": "s:string",
+            "Errors": {
+              "Errors[]": {
+                "Code": "s:int",
+                "Message": "s:string",
+                "targetNSAlias": "tns",
+                "targetNamespace": "http://amsservices.com/"
+              },
+              "targetNSAlias": "tns",
+              "targetNamespace": "http://amsservices.com/"
+            },
+            "targetNSAlias": "tns",
+            "targetNamespace": "http://amsservices.com/"
+          }
+        }
+      }
+    }
+  }
+}
