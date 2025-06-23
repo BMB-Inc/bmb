@@ -1,7 +1,7 @@
 {
   "name": "@bmb-inc/types",
   "description": "Common TypeScript types and schema definitions for BMB Inc projects.",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "author": "BMB Inc",
   "license": "MIT",
   "main": "dist/index.js",
