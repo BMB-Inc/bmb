@@ -390,10 +390,10 @@ export class SagittaSoapClient {
       criteria.push(`DEPARTMENT_CODE=${args.departmentCd}`);
     }
     if (args.effectiveDate) {
-      criteria.push(`EFFDATE=${args.effectiveDate}`);
+      criteria.push(`EFF.DATE=${args.effectiveDate}`);
     }
     if (args.expirationDate) {
-      criteria.push(`EXPDATE=${args.expirationDate}`);
+      criteria.push(`EXP.DATE=${args.expirationDate}`);
     }
     return criteria.join(" AND ");
   }

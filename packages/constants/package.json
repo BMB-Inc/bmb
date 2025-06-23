@@ -1,7 +1,8 @@
 {
   "name": "@bmb-inc/constants",
-  "version": "0.0.18",
+  "version": "0.0.17",
   "description": "Constants for BMB",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

@@ -1,6 +1,6 @@
 import z from "zod/v4";
 
-export const clientsSchema: z.ZodSchema = z
+export const clientsSchema = z
   .object({
     CLIENTS_ID: z.number().int(),
     ACCTINGCONTACT: z.string().nullable().optional(),
