@@ -2,7 +2,12 @@ import { createClientAsync, IOptions, Client as SoapClient } from "soap";
 import { writeFileSync } from "fs";
 import { join } from "path";
 import { XMLParser } from "fast-xml-parser";
-import { PoliciesSchema, SoapPoliciesSchema } from "@bmb-inc/types";
+import {
+  PoliciesSchema,
+  SoapClientSchema,
+  ClientsSchema,
+  SoapPoliciesSchema,
+} from "@bmb-inc/types";
 import { getCoverageCodeById } from "@bmb-inc/constants";
 import { oaDateToJsDate } from "@bmb-inc/utils";
 
@@ -372,6 +377,58 @@ export class SagittaSoapClient {
     return this.transformSoapPoliciesToSQLPolicies(formattedResult);
   }
 
+  public async getClients(args: {
+    clientCd?: string;
+    clientName?: string;
+  }): Promise<ClientsSchema[]> {
+    const criteria = this.buildCriteria(args);
+    const statement = `SELECT CLIENTS *CRITERIA* WITH ${criteria}`;
+    const result = await this.callPassThroughReq<SoapClientSchema>(statement);
+    const formattedResult = this.arrayCheck({
+      data: result,
+      arrayAllowed: true,
+    });
+    return this.transformSoapClientsToSQLClients(formattedResult);
+  }
+
+  private transformSoapClientsToSQLClients(
+    soapClients: SoapClientSchema | SoapClientSchema[]
+  ): ClientsSchema[] {
+    if (Array.isArray(soapClients)) {
+      return soapClients.map((soapClient): ClientsSchema => {
+        return {
+          CLIENTS_ID: Number(soapClient["@_sagitem"]),
+          CLIENTNAME: soapClient.ClientName,
+          CLIENT_CODE: soapClient.ClientCd,
+          ADDRESS1: soapClient.Addr1,
+          CITY: soapClient.City,
+          STATE: soapClient.StateProvCd,
+          TELEPHONE1: soapClient.Phone1Number?.toString(),
+          EMAILADDRESS: soapClient.EmailAddr,
+          PROD1: soapClient.ProducerCd.Producer1Cd,
+          PROD2: soapClient.ServicerCd.Servicer1Cd,
+          PROD3: soapClient.ServicerCd.Servicer2Cd,
+        };
+      });
+    } else {
+      return [
+        {
+          CLIENTS_ID: Number(soapClients["@_sagitem"]),
+          CLIENTNAME: soapClients.ClientName,
+          CLIENT_CODE: soapClients.ClientCd,
+          ADDRESS1: soapClients.Addr1,
+          CITY: soapClients.City,
+          STATE: soapClients.StateProvCd,
+          TELEPHONE1: soapClients.Phone1Number?.toString(),
+          EMAILADDRESS: soapClients.EmailAddr,
+          PROD1: soapClients.ProducerCd.Producer1Cd,
+          PROD2: soapClients.ServicerCd.Servicer1Cd,
+          PROD3: soapClients.ServicerCd.Servicer2Cd,
+        },
+      ];
+    }
+  }
+
   private buildCriteria(args: {
     policyNumber?: string;
     clientCd?: string;
@@ -379,6 +436,7 @@ export class SagittaSoapClient {
     departmentCd?: string;
     effectiveDate?: Date;
     expirationDate?: Date;
+    clientName?: string;
   }): string {
     const criteria: string[] = [];
     if (args.policyNumber) {
@@ -386,6 +444,9 @@ export class SagittaSoapClient {
     }
     if (args.clientCd) {
       criteria.push(`CLIENT.CODE=${args.clientCd}`);
+    }
+    if (args.clientName) {
+      criteria.push(`CLIENT.NAME=${args.clientName}`);
     }
     if (args.coverageCd) {
       criteria.push(`COV.CODE=${args.coverageCd}`);

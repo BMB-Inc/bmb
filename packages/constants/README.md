@@ -32,27 +32,109 @@ import { coverageCodes, getCoverageCodeById } from '@bmb-inc/constants';
 const autoCode = coverageCodes['3'];
 console.log(autoCode); // { coverageCode: 'AUT', coverageDesc: 'Auto-Personal' }
 
-// Get coverage code info by ID
+// Get coverage code info by ID  
 const coverage = getCoverageCodeById('3');
 console.log(coverage); // { coverageCode: 'AUT', coverageDesc: 'Auto-Personal' }
+
+// Handle undefined/null IDs safely
+const safeCoverage = getCoverageCodeById(null);
+console.log(safeCoverage); // Returns appropriate default or throws error
 ```
 
 ## Available Constants
 
-This package includes standardized constants for:
+This package includes standardized constants for comprehensive insurance coverage types:
 
-- **Coverage Codes**: Comprehensive mapping of insurance coverage types
-  - Auto (Personal and Commercial)
-  - Property (Homeowners, Dwelling, Commercial Property)
-  - Liability (General, Professional, D&O)
-  - Workers Compensation
-  - Bonds and Surety
-  - Specialty coverages (Cyber, EPL, etc.)
+### Major Coverage Categories
 
-## Functions
+- **Auto Insurance**
+  - `AUT` - Auto-Personal
+  - `CAU` - Auto-Commercial
+  - `FAP` - Farm Auto Personal
 
-- `getCoverageCodeById(id)`: Retrieves coverage code information by ID
-- `coverageCodes`: Object mapping coverage IDs to their codes and descriptions
+- **Property Insurance**
+  - `CPP` - Property-Commercial
+  - `HOW` - Homeowners
+  - `CON` - Condominium
+  - `FAR` - Farmowners-Personal
+
+- **Liability Insurance**
+  - `GLL` - General Liability
+  - `EPL` - Employment Practices Liability
+  - `D_O` - Directors & Officers
+  - `PRO` - Professional Liability
+
+- **Workers Compensation**
+  - `WOR` - Workers Compensation
+  - `USL` - USL&H Workers Comp
+
+- **Specialty Coverages**
+  - `CYB` - Cyber Liability
+  - `EQF` - Equipment Floater
+  - `BLR` - Boiler and Machinery
+  - `CRM` - Crime
+  - `FID` - Fidelity Coverage
+
+- **Bonds and Surety**
+  - `BCO` - Bonds-Contract
+  - `BMI` - Bonds-Miscellaneous
+  - `BNO` - Bonds-Notary
+  - `ERI` - ERISA Bond
+
+### Total Coverage Types
+
+The package includes **180+ coverage codes** covering:
+- Personal and commercial lines
+- Property, casualty, and specialty insurance
+- Professional liability and errors & omissions
+- Bonds, surety, and financial products
+- Health, dental, and employee benefits
+- International and specialty markets
+
+## API Reference
+
+### `coverageCodes`
+
+An object mapping coverage IDs to coverage information:
+
+```typescript
+const coverageCodes: Record<string, { 
+  coverageCode: CoverageCode; 
+  coverageDesc: string 
+}>
+```
+
+### `getCoverageCodeById(id)`
+
+Retrieves coverage code information by ID with safe handling:
+
+```typescript
+function getCoverageCodeById(
+  coverageId: string | number | null | undefined
+): { coverageCode: CoverageCode; coverageDesc: string }
+```
+
+**Parameters:**
+- `coverageId` - The coverage ID to look up (string, number, null, or undefined)
+
+**Returns:**
+- Object with `coverageCode` and `coverageDesc` properties
+
+**Error Handling:**
+- Safely handles null/undefined input
+- Provides appropriate error messages for invalid IDs
+
+## Type Safety
+
+This package uses TypeScript enums from `@bmb-inc/types` for type safety:
+
+```typescript
+import { CoverageCode } from '@bmb-inc/types';
+
+// All coverage codes are properly typed
+const coverage: { coverageCode: CoverageCode; coverageDesc: string } = 
+  getCoverageCodeById('3');
+```
 
 ## Development
 
@@ -61,6 +143,14 @@ This package includes standardized constants for:
 ```bash
 npm run build
 ```
+
+### Dependencies
+
+- `@bmb-inc/types` - For `CoverageCode` enum and type definitions
+
+## Version
+
+Current version: **0.0.21**
 
 ## License
 

@@ -1,5 +1,15 @@
 import z from "zod/v4";
 
+export const soapClientProducerCdSchema = z.object({
+  Producer1Cd: z.coerce.string().nullable().optional(),
+});
+
+export const soapClientServicerCdSchema = z.object({
+  Servicer1Cd: z.coerce.string().nullable().optional(),
+  Servicer2Cd: z.coerce.string().nullable().optional(),
+  Servicer3Cd: z.coerce.string().nullable().optional(),
+});
+
 export const soapClientSchema = z
   .object({
     ClientCd: z.string().nullable().optional().meta({
@@ -12,8 +22,8 @@ export const soapClientSchema = z
     StateProvCd: z.string().nullable().optional(),
     Phone1Number: z.number().nullable().optional(),
     ReferenceCd: z.number().nullable().optional(),
-    ProducerCd: z.number().nullable().optional(),
-    ServicerCd: z.number().nullable().optional(),
+    ProducerCd: soapClientProducerCdSchema,
+    ServicerCd: soapClientServicerCdSchema,
     PostCd: z.object({
       PostalCode: z.number().nullable().optional(),
     }),
