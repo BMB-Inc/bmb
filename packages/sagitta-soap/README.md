@@ -75,7 +75,7 @@ const policies = await client.getPolicies({
 
 // Make raw PassThroughReq calls
 const result = await client.callPassThroughReq(
-  'SELECT * FROM policies WHERE policy_number = "POL123456"'
+  'SELECT * FROM POLICIES WHERE POLICY.NUMBER = "POL123456"'
 );
 
 // Get available methods
