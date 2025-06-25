@@ -53,7 +53,7 @@ Essential date conversion functions for working with legacy systems and database
 Converts OLE Automation date numbers to JavaScript Date objects.
 
 **Parameters:**
-- `oaDate` - OLE Automation date number (days since January 1, 1900)
+- `oaDate` - OLE Automation date number (days since January 1, 1968)
 
 **Returns:**
 - JavaScript `Date` object
