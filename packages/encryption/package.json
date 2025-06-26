@@ -1,6 +1,6 @@
 {
   "name": "@bmb-inc/encryption",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "NIST SP 800-132 & NYDFS compliant encryption package using industry-standard libraries (Argon2, bcrypt) with secure wrapper utilities",
   "type": "module",
   "main": "dist/index.js",
