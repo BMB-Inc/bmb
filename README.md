@@ -6,6 +6,7 @@ This monorepo contains shared packages for BMB Inc projects and services, provid
 
 - **[@bmb-inc/types](./packages/types)** - TypeScript schemas and type definitions for insurance data structures
 - **[@bmb-inc/constants](./packages/constants)** - Insurance coverage codes and standardized constants
+- **[@bmb-inc/encryption](./packages/encryption)** - Secure cryptographic utilities with NIST and NYDFS compliance
 - **[@bmb-inc/sagitta-soap](./packages/sagitta-soap)** - SOAP client library for Sagitta insurance system integration
 - **[@bmb-inc/utils](./packages/utils)** - Common utility functions for date manipulation and data processing
 
@@ -25,6 +26,15 @@ bmb/
 │   ├── constants/          # @bmb-inc/constants - coverage codes and constants
 │   │   ├── src/
 │   │   │   ├── coverage-codes.ts
+│   │   │   └── index.ts
+│   │   ├── package.json
+│   │   └── dist/
+│   ├── encryption/         # @bmb-inc/encryption - cryptographic utilities
+│   │   ├── src/
+│   │   │   ├── aes.ts      # AES encryption utilities
+│   │   │   ├── password.ts # Password hashing (Argon2/bcrypt)
+│   │   │   ├── rsa.ts      # RSA encryption utilities
+│   │   │   ├── factory.ts  # Encryption factory pattern
 │   │   │   └── index.ts
 │   │   ├── package.json
 │   │   └── dist/
@@ -65,6 +75,7 @@ yarn build:all
 ```bash
 yarn build:types          # Build @bmb-inc/types
 yarn build:constants      # Build @bmb-inc/constants
+yarn build:encryption     # Build @bmb-inc/encryption
 yarn build:sagitta-soap   # Build @bmb-inc/sagitta-soap
 yarn build:utils          # Build @bmb-inc/utils
 ```
@@ -79,6 +90,7 @@ yarn dev:sagitta-soap     # Run sagitta-soap in development mode
 yarn publish:all          # Publish all packages
 yarn publish:types        # Publish @bmb-inc/types
 yarn publish:constants    # Publish @bmb-inc/constants
+yarn publish:encryption   # Publish @bmb-inc/encryption
 yarn publish:sagitta-soap # Publish @bmb-inc/sagitta-soap
 yarn publish:utils        # Publish @bmb-inc/utils
 ```
@@ -107,6 +119,7 @@ All packages are **private to BMB organization**:
 
 - [@bmb-inc/types Documentation](./packages/types/README.md) - Insurance data schemas and types
 - [@bmb-inc/constants Documentation](./packages/constants/README.md) - Coverage codes and constants
+- [@bmb-inc/encryption Documentation](./packages/encryption/README.md) - Secure cryptographic utilities
 - [@bmb-inc/sagitta-soap Documentation](./packages/sagitta-soap/README.md) - SOAP client library
 - [@bmb-inc/utils Documentation](./packages/utils/README.md) - Utility functions
 
@@ -114,6 +127,7 @@ All packages are **private to BMB organization**:
 
 This monorepo supports:
 - **Insurance Data Management**: Comprehensive schemas for policies, coverages, clients, and more
+- **Security & Encryption**: NIST and NYDFS compliant cryptographic operations and password hashing
 - **Sagitta Integration**: Complete SOAP client for interacting with Sagitta insurance systems
 - **Data Validation**: Zod-based schemas for runtime validation and type safety
 - **Cross-Platform Utilities**: Date conversion, data transformation, and common operations
