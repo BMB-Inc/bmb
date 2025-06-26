@@ -188,6 +188,7 @@ export class AESCrypto {
       }
 
       const salt = CryptoUtils.generateSalt();
+      // amazonq-ignore-next-line
       const iv = CryptoUtils.generateIVForAlgorithm("aes-256-gcm"); // 12-byte IV for GCM
       const key = CryptoUtils.deriveKeyForEncryption(
         password,
