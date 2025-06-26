@@ -21,10 +21,12 @@
     "build:types": "yarn workspace @bmb-inc/types build",
     "build:constants": "yarn workspace @bmb-inc/constants build",
     "build:utils": "yarn workspace @bmb-inc/utils build",
+    "build:encryption": "yarn workspace @bmb-inc/encryption build",
     "build:sagitta-soap": "yarn workspace @bmb-inc/sagitta-soap build",
     "publish:types": "yarn workspace @bmb-inc/types version patch && yarn workspace @bmb-inc/types npm publish",
     "publish:constants": "yarn workspace @bmb-inc/constants version patch && yarn workspace @bmb-inc/constants npm publish",
     "publish:utils": "yarn workspace @bmb-inc/utils version patch && yarn workspace @bmb-inc/utils npm publish",
+    "publish:encryption": "yarn workspace @bmb-inc/encryption version patch && yarn workspace @bmb-inc/encryption npm publish",
     "publish:sagitta-soap": "yarn workspace @bmb-inc/sagitta-soap version patch && yarn workspace @bmb-inc/sagitta-soap npm publish",
     "dev:sagitta-soap": "yarn workspace @bmb-inc/sagitta-soap dev"
   },

@@ -1,2 +1,2 @@
-export * from "./sagitta/sql/index.js";
-export * from "./sagitta/soap/index.js";
+export * from "./sagitta/sql/index";
+export * from "./sagitta/soap/index";

@@ -1,0 +1,40 @@
+{
+  "name": "@bmb-inc/encryption",
+  "version": "2.0.0",
+  "description": "NIST SP 800-132 & NYDFS compliant encryption package using industry-standard libraries (Argon2, bcrypt) with secure wrapper utilities",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "dev": "tsc --watch"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bmb-inc/bmb.git"
+  },
+  "keywords": [
+    "encryption",
+    "crypto",
+    "security",
+    "argon2",
+    "bcrypt",
+    "nist",
+    "nydfs",
+    "password-hashing",
+    "server",
+    "sensitive-data"
+  ],
+  "dependencies": {
+    "argon2": "^0.43.0",
+    "bcrypt": "6.0.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "typescript": "^5.0.0"
+  }
+}
