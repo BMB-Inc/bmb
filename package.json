@@ -28,7 +28,10 @@
     "publish:utils": "yarn workspace @bmb-inc/utils version patch && yarn workspace @bmb-inc/utils npm publish",
     "publish:encryption": "yarn workspace @bmb-inc/encryption version patch && yarn workspace @bmb-inc/encryption npm publish",
     "publish:sagitta-soap": "yarn workspace @bmb-inc/sagitta-soap version patch && yarn workspace @bmb-inc/sagitta-soap npm publish",
-    "dev:sagitta-soap": "yarn workspace @bmb-inc/sagitta-soap dev"
+    "dev:sagitta-soap": "yarn workspace @bmb-inc/sagitta-soap dev",
+    "dev:auth": "yarn workspace @bmb-inc/auth dev",
+    "dev:auth:service": "yarn workspace @bmb-inc/auth dev:service",
+    "build:auth": "yarn workspace @bmb-inc/auth build"
   },
   "keywords": [
     "bmb",
@@ -38,12 +41,14 @@
     "insurance"
   ],
   "devDependencies": {
+    "@types/express": "^5.0.3",
     "@types/node": "^24.0.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
   "packageManager": "yarn@4.9.2",
   "dependencies": {
+    "express": "^5.1.0",
     "tsx": "^4.20.3",
     "zod": "^3.25.67"
   }

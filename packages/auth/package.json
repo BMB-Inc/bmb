@@ -1,0 +1,30 @@
+{
+  "name": "@bmb-inc/auth",
+  "version": "0.0.1",
+  "description": "Authentication service for BMB",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "dev": "tsx --env-file=./.env ./src/azure/client.ts",
+    "dev:service": "tsx --env-file=./.env ./src/examples/webRedirect.ts"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bmb-inc/bmb.git"
+  },
+  "dependencies": {
+    "@azure/identity": "^4.10.1",
+    "@azure/msal-node": "^2.15.0"
+  }
+}
