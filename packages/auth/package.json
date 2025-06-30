@@ -1,9 +1,14 @@
 {
   "name": "@bmb-inc/auth",
-  "version": "0.0.1",
+  "version": "0.0.12",
   "description": "Authentication service for BMB",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "exports": {
+    "require": "./dist/index.cjs",
+    "import": "./dist/index.js"
+  },
   "types": "dist/index.d.ts",
   "files": [
     "dist/**/*",
@@ -11,7 +16,7 @@
     "package.json"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "rollup -c",
     "clean": "rm -rf dist",
     "dev": "tsx --env-file=./.env ./src/azure/client.ts",
     "dev:service": "tsx --env-file=./.env ./src/examples/webRedirect.ts"

@@ -12,3 +12,5 @@ export * from "./misc-coverages";
 export * from "./policies";
 export * from "./umbrella";
 export * from "./workers-comp";
+export * from './bmbhount9';
+export * from './staff';

@@ -354,7 +354,7 @@ export class WebAuthService {
             }
 
             // Check issuer (should be Microsoft)
-            if (!claims.iss || !claims.iss.includes('login.microsoftonline.com')) {
+            if (!claims.iss || !claims.iss.includes('login.microsoftonline.com') || !claims.iss.includes('sts.windows.net')) {
                 return { valid: false, error: "Invalid issuer" };
             }
 
