@@ -1,11 +1,11 @@
 {
   "name": "@bmb-inc/auth-context",
   "description": "React context for user authentication state management",
-  "version": "0.0.10",
+  "version": "0.0.12",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "rollup -c",
     "clean": "rm -rf dist"
   },
   "dependencies": {
