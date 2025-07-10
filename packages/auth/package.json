@@ -1,6 +1,6 @@
 {
   "name": "@bmb-inc/auth",
-  "version": "0.0.12",
+  "version": "0.0.14",
   "description": "Authentication service for BMB",
   "type": "module",
   "main": "./dist/index.cjs",

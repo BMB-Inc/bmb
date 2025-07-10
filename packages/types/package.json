@@ -1,11 +1,16 @@
 {
   "name": "@bmb-inc/types",
   "description": "Common TypeScript types and schema definitions for BMB Inc projects.",
-  "version": "0.0.42",
+  "version": "0.0.51",
   "author": "BMB Inc",
   "license": "MIT",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "exports": {
+    "require": "./dist/index.cjs",
+    "import": "./dist/index.js"
+  },
   "types": "dist/index.d.ts",
   "files": [
     "dist/**/*",
@@ -21,7 +26,7 @@
     "@bmb-inc:registry": "https://npm.pkg.github.com"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "rollup -c",
     "clean": "rm -rf dist"
   },
   "keywords": [
