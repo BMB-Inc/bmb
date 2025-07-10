@@ -354,13 +354,13 @@ export class WebAuthService {
             }
 
             // Check issuer (should be Microsoft)
-            if (!claims.iss || !claims.iss.includes('login.microsoftonline.com') || !claims.iss.includes('sts.windows.net')) {
+            if (!claims.iss || !claims.iss.includes('sts.windows.net')) {
                 return { valid: false, error: "Invalid issuer" };
             }
 
             // Check audience (should be your client ID)
-            if (claims.aud !== this.config.clientId) {
-                return { valid: false, error: "Invalid audience" };
+            if (claims.appid !== this.config.clientId) {
+                return { valid: false, error: "Invalid app" };
             }
 
             // Check tenant
