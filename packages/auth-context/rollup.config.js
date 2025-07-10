@@ -15,8 +15,19 @@ export default [
         format: "es",
       },
     ],
-    plugins: [typescript({ tsconfig: "./tsconfig.json" })],
-    external: [],
+    plugins: [
+      typescript({ 
+        tsconfig: "./tsconfig.json",
+        exclude: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"]
+      })
+    ],
+    external: [
+      "react",
+      "react-dom",
+      "@mantine/core",
+      "@mantine/hooks",
+      "@bmb-inc/types"
+    ],
   },
   {
     input: "src/index.ts",
@@ -25,5 +36,12 @@ export default [
       format: "es",
     },
     plugins: [dts()],
+    external: [
+      "react",
+      "react-dom", 
+      "@mantine/core",
+      "@mantine/hooks",
+      "@bmb-inc/types"
+    ],
   },
 ];

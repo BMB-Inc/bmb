@@ -19,7 +19,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode; }> = ({ childre
     fetchCurrentUser().then((data) => {
       if (!isMounted) return;
       if (!data) {
-        // window.location.href = 'https://apps.bmbinc.com/api/auth/login-v2';
+        window.location.href = 'https://apps.bmbinc.com/api/auth/login-v2';
         return;
       }
       setUser(data);

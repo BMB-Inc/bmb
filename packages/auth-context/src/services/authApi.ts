@@ -3,7 +3,7 @@ import type { User } from '@bmb-inc/types';
 export const fetchCurrentUser = async (): Promise<User | null> => {
   try {
     // Implement your actual API call here
-    const response = await fetch('/api/auth/current-user');
+    const response = await fetch('https://apps.bmbinc.com/api/auth/whoami');
     if (!response.ok) return null;
     return await response.json();
   } catch (error) {
