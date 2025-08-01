@@ -32,7 +32,9 @@
     "dev:auth": "yarn workspace @bmb-inc/auth dev",
     "dev:auth:service": "yarn workspace @bmb-inc/auth dev:service",
     "build:auth": "yarn workspace @bmb-inc/auth build",
-    "publish:auth": "yarn workspace @bmb-inc/auth version patch && yarn workspace @bmb-inc/auth npm publish"
+    "publish:auth": "yarn workspace @bmb-inc/auth version patch && yarn workspace @bmb-inc/auth npm publish",
+    "build:auth-context": "yarn workspace @bmb-inc/auth-context build",
+    "publish:auth-context": "yarn workspace @bmb-inc/auth-context version patch && yarn workspace @bmb-inc/auth-context npm publish"
   },
   "keywords": [
     "bmb",
