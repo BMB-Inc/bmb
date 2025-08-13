@@ -1,7 +1,7 @@
 // AuthContext.tsx
 import { User } from '@bmb-inc/types';
 import React, { createContext, useEffect, useState, useCallback } from 'react';
-import { AuthCheckingScreen } from './components/AuthCheckingScreen';
+import { AuthCheckingScreen } from './components/auth-checking-screen';
 
 export interface UserContextType {
   user: User | null;
@@ -18,19 +18,21 @@ export const AuthContext = createContext<UserContextType>({
 });
 
 interface AuthProviderProps {
-  baseUrl: string;
-  redirectUrl?: string;
+  authUrl: string;
   children: React.ReactNode;
 }
 
 // NOTE: export it as a named export
-export const AuthProvider: React.FC<AuthProviderProps> = ({ baseUrl, redirectUrl, children }) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({ authUrl, children }) => {
+  const loginUrl = `${authUrl}/login-v2`;
+  const whoamiUrl = `${authUrl}/whoami`;
+  const logoutUrl = `${authUrl}/logout-v2`;
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchCurrentUser = useCallback(async () => {
     try {
-      const response = await fetch(`${baseUrl}/api/auth/whoami`, { credentials: 'include' });
+      const response = await fetch(whoamiUrl, { credentials: 'include' });
       if (!response.ok) return null;
       const data: User = await response.json();
       setUser(data ?? null);
@@ -38,17 +40,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ baseUrl, redirectUrl
     } catch {
       return null;
     }
-  }, [baseUrl]);
+  }, [whoamiUrl]);
 
   const logout = useCallback(async () => {
     try {
-      const response = await fetch(`${baseUrl}/api/auth/logout-v2`, { credentials: 'include' });
+      const response = await fetch(logoutUrl, { credentials: 'include' });
       if (!response.ok) return;
       await response.json();
     } finally {
       setUser(null);
     }
-  }, [baseUrl]);
+  }, [logoutUrl]);
 
   useEffect(() => {
     let isMounted = true;
@@ -56,13 +58,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ baseUrl, redirectUrl
       const data = await fetchCurrentUser();
       if (!isMounted) return;
       if (!data) {
-        window.location.href = redirectUrl ?? baseUrl;
+        window.location.href = loginUrl;
         return;
       }
       setLoading(false);
     })();
     return () => { isMounted = false; };
-  }, [fetchCurrentUser, redirectUrl]);
+  }, [fetchCurrentUser, loginUrl]);
 
   const isUserAuthenticated = !!user;
 
@@ -73,26 +75,4 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ baseUrl, redirectUrl
   );
 };
 
-const fetchCurrentUserForTest = async (baseUrl: string, requestHeaders?: HeadersInit) => {
-    try {
-      const headersToUse: HeadersInit = {
-        ...(requestHeaders || {}),
-      };
-      const response = await fetch(`${baseUrl}/api/auth/whoami`, { credentials: 'include', headers: headersToUse });
-      if (!response.ok) {
-        const text = await response.text().catch(() => '');
-        // eslint-disable-next-line no-console
-        console.error(`[auth-context] whoami failed`, { status: response.status, statusText: response.statusText, body: text });
-        return null;
-      }
-      const data: User = await response.json();
-      return data ?? null;
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error('[auth-context] whoami error', err);
-      return null;
-    }
-};
-
-// If you want, you can also export these:
-export { AuthCheckingScreen, fetchCurrentUserForTest };
+export { AuthCheckingScreen };

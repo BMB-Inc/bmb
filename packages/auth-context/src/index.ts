@@ -1,2 +1,2 @@
-export { AuthProvider, AuthContext, AuthCheckingScreen, fetchCurrentUserForTest } from './AuthContext';
+export { AuthProvider, AuthContext, AuthCheckingScreen } from './auth-context';  
 export { useAuth } from './hooks/useAuth';
