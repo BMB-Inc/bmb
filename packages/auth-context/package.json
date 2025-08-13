@@ -1,7 +1,7 @@
 {
   "name": "@bmb-inc/auth-context",
   "description": "React context for user authentication state management",
-  "version": "0.0.16",
+  "version": "0.0.32",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -17,7 +17,8 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "example": "node --env-file=.env --import=tsx ./src/examples/index.ts"
   },
   "dependencies": {
     "@bmb-inc/types": "workspace:*",
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
+    "dotenv": "^17.2.1",
     "typescript": "^5.8.3"
   },
   "publishConfig": {

@@ -1,3 +1,2 @@
-export * from "./context/UserContext";
-export * from "./components/AuthCheckingScreen";
-export * from "./services/authApi";
+export { AuthProvider, AuthContext, AuthCheckingScreen, fetchCurrentUserForTest } from './AuthContext';
+export { useAuth } from './hooks/useAuth';

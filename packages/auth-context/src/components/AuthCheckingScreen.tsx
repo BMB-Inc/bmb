@@ -1,17 +1,44 @@
-import { Loader, Text, Stack, Center } from '@mantine/core';
 
+import React from "react";
 export function AuthCheckingScreen() {
   return (
-    <Center style={{ height: '100vh', width: '100vw', backgroundColor: 'white' }}>
-      <Stack align="center" gap="md">
-        <Loader size="lg" />
-        <Text size="lg" fw={500} c="dimmed">
+    <div
+      style={{
+        height: '100vh',
+        width: '100vw',
+        backgroundColor: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
+        <div style={{ marginBottom: '1rem' }}>
+          <span
+            style={{
+              display: 'inline-block',
+              width: 48,
+              height: 48,
+              border: '6px solid #eee',
+              borderTop: '6px solid #888',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+            }}
+          />
+          <style>{`
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}</style>
+        </div>
+        <div style={{ fontSize: '1.25rem', fontWeight: 500, color: '#888' }}>
           Checking authentication...
-        </Text>
-        <Text size="sm" c="dimmed" ta="center">
+        </div>
+        <div style={{ fontSize: '0.95rem', color: '#aaa', textAlign: 'center' }}>
           Please wait while we verify your credentials
-        </Text>
-      </Stack>
-    </Center>
+        </div>
+      </div>
+    </div>
   );
-} 
+}
