@@ -3,13 +3,20 @@ import { useForm } from "@mantine/form";
 import { Button, Card, Group, Stack, TextInput } from "@mantine/core";
 import { ClientSearchForm } from "./client-search-form";
 
-export const FormExample = () => {
-  const [submittedValues, setSubmittedValues] = useState<any>(null);
+// Define the form values type explicitly for better type safety
+interface ClientFormValues {
+  clientId: string | null;
+  clientName: string;
+  notes: string;
+}
 
-  // Set up the form
-  const form = useForm({
+export const FormExample = () => {
+  const [submittedValues, setSubmittedValues] = useState<ClientFormValues | null>(null);
+
+  // Set up the form with proper typing
+  const form = useForm<ClientFormValues>({
     initialValues: {
-      clientId: "",
+      clientId: null,
       clientName: "",
       notes: "",
     },
@@ -25,7 +32,7 @@ export const FormExample = () => {
   });
 
   // Handle form submission
-  const handleSubmit = (values: typeof form.values) => {
+  const handleSubmit = (values: ClientFormValues) => {
     console.log("Form submitted with:", values);
     setSubmittedValues(values);
   };
@@ -36,8 +43,8 @@ export const FormExample = () => {
 
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap="md">
-          {/* Client Search component connected to the form */}
-          <ClientSearchForm
+          {/* Client Search component with proper type safety */}
+          <ClientSearchForm<ClientFormValues>
             form={form}
             name="clientId"
             label="Select Client"

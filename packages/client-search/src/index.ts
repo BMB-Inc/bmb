@@ -1,13 +1,12 @@
 // Export components
 export { ClientSearch } from './components/client-search';
-export { ClientSearchForm } from './components/client-search-form';
+export { 
+  ClientSearchForm,
+  type FormValues,
+  type ClientSearchFormProps
+} from './components/client-search-form';
+export { FormExample } from './components/form-example';
 
-// Export types
-export interface ClientSearchFormProps {
-  form: any; // Using any here since we don't want to export Mantine form types
-  name: string;
-  label?: string;
-  placeholder?: string;
-  disabled?: boolean;
-  [key: string]: any;
-}
+// Re-export types from @mantine/form
+// This approach allows consumers to use these types without directly importing from @mantine/form
+export type { UseFormReturnType } from '@mantine/form';

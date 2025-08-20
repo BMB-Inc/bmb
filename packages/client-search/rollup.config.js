@@ -10,10 +10,16 @@ export default [
         file: "dist/index.cjs",
         format: "cjs",
         exports: "named",
+        // Prevent file locking issues by ensuring files are closed properly
+        compact: true,
+        sourcemap: false,
       },
       {
         file: "dist/index.js",
         format: "es",
+        // Prevent file locking issues by ensuring files are closed properly
+        compact: true,
+        sourcemap: false,
       },
     ],
     plugins: [
@@ -45,6 +51,9 @@ export default [
     output: {
       file: "dist/index.d.ts",
       format: "es",
+      // Minimize chance of file locking
+      compact: true,
+      sourcemap: false,
     },
     plugins: [dts()],
     external: [

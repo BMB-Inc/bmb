@@ -7,23 +7,29 @@ import { Select } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Loader } from "@mantine/core";
 
-interface ClientSearchFormProps {
-  form: UseFormReturnType<any>;
-  name: string;
+// Define a generic interface for the form values
+export interface FormValues {
+  [key: string]: string | null | undefined;
+}
+
+// Define the props for the ClientSearchForm component
+export interface ClientSearchFormProps<T extends Record<string, any>> {
+  form: UseFormReturnType<T>;
+  name: Extract<keyof T, string>; // Ensure name is both a key of T and a string
   label?: string;
   placeholder?: string;
   disabled?: boolean;
   mt?: string | number;
 }
 
-export const ClientSearchForm = ({ 
+export const ClientSearchForm = <T extends Record<string, any>>({ 
   form, 
   name, 
   label = 'Client', 
   placeholder = 'Search clients...', 
   disabled = false,
   ...props
-}: ClientSearchFormProps) => {
+}: ClientSearchFormProps<T>) => {
   // State for search and selection
   const [searchQuery, setSearchQuery] = useState<string | null>(null);
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
@@ -79,8 +85,11 @@ export const ClientSearchForm = ({
           const client = data?.find((c: ClientsSchema) => c.CLIENTS_ID?.toString() === selectedValue);
           setSelectedClient(client || null);
           
-          // Update the form
-          form.setFieldValue(name, selectedValue);
+          // Update the form with proper typing
+          form.setValues(values => ({
+            ...values,
+            [name]: selectedValue
+          }));
           
           // Clear search query to stop further API requests
           setSearchQuery(null);
@@ -89,8 +98,11 @@ export const ClientSearchForm = ({
           setSelectedClient(null);
           setSearchQuery(null);
           
-          // Clear the form field
-          form.setFieldValue(name, null);
+          // Clear the form field with proper typing
+          form.setValues(values => ({
+            ...values,
+            [name]: null
+          }));
         }
         
         setSearching(false);
