@@ -1,0 +1,66 @@
+{
+  "name": "@bmb-inc/client-search",
+  "version": "0.1.5",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "yarn clean && rollup -c",
+    "build:app": "tsc -b && vite build",
+    "clean": "rm -rf dist node_modules/.cache 2>/dev/null || true",
+    "cleanall": "rm -rf dist node_modules/.cache .rollup.cache 2>/dev/null || true && (find . -name 'dist-*' -type d -exec rm -rf {} + 2>/dev/null || true)",
+    "build:safe": "yarn cleanall && yarn rollup -c",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    "require": "./dist/index.cjs",
+    "import": "./dist/index.js"
+  },
+  "peerDependencies": {
+    "@mantine/core": "^8.2.5",
+    "@mantine/form": "^8.2.5",
+    "@mantine/hooks": "^8.2.5",
+    "@tanstack/react-query": "^5.85.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "dependencies": {
+    "@bmb-inc/auth-context": "workspace:^",
+    "@bmb-inc/types": "workspace:^",
+    "@tabler/icons-react": "^3.1.0",
+    "@vitejs/plugin-basic-ssl": "^2.1.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.33.0",
+    "@mantine/core": "^8.2.5",
+    "@mantine/form": "^8.2.5",
+    "@mantine/hooks": "^8.2.5",
+    "@rollup/plugin-replace": "^5.0.5",
+    "@rollup/plugin-typescript": "^12.1.3",
+    "@tanstack/react-query": "^5.85.3",
+    "@types/react": "^18.2.54",
+    "@types/react-dom": "^18.2.18",
+    "@vitejs/plugin-react": "^5.0.0",
+    "eslint": "^9.33.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "rollup": "^4.44.1",
+    "rollup-plugin-dts": "^6.2.1",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.39.1",
+    "vite": "^7.1.2"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "@bmb-inc:registry": "https://npm.pkg.github.com"
+  }
+}

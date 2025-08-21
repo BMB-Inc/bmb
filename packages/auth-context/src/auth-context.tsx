@@ -20,11 +20,13 @@ export const AuthContext = createContext<UserContextType>({
 interface AuthProviderProps {
   authUrl: string;
   children: React.ReactNode;
+  redirectUrl?: string;
+  includeCredentials?: boolean;
 }
 
 // NOTE: export it as a named export
-export const AuthProvider: React.FC<AuthProviderProps> = ({ authUrl, children }) => {
-  const loginUrl = `${authUrl}/login-v2`;
+export const AuthProvider: React.FC<AuthProviderProps> = ({ authUrl, children, redirectUrl, includeCredentials = true }) => {
+  const loginUrl = `${authUrl}/login-v2${redirectUrl ? `?redirect=${redirectUrl}` : ''}`;
   const whoamiUrl = `${authUrl}/whoami`;
   const logoutUrl = `${authUrl}/logout-v2`;
   const [user, setUser] = useState<User | null>(null);
@@ -32,7 +34,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ authUrl, children })
 
   const fetchCurrentUser = useCallback(async () => {
     try {
-      const response = await fetch(whoamiUrl, { credentials: 'include' });
+      const response = await fetch(whoamiUrl, { credentials: includeCredentials ? 'include' : 'same-origin' });
       if (!response.ok) return null;
       const data: User = await response.json();
       setUser(data ?? null);
