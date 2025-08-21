@@ -49,6 +49,8 @@ export enum ReviewStatus {
   PENDING = "PENDING",
   APPROVED = "APPROVED",
   REJECTED = "REJECTED",
+  INITIAL_REVIEW = "INITIAL_REVIEW",
+  FINAL_REVIEW = "FINAL_REVIEW",
 }
 
 export const expenseZodObject = z.object({
