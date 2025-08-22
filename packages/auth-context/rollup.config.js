@@ -1,5 +1,10 @@
 import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
+import replace from "@rollup/plugin-replace";
+import dotenv from "dotenv";
+
+// Load environment variables from .env file
+dotenv.config({ path: '../../.env' });
 
 export default [
   {
@@ -19,6 +24,12 @@ export default [
       typescript({ 
         tsconfig: "./tsconfig.json",
         exclude: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"]
+      }),
+      replace({
+        preventAssignment: true,
+        values: {
+          'process.env.API_KEY': JSON.stringify(process.env.API_KEY || ''),
+        }
       })
     ],
     external: [
