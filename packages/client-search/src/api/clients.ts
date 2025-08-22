@@ -1,5 +1,25 @@
-const SAGITTA_API_URL = (import.meta as any).env.VITE_SAGITTA_CLIENTS_URL || "http://localhost:3000";
-const API_KEY = (import.meta as any).env.VITE_API_KEY || "1234567890";
+const SAGITTA_API_URL = 'https://staging.bmbinc.com/api/sagitta';
+
+export const getClientById = async (clientId: string) => {
+  if (!clientId) return null;
+  
+  try {
+    const apiUrl = `${SAGITTA_API_URL}/clients?client_id=${encodeURIComponent(clientId)}`;
+    const result = await fetch(apiUrl);
+    
+    if (!result.ok) {
+      throw new Error(`API error: ${result.status} ${result.statusText}`);
+    }
+    
+    const response = await result.json();
+    // API returns an array, so we return the array directly
+    // The component will handle extracting the first client
+    return response;
+  } catch (error) {
+    console.error("Error fetching client by ID:", error);
+    return null;
+  }
+};
 
 export const getClients = async (client_name: string) => {
   if (!client_name) {
@@ -9,9 +29,7 @@ export const getClients = async (client_name: string) => {
   try {
     const apiUrl = `${SAGITTA_API_URL}/clients?client_name=${encodeURIComponent(client_name)}`;
     const result = await fetch(apiUrl, {
-      headers: {
-        'x-api-key': API_KEY,
-      },
+      credentials: 'include',
     });
     
     if (!result.ok) {

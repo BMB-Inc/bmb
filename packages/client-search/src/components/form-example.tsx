@@ -16,7 +16,7 @@ export const FormExample = () => {
   // Set up the form with proper typing
   const form = useForm<ClientFormValues>({
     initialValues: {
-      clientId: null,
+      clientId: '20019',
       clientName: "",
       notes: "",
     },

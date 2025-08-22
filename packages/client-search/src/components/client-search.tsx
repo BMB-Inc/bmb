@@ -2,11 +2,17 @@ import type { ClientsSchema } from "@bmb-inc/types";
 import { useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useGetClients } from "../hooks/useGetClients";
-import { Select } from "@mantine/core";
+import { Select, SelectProps } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Loader } from "@mantine/core";
 
-export const ClientSearch = () => {
+interface ClientSearchProps extends Omit<SelectProps, 'data' | 'onChange' | 'value'> {
+  placeholder?: string;
+  label?: string;
+  disabled?: boolean;
+}
+
+export const ClientSearch = ({...props}: ClientSearchProps) => {
   // State for search and selection
   const [searchQuery, setSearchQuery] = useState<string | null>(null);
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
@@ -29,11 +35,12 @@ export const ClientSearch = () => {
       searchable
       clearable
       limit={100}
-      error={error?.message || undefined}
+      error={(error?.message && shouldFetch) || undefined}
       leftSection={<IconSearch />}
       rightSection={isLoading || searching ? <Loader size="xs" color="blue" /> : undefined}
       nothingFoundMessage="No clients found"
       placeholder="Search clients..."
+      {...props}
       
       // Selected value - client ID when selected, otherwise null
       value={selectedClient?.CLIENTS_ID?.toString() || null}

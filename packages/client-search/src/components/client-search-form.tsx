@@ -1,9 +1,10 @@
 import { type UseFormReturnType } from "@mantine/form";
 import type { ClientsSchema } from "@bmb-inc/types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useGetClients } from "../hooks/useGetClients";
-import { Select } from "@mantine/core";
+import { useGetClientById } from "../hooks/useGetClientById";
+import { Select, SelectProps } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Loader } from "@mantine/core";
 
@@ -13,9 +14,9 @@ export interface FormValues {
 }
 
 // Define the props for the ClientSearchForm component
-export interface ClientSearchFormProps<T extends Record<string, any>> {
+export interface ClientSearchFormProps<T extends Record<string, any>> extends Omit<SelectProps, 'data' | 'onChange' | 'value' | 'form'> {
   form: UseFormReturnType<T>;
-  name: Extract<keyof T, string>; // Ensure name is both a key of T and a string
+  name: Extract<keyof T, string>;
   label?: string;
   placeholder?: string;
   disabled?: boolean;
@@ -25,7 +26,7 @@ export interface ClientSearchFormProps<T extends Record<string, any>> {
 export const ClientSearchForm = <T extends Record<string, any>>({ 
   form, 
   name, 
-  label = 'Client', 
+  label, 
   placeholder = 'Search clients...', 
   disabled = false,
   ...props
@@ -39,6 +40,19 @@ export const ClientSearchForm = <T extends Record<string, any>>({
   // Get value from form
   const formValue = form.values[name];
   
+  // Fetch client by ID if form has a value but no selected client
+  const { data: clientById } = useGetClientById(
+    formValue && !selectedClient ? formValue as string : null
+  );
+  
+  // When client is fetched by ID, set it as the selected client
+  useEffect(() => {
+    if (clientById && Array.isArray(clientById) && clientById.length > 0 && formValue && !selectedClient) {
+      // API returns an array, so we need to use the first item
+      setSelectedClient(clientById[0]);
+    }
+  }, [clientById, formValue, selectedClient]);
+  
   // Only fetch when actively searching and no client is selected
   const shouldFetch = !selectedClient && debouncedSearchQuery && debouncedSearchQuery.length > 0;
   const { data, isLoading, error } = useGetClients(shouldFetch ? debouncedSearchQuery : "");
@@ -51,8 +65,8 @@ export const ClientSearchForm = <T extends Record<string, any>>({
       }))
     : [];
     
-  // Show error if present
-  const errorMessage = error instanceof Error ? error.message : undefined;
+  // Show error if present but only if we're actually searching
+  const errorMessage = (error instanceof Error && shouldFetch) ? error.message : undefined;
 
   return (
     <Select
@@ -65,12 +79,13 @@ export const ClientSearchForm = <T extends Record<string, any>>({
       placeholder={placeholder}
       label={label}
       disabled={disabled}
+      {...props}
       
       // Get all form input props for validation, errors, etc.
       {...form.getInputProps(name)}
       
-      // Display API errors if present
-      error={form.getInputProps(name).error || errorMessage}
+      // Only display form errors when field is touched and has a value, or API errors during search
+      error={(form.getInputProps(name).error && form.isTouched(name) && formValue) || errorMessage}
       
       // Options dropdown data
       data={clientOptions}
