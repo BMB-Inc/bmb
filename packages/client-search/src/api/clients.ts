@@ -1,11 +1,16 @@
 const SAGITTA_API_URL = 'https://staging.bmbinc.com/api/sagitta';
+const API_KEY = import.meta.env.VITE_API_KEY;
 
 export const getClientById = async (clientId: string) => {
   if (!clientId) return null;
   
   try {
     const apiUrl = `${SAGITTA_API_URL}/clients?client_id=${encodeURIComponent(clientId)}`;
-    const result = await fetch(apiUrl);
+    const result = await fetch(apiUrl, {
+      headers: {
+        'x-api-key': API_KEY
+      },
+    });
     
     if (!result.ok) {
       throw new Error(`API error: ${result.status} ${result.statusText}`);
@@ -29,7 +34,9 @@ export const getClients = async (client_name: string) => {
   try {
     const apiUrl = `${SAGITTA_API_URL}/clients?client_name=${encodeURIComponent(client_name)}`;
     const result = await fetch(apiUrl, {
-      credentials: 'include',
+      headers: {
+        'x-api-key': API_KEY
+      },
     });
     
     if (!result.ok) {

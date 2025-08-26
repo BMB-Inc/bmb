@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { Button, Card, Group, Stack, TextInput } from "@mantine/core";
 import { ClientSearchForm } from "./client-search-form";
+import { useElementSize } from "@mantine/hooks";
 
 // Define the form values type explicitly for better type safety
 interface ClientFormValues {
@@ -16,7 +17,7 @@ export const FormExample = () => {
   // Set up the form with proper typing
   const form = useForm<ClientFormValues>({
     initialValues: {
-      clientId: '20019',
+      clientId: null,
       clientName: "",
       notes: "",
     },
@@ -30,6 +31,10 @@ export const FormExample = () => {
       },
     },
   });
+
+  useEffect(() => {
+    console.log(form.errors);
+  }, [form.errors]);
 
   // Handle form submission
   const handleSubmit = (values: ClientFormValues) => {
@@ -49,6 +54,8 @@ export const FormExample = () => {
             name="clientId"
             label="Select Client"
             placeholder="Search for a client..."
+            error={form.errors.clientId}
+            withTooltip
           />
 
           {/* Regular form fields */}

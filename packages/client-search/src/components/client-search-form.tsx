@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useGetClients } from "../hooks/useGetClients";
 import { useGetClientById } from "../hooks/useGetClientById";
-import { Select, SelectProps } from "@mantine/core";
+import { Select, SelectProps, Tooltip } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Loader } from "@mantine/core";
 
@@ -21,6 +21,7 @@ export interface ClientSearchFormProps<T extends Record<string, any>> extends Om
   placeholder?: string;
   disabled?: boolean;
   mt?: string | number;
+  withTooltip?: boolean;
 }
 
 export const ClientSearchForm = <T extends Record<string, any>>({ 
@@ -29,6 +30,7 @@ export const ClientSearchForm = <T extends Record<string, any>>({
   label, 
   placeholder = 'Search clients...', 
   disabled = false,
+  withTooltip = false,
   ...props
 }: ClientSearchFormProps<T>) => {
   // State for search and selection
@@ -52,6 +54,13 @@ export const ClientSearchForm = <T extends Record<string, any>>({
       setSelectedClient(clientById[0]);
     }
   }, [clientById, formValue, selectedClient]);
+
+  // Clear selected client when form value is cleared externally
+  useEffect(() => {
+    if (!formValue && selectedClient) {
+      setSelectedClient(null);
+    }
+  }, [formValue, selectedClient]);
   
   // Only fetch when actively searching and no client is selected
   const shouldFetch = !selectedClient && debouncedSearchQuery && debouncedSearchQuery.length > 0;
@@ -68,7 +77,7 @@ export const ClientSearchForm = <T extends Record<string, any>>({
   // Show error if present but only if we're actually searching
   const errorMessage = (error instanceof Error && shouldFetch) ? error.message : undefined;
 
-  return (
+  const selectComponent = (
     <Select
       searchable
       clearable
@@ -142,5 +151,15 @@ export const ClientSearchForm = <T extends Record<string, any>>({
       // Pass through any additional props
       {...props}
     />
+  )
+
+  return (
+    withTooltip ? (
+      <Tooltip label="Start typing to search for a client...">
+        {selectComponent}
+      </Tooltip>
+    ) : (
+      selectComponent
+    )
   );
 };

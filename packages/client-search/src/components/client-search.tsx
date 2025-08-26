@@ -2,7 +2,7 @@ import type { ClientsSchema } from "@bmb-inc/types";
 import { useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useGetClients } from "../hooks/useGetClients";
-import { Select, SelectProps } from "@mantine/core";
+import { Select, SelectProps, Tooltip } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Loader } from "@mantine/core";
 
@@ -10,9 +10,10 @@ interface ClientSearchProps extends Omit<SelectProps, 'data' | 'onChange' | 'val
   placeholder?: string;
   label?: string;
   disabled?: boolean;
+  withTooltip?: boolean;
 }
 
-export const ClientSearch = ({...props}: ClientSearchProps) => {
+export const ClientSearch = ({withTooltip = false, ...props}: ClientSearchProps) => {
   // State for search and selection
   const [searchQuery, setSearchQuery] = useState<string | null>(null);
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
@@ -30,7 +31,8 @@ export const ClientSearch = ({...props}: ClientSearchProps) => {
         label: `${client.CLIENTNAME || 'Unknown'} - ${client.CLIENT_CODE || 'No Code'}`,
       }))
     : [];
-  return (
+  // Create the Select component once
+  const selectComponent = (
     <Select
       searchable
       clearable
@@ -82,5 +84,14 @@ export const ClientSearch = ({...props}: ClientSearchProps) => {
         ? `${selectedClient.CLIENTNAME || ''} - ${selectedClient.CLIENT_CODE || ''}` 
         : searchQuery || ""}
     />
-  )
+  );
+
+  // Conditionally wrap with tooltip based on withTooltip prop
+  return withTooltip ? (
+    <Tooltip label="Start typing to search for a client...">
+      {selectComponent}
+    </Tooltip>
+  ) : (
+    selectComponent
+  );
 };
