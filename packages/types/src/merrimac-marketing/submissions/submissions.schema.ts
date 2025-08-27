@@ -12,6 +12,7 @@ export const statusEnum = {
   "Not Quoted": "Not Quoted",
   BORs: "BORs",
   "Did not Bind": "Did not Bind",
+  Indication: "Indication",
 } as const;
 
 export const typeOfRiskEnum = {

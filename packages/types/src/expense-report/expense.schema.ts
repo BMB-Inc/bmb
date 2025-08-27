@@ -15,6 +15,88 @@ export enum ExpenseCategory {
   Misc = "Miscellaneous"
 }
 
+export enum TicketsSubCategory {
+  Golf = "Golf",
+  Football = "Football",
+  Baseball = "Baseball",
+  Rodeo = "Rodeo",
+  Cookoff = "Cookoff",
+  Other = "Other",
+}
+
+export enum HuntingSubCategory {
+  Groceries = "Groceries",
+  Other = "Other",
+}
+
+export enum ExpenseDivisionGLCodes {
+  Houston = 1,
+  Louisiana = 8,
+  Dormer = 20,
+  Florida = 31,
+  Merrimac = 34,
+  TA = 50,
+  MSurety = 51,
+  Arkansas = 15,
+}
+
+export enum ExpenseCategoryGLCodes {
+  Airfare = 6100,
+  CarRental = 6100,
+  ComputerSoftwareSupplies = 6187,
+  Donations = 6155,
+  DrinksOnly = 6110,
+  DuesSubscriptions = 6250,
+  Education = 6085,
+  EmploymentFees = 6080,
+  MileageReimbursement = 6100,
+  GiftsFlowers = 6160,
+  GiftsEEAnniversary = 6333,
+  Golf = 6110,
+  Hotel = 6100,
+  HuntingAllOther = 6110,
+  HuntingGroceriesForMealsCook = 6119,
+  Internet = 6285,
+  Licenses = 6240,
+  MealClientProspectIncluded = 6119,
+  MealEEOnly = 6099,
+  MeetingsConferencesConventions = 6120,
+  Miscellaneous = 6330,
+  OfficeSupplies = 6185,
+  PostageShippingDelivery = 6210,
+  RepairsMaintenance = 6290,
+  SocialCommittee = 6098,
+  Sponsorship = 6150,
+  Telephone = 6195,
+  TicketCostOnlyBaseball = 6113,
+  TicketCostOnlyFootball = 6114,
+  TicketCostOnlyGolf = 6112,
+  TicketCostOnlyRodeoCookoff = 6111,
+  Transportation = 6100,
+}
+
+export enum ExpenseDepartmentGLCodes {
+  PersonalLines = 20,
+  PersonalLinesManager = 25,
+  CommercialLines = 30,
+  Marketing = 31,
+  CommercialLinesManager = 35,
+  ArkansasOffice = 39,
+  Claims = 46,
+  LossControl = 49,
+  Surety = 50,
+  SuretyManager = 55,
+  Benefits = 60,
+  Life = 61,
+  PEO = 62,
+  BenefitsManager = 65,
+  Accounting = 70,
+  IT = 75,
+  EdBritt = 80,
+  Administrative = 81,
+  Operations = 85,
+}
+
 export enum ExpenseType {
   Client = "Client",
   Personal = "Personal",
@@ -59,6 +141,7 @@ export enum ReviewStatus {
 export const expenseZodObject = z.object({
   id: z.string(),
   expense_category: z.enum(ExpenseCategory),
+  sub_category: z.string().nullable().optional(),
   client_id: z.number().nullable().optional(),
   expense_type: z.enum(ExpenseType),
   expense_amount: z.number().or(z.string()),
@@ -79,6 +162,7 @@ export const expenseZodObject = z.object({
   submitted_expense_report_filename: z.string().nullable().optional(),
   review_status: z.enum(ReviewStatus).nullable().optional(),
   review_reason: z.string().nullable().optional(),
+  gl_code: z.string().nullable().optional(),
 });
 
 export const createExpenseSchema = expenseZodObject.omit({
