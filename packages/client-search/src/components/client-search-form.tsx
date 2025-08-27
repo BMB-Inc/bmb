@@ -1,38 +1,34 @@
 import { type UseFormReturnType } from "@mantine/form";
 import type { ClientsSchema } from "@bmb-inc/types";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useGetClients } from "../hooks/useGetClients";
-import { useGetClientById } from "../hooks/useGetClientById";
-import { Select, SelectProps, Tooltip } from "@mantine/core";
+import { Select } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Loader } from "@mantine/core";
 
-// Define a generic interface for the form values
-export interface FormValues {
-  [key: string]: string | null | undefined;
-}
-
-// Define the props for the ClientSearchForm component
-export interface ClientSearchFormProps<T extends Record<string, any>> extends Omit<SelectProps, 'data' | 'onChange' | 'value' | 'form'> {
+/**
+ * A more sophisticated type-safe implementation of ClientSearchForm.
+ * T is the form values type
+ * K is the name of the field in the form that will store the client ID
+ */
+interface ClientSearchFormProps<T, K extends keyof T> {
   form: UseFormReturnType<T>;
-  name: Extract<keyof T, string>;
+  name: K;
   label?: string;
   placeholder?: string;
   disabled?: boolean;
   mt?: string | number;
-  withTooltip?: boolean;
 }
 
-export const ClientSearchForm = <T extends Record<string, any>>({ 
+export const ClientSearchForm = <T, K extends keyof T>({ 
   form, 
   name, 
-  label, 
+  label = 'Client', 
   placeholder = 'Search clients...', 
   disabled = false,
-  withTooltip = false,
   ...props
-}: ClientSearchFormProps<T>) => {
+}: ClientSearchFormProps<T, K>) => {
   // State for search and selection
   const [searchQuery, setSearchQuery] = useState<string | null>(null);
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
@@ -41,26 +37,6 @@ export const ClientSearchForm = <T extends Record<string, any>>({
   
   // Get value from form
   const formValue = form.values[name];
-  
-  // Fetch client by ID if form has a value but no selected client
-  const { data: clientById } = useGetClientById(
-    formValue && !selectedClient ? formValue as string : null
-  );
-  
-  // When client is fetched by ID, set it as the selected client
-  useEffect(() => {
-    if (clientById && Array.isArray(clientById) && clientById.length > 0 && formValue && !selectedClient) {
-      // API returns an array, so we need to use the first item
-      setSelectedClient(clientById[0]);
-    }
-  }, [clientById, formValue, selectedClient]);
-
-  // Clear selected client when form value is cleared externally
-  useEffect(() => {
-    if (!formValue && selectedClient) {
-      setSelectedClient(null);
-    }
-  }, [formValue, selectedClient]);
   
   // Only fetch when actively searching and no client is selected
   const shouldFetch = !selectedClient && debouncedSearchQuery && debouncedSearchQuery.length > 0;
@@ -74,10 +50,10 @@ export const ClientSearchForm = <T extends Record<string, any>>({
       }))
     : [];
     
-  // Show error if present but only if we're actually searching
-  const errorMessage = (error instanceof Error && shouldFetch) ? error.message : undefined;
+  // Show error if present
+  const errorMessage = error instanceof Error ? error.message : undefined;
 
-  const selectComponent = (
+  return (
     <Select
       searchable
       clearable
@@ -88,13 +64,12 @@ export const ClientSearchForm = <T extends Record<string, any>>({
       placeholder={placeholder}
       label={label}
       disabled={disabled}
-      {...props}
       
       // Get all form input props for validation, errors, etc.
       {...form.getInputProps(name)}
       
-      // Only display form errors when field is touched and has a value, or API errors during search
-      error={(form.getInputProps(name).error && form.isTouched(name) && formValue) || errorMessage}
+      // Display API errors if present
+      error={form.getInputProps(name).error || errorMessage}
       
       // Options dropdown data
       data={clientOptions}
@@ -109,11 +84,8 @@ export const ClientSearchForm = <T extends Record<string, any>>({
           const client = data?.find((c: ClientsSchema) => c.CLIENTS_ID?.toString() === selectedValue);
           setSelectedClient(client || null);
           
-          // Update the form with proper typing
-          form.setValues(values => ({
-            ...values,
-            [name]: selectedValue
-          }));
+          // Update the form with proper typing - no 'as any' needed
+          form.setFieldValue(name, selectedValue);
           
           // Clear search query to stop further API requests
           setSearchQuery(null);
@@ -122,11 +94,8 @@ export const ClientSearchForm = <T extends Record<string, any>>({
           setSelectedClient(null);
           setSearchQuery(null);
           
-          // Clear the form field with proper typing
-          form.setValues(values => ({
-            ...values,
-            [name]: null
-          }));
+          // Clear the form field with proper typing - no 'as any' needed
+          form.setFieldValue(name, null);
         }
         
         setSearching(false);
@@ -151,15 +120,5 @@ export const ClientSearchForm = <T extends Record<string, any>>({
       // Pass through any additional props
       {...props}
     />
-  )
-
-  return (
-    withTooltip ? (
-      <Tooltip label="Start typing to search for a client...">
-        {selectComponent}
-      </Tooltip>
-    ) : (
-      selectComponent
-    )
   );
 };

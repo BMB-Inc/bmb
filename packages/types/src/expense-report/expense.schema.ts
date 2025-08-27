@@ -6,10 +6,13 @@ export enum ExpenseCategory {
   Fuel = "Fuel",
   Hotel = "Hotel",
   Meal = "Meal",
-  Entertainment = "Entertainment",
-  Telephone = "Telephone",
   Tickets = "Tickets",
+  Telephone = "Telephone",
   Transportation = "Transportation",
+  Golf = "Golf",
+  OfficeSupplies = "Office Supplies",
+  Hunting = "Hunting",
+  Misc = "Miscellaneous"
 }
 
 export enum TicketsSubCategory {
