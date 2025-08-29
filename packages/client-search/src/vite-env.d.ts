@@ -3,7 +3,6 @@
 // Add explicit type definitions for our environment variables
 interface ImportMetaEnv {
   readonly VITE_SAGITTA_CLIENTS_URL: string;
-  readonly VITE_API_KEY: string;
   // Add other env vars as needed
 }
 

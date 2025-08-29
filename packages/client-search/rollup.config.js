@@ -23,12 +23,10 @@ export default [
       },
     ],
     plugins: [
+      // No environment variable replacements needed
       replace({
         preventAssignment: true,
-        values: {
-          'import.meta.env.VITE_SAGITTA_CLIENTS_URL': JSON.stringify(process.env.VITE_SAGITTA_CLIENTS_URL || 'http://localhost:3001/api'),
-          'import.meta.env.VITE_API_KEY': JSON.stringify(process.env.VITE_API_KEY || '')
-        }
+        values: {}
       }),
       typescript({ 
         tsconfig: "./tsconfig.json",

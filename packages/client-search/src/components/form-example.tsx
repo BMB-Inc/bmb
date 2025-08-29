@@ -3,9 +3,11 @@ import { useForm } from "@mantine/form";
 import { Button, Card, Group, Stack, TextInput } from "@mantine/core";
 import { ClientSearchForm } from "./client-search-form";
 import { useElementSize } from "@mantine/hooks";
+// Import local ClientFormValues instead of from types package
+import { ClientFormValues as FormValues } from "./client-search-form";
 
-// Define the form values type explicitly for better type safety
-interface ClientFormValues {
+// Define form values for this example
+interface ClientFormValues extends FormValues {
   clientId: string | null;
   clientName: string;
   notes: string;
@@ -49,12 +51,11 @@ export const FormExample = () => {
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap="md">
           {/* Client Search component with proper type safety */}
-          <ClientSearchForm<ClientFormValues>
+          <ClientSearchForm<ClientFormValues, "clientId">
             form={form}
             name="clientId"
             label="Select Client"
             placeholder="Search for a client..."
-            error={form.errors.clientId}
             withTooltip
           />
 

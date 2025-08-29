@@ -3,30 +3,40 @@ import type { ClientsSchema } from "@bmb-inc/types";
 import { useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useGetClients } from "../hooks/useGetClients";
-import { Select } from "@mantine/core";
+import { Select, Tooltip, type SelectProps } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Loader } from "@mantine/core";
+
+// Define the common form values type used in client forms
+export interface ClientFormValues {
+  clientId: string | null;
+  [key: string]: any;
+}
+
+// Simple form values type for backward compatibility
+export type FormValues = Record<string, any>;
 
 /**
  * A more sophisticated type-safe implementation of ClientSearchForm.
  * T is the form values type
  * K is the name of the field in the form that will store the client ID
  */
-interface ClientSearchFormProps<T, K extends keyof T> {
+export type ClientSearchFormProps<T extends Record<string, any>, K extends keyof T> = Omit<SelectProps, 'onChange' | 'value' | 'data' | 'form'> & {
+  /** The Mantine form instance */
   form: UseFormReturnType<T>;
+  /** Form field name that will store the client ID */
   name: K;
-  label?: string;
-  placeholder?: string;
-  disabled?: boolean;
-  mt?: string | number;
+  /** Whether to show a tooltip on the component */
+  withTooltip?: boolean;
 }
 
-export const ClientSearchForm = <T, K extends keyof T>({ 
+export const ClientSearchForm = <T extends Record<string, any>, K extends keyof T>({ 
   form, 
   name, 
   label = 'Client', 
   placeholder = 'Search clients...', 
   disabled = false,
+  withTooltip = false,
   ...props
 }: ClientSearchFormProps<T, K>) => {
   // State for search and selection
@@ -53,7 +63,7 @@ export const ClientSearchForm = <T, K extends keyof T>({
   // Show error if present
   const errorMessage = error instanceof Error ? error.message : undefined;
 
-  return (
+  const selectComponent = (
     <Select
       searchable
       clearable
@@ -66,16 +76,16 @@ export const ClientSearchForm = <T, K extends keyof T>({
       disabled={disabled}
       
       // Get all form input props for validation, errors, etc.
-      {...form.getInputProps(name)}
+      {...form.getInputProps(name.toString())}
       
       // Display API errors if present
-      error={form.getInputProps(name).error || errorMessage}
+      error={form.getInputProps(name.toString()).error || errorMessage}
       
       // Options dropdown data
       data={clientOptions}
       
       // Override value and onChange to work with our component
-      value={formValue || selectedClient?.CLIENTS_ID?.toString() || null}
+      value={formValue ? String(formValue) : selectedClient?.CLIENTS_ID?.toString() || null}
       onChange={(selectedValue) => {
         setSearching(true);
         
@@ -84,8 +94,8 @@ export const ClientSearchForm = <T, K extends keyof T>({
           const client = data?.find((c: ClientsSchema) => c.CLIENTS_ID?.toString() === selectedValue);
           setSelectedClient(client || null);
           
-          // Update the form with proper typing - no 'as any' needed
-          form.setFieldValue(name, selectedValue);
+          // Update the form with proper typing
+          form.setFieldValue(name.toString(), selectedValue as any);
           
           // Clear search query to stop further API requests
           setSearchQuery(null);
@@ -94,8 +104,8 @@ export const ClientSearchForm = <T, K extends keyof T>({
           setSelectedClient(null);
           setSearchQuery(null);
           
-          // Clear the form field with proper typing - no 'as any' needed
-          form.setFieldValue(name, null);
+          // Clear the form field with proper typing
+          form.setFieldValue(name.toString(), null as any);
         }
         
         setSearching(false);
@@ -120,5 +130,15 @@ export const ClientSearchForm = <T, K extends keyof T>({
       // Pass through any additional props
       {...props}
     />
+  );
+
+  return (
+    withTooltip ? (
+      <Tooltip label="Start typing to search for a client...">
+        {selectComponent}
+      </Tooltip>
+    ) : (
+      selectComponent
+    )
   );
 };
