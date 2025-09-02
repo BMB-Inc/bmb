@@ -15,10 +15,10 @@ interface StaffSearchProps extends Omit<SelectProps, 'onChange'> {
   placeholder?: string;
   onChange?: (value: string | null) => void;
   showParamsSelection?: boolean;
-  isStaging?: boolean;
+  baseUrl?: string;
 }
 
-function StaffSearch({ label, placeholder, onChange, showParamsSelection = true, isStaging = false, ...rest }: StaffSearchProps) { 
+function StaffSearch({ label, placeholder, onChange, showParamsSelection = true, baseUrl, ...rest }: StaffSearchProps) { 
   // State management
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery] = useDebouncedValue(searchQuery, 300);
@@ -40,7 +40,7 @@ function StaffSearch({ label, placeholder, onChange, showParamsSelection = true,
     undefined, 
     undefined, 
     undefined,
-    isStaging
+    baseUrl
   );
   
   // Use the custom search hook for searching staff
@@ -48,7 +48,7 @@ function StaffSearch({ label, placeholder, onChange, showParamsSelection = true,
     staffData: searchResults, 
     isLoading,
     error: searchError 
-  } = useStaffSearch(searchField, debouncedQuery, true, isStaging);
+  } = useStaffSearch(searchField, debouncedQuery, true, baseUrl);
   
   // Handle errors from both API calls
   useMemo(() => {

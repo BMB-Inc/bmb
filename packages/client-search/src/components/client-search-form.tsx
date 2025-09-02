@@ -28,6 +28,8 @@ export type ClientSearchFormProps<T extends Record<string, any>, K extends keyof
   name: K;
   /** Whether to show a tooltip on the component */
   withTooltip?: boolean;
+  /** Base URL for API requests */
+  baseUrl?: string;
 }
 
 export const ClientSearchForm = <T extends Record<string, any>, K extends keyof T>({ 
@@ -37,6 +39,7 @@ export const ClientSearchForm = <T extends Record<string, any>, K extends keyof 
   placeholder = 'Search clients...', 
   disabled = false,
   withTooltip = false,
+  baseUrl,
   ...props
 }: ClientSearchFormProps<T, K>) => {
   // State for search and selection
@@ -50,7 +53,10 @@ export const ClientSearchForm = <T extends Record<string, any>, K extends keyof 
   
   // Only fetch when actively searching and no client is selected
   const shouldFetch = !selectedClient && debouncedSearchQuery && debouncedSearchQuery.length > 0;
-  const { data, isLoading, error } = useGetClients(shouldFetch ? debouncedSearchQuery : "");
+  const { data, isLoading, error } = useGetClients(
+    shouldFetch ? debouncedSearchQuery : "",
+    baseUrl
+  );
 
   // Convert client data to select options format and handle errors
   const clientOptions = Array.isArray(data) 

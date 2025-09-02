@@ -1,7 +1,7 @@
-const SAGITTA_API_URL = 'https://apps.bmbinc.com/api/sagitta';
-const SAGITTA_API_URL_STAGING = 'https://staging.bmbinc.com/api/sagitta';
+// Default API URL that can be overridden
+const DEFAULT_API_URL = 'https://apps.bmbinc.com/api/sagitta';
 
-export const getStaff = async (staffCode?: string, staffName?: string, staffId?: number, divisionNo?: string, email?: string, isStaging?: boolean) => {
+export const getStaff = async (staffCode?: string, staffName?: string, staffId?: number, divisionNo?: string, email?: string, baseUrl?: string) => {
   // Build query parameters properly
   const params = new URLSearchParams();
   
@@ -12,7 +12,7 @@ export const getStaff = async (staffCode?: string, staffName?: string, staffId?:
   if (email) params.append('email', email);
   params.append('staffOnly', 'true');
   
-  const response = await fetch(`${isStaging ? SAGITTA_API_URL_STAGING : SAGITTA_API_URL}/staff?${params.toString()}`, {
+  const response = await fetch(`${baseUrl || DEFAULT_API_URL}/staff?${params.toString()}`, {
     credentials: 'include',
   });
   const data = await response.json();

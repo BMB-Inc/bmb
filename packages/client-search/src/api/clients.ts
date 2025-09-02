@@ -1,11 +1,11 @@
-// API URL for client data
-const SAGITTA_API_URL = 'https://apps.bmbinc.com/api/sagitta';
+// Default API URL that can be overridden
+const DEFAULT_API_URL = 'https://apps.bmbinc.com/api/sagitta';
 
-export const getClientById = async (clientId: string) => {
+export const getClientById = async (clientId: string, baseUrl?: string) => {
   if (!clientId) return null;
   
   try {
-    const apiUrl = `${SAGITTA_API_URL}/clients?clientId=${encodeURIComponent(clientId)}`;
+    const apiUrl = `${baseUrl || DEFAULT_API_URL}/clients?clientId=${encodeURIComponent(clientId)}`;
     const result = await fetch(apiUrl, {
       // headers: {
       //     'x-api-key': API_KEY
@@ -27,13 +27,13 @@ export const getClientById = async (clientId: string) => {
   }
 };
 
-export const getClients = async (client_name: string) => {
+export const getClients = async (client_name: string, baseUrl?: string) => {
   if (!client_name) {
     return [];
   }
   
   try {
-    const apiUrl = `${SAGITTA_API_URL}/clients?clientName=${encodeURIComponent(client_name)}`;
+    const apiUrl = `${baseUrl || DEFAULT_API_URL}/clients?clientName=${encodeURIComponent(client_name)}`;
     const result = await fetch(apiUrl, {
       // headers: {
       //   'x-api-key': API_KEY || ''

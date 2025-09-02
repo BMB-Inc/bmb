@@ -5,7 +5,7 @@ export function useStaffSearch(
   searchField: SearchField,
   query: string,
   enabled: boolean = true,
-  isStaging?: boolean
+  baseUrl?: string
 ) {
   // Only fetch if there's a search query and it's enabled
   const shouldFetch = enabled && query.trim().length > 0;
@@ -23,6 +23,6 @@ export function useStaffSearch(
     undefined, // staffId - not using in search
     shouldFetch ? queryParams.divisionNo : undefined,
     shouldFetch ? queryParams.email : undefined,
-    isStaging
+    baseUrl
   );
 }
