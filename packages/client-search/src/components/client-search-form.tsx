@@ -33,7 +33,7 @@ export type ClientSearchFormProps<T extends Record<string, any>, K extends keyof
 export const ClientSearchForm = <T extends Record<string, any>, K extends keyof T>({ 
   form, 
   name, 
-  label = 'Client', 
+  label, 
   placeholder = 'Search clients...', 
   disabled = false,
   withTooltip = false,
