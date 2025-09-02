@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { getStaff } from "../api/route";
 import type { Staff } from '@bmb-inc/types';
 
-export const useGetStaff = (staffCode?: string, staffName?: string, staffId?: number, divisionNo?: string, email?: string) => {
+export const useGetStaff = (staffCode?: string, staffName?: string, staffId?: number, divisionNo?: string, email?: string, isStaging?: boolean) => {
   const { data: staffData, isLoading, error } = useQuery<Staff[]>({
     queryKey: ["staff", staffCode, staffName, staffId, divisionNo, email],
     queryFn: async () => {
-      const result = await getStaff(staffCode, staffName, staffId, divisionNo, email);
+      const result = await getStaff(staffCode, staffName, staffId, divisionNo, email, isStaging);
       return result;
     },
     enabled: !!staffCode || !!staffName || !!staffId || !!divisionNo || !!email,

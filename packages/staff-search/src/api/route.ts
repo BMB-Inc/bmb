@@ -1,7 +1,7 @@
 const SAGITTA_API_URL = 'https://apps.bmbinc.com/api/sagitta';
-const API_KEY = import.meta.env.VITE_SAGITTA_API_KEY;
+const SAGITTA_API_URL_STAGING = 'https://staging.bmbinc.com/api/sagitta';
 
-export const getStaff = async (staffCode?: string, staffName?: string, staffId?: number, divisionNo?: string, email?: string) => {
+export const getStaff = async (staffCode?: string, staffName?: string, staffId?: number, divisionNo?: string, email?: string, isStaging?: boolean) => {
   // Build query parameters properly
   const params = new URLSearchParams();
   
@@ -12,10 +12,8 @@ export const getStaff = async (staffCode?: string, staffName?: string, staffId?:
   if (email) params.append('email', email);
   params.append('staffOnly', 'true');
   
-  const response = await fetch(`${SAGITTA_API_URL}/staff?${params.toString()}`, {
-    headers: {
-      'x-api-key': API_KEY,
-    },
+  const response = await fetch(`${isStaging ? SAGITTA_API_URL_STAGING : SAGITTA_API_URL}/staff?${params.toString()}`, {
+    credentials: 'include',
   });
   const data = await response.json();
   return data;
