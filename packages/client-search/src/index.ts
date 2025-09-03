@@ -2,8 +2,9 @@
 export { ClientSearch } from './components/client-search';
 export { 
   ClientSearchForm,
-  type FormValues,
-  type ClientSearchFormProps
+  type ClientSearchFormProps,
+  type ClientFormValues,
+  type FormValues
 } from './components/client-search-form';
 export { FormExample } from './components/form-example';
 

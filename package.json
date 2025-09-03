@@ -36,7 +36,9 @@
     "build:auth-context": "yarn workspace @bmb-inc/auth-context build",
     "publish:auth-context": "yarn workspace @bmb-inc/auth-context version patch && yarn workspace @bmb-inc/auth-context npm publish",
     "build:client-search": "yarn workspace @bmb-inc/client-search build",
-    "publish:client-search": "yarn workspace @bmb-inc/client-search version patch && yarn workspace @bmb-inc/client-search npm publish"
+    "publish:client-search": "yarn workspace @bmb-inc/client-search version patch && yarn workspace @bmb-inc/client-search npm publish",
+    "build:staff-search": "yarn workspace @bmb-inc/staff-search build",
+    "publish:staff-search": "yarn workspace @bmb-inc/staff-search version patch && yarn workspace @bmb-inc/staff-search npm publish"
   },
   "keywords": [
     "bmb",
@@ -58,6 +60,7 @@
   "dependencies": {
     "@vitejs/plugin-react": "^5.0.0",
     "express": "^5.1.0",
+    "react-router-dom": "^7.8.2",
     "tsx": "^4.20.3",
     "zod": "^3.25.67"
   },

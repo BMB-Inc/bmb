@@ -11,9 +11,10 @@ interface ClientSearchProps extends Omit<SelectProps, 'data' | 'onChange' | 'val
   label?: string;
   disabled?: boolean;
   withTooltip?: boolean;
+  baseUrl?: string;
 }
 
-export const ClientSearch = ({withTooltip = false, ...props}: ClientSearchProps) => {
+export const ClientSearch = ({withTooltip = false, baseUrl, ...props}: ClientSearchProps) => {
   // State for search and selection
   const [searchQuery, setSearchQuery] = useState<string | null>(null);
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
@@ -22,7 +23,10 @@ export const ClientSearch = ({withTooltip = false, ...props}: ClientSearchProps)
   
   // Only fetch when actively searching and no client is selected
   const shouldFetch = !selectedClient && debouncedSearchQuery && debouncedSearchQuery.length > 0;
-  const { data, isLoading, error } = useGetClients(shouldFetch ? debouncedSearchQuery : "");
+  const { data, isLoading, error } = useGetClients(
+    shouldFetch ? debouncedSearchQuery : "", 
+    baseUrl
+  );
 
   // Convert client data to select options format
   const clientOptions = Array.isArray(data) 
