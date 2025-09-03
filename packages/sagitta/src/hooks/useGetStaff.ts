@@ -7,7 +7,6 @@ export const useGetStaff = (staffCode?: string, staffName?: string, email?: stri
     queryKey: ["staff", staffCode, staffName, email, baseUrl],
     queryFn: async () => {
       const result = await getStaff(staffCode, staffName, email, baseUrl);
-      console.log("API Response:", result);
       return result;
     },
     enabled: !!staffCode || !!staffName || !!email,

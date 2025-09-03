@@ -1,16 +1,16 @@
 // Default API URL that can be overridden
 const DEFAULT_API_URL = 'https://apps.bmbinc.com/api/sagitta';
-const API_KEY = (import.meta as any).env.VITE_SAGITTA_API_KEY || '12345';
+// const API_KEY = (import.meta as any).env.VITE_SAGITTA_API_KEY || '12345';
 export const getClientById = async (clientId: string, baseUrl?: string) => {
   if (!clientId) return null;
   
   try {
     const apiUrl = `${baseUrl || DEFAULT_API_URL}/clients?clientId=${encodeURIComponent(clientId)}`;
     const result = await fetch(apiUrl, {
-      headers: {
-          'x-api-key': API_KEY
-      },
-      // credentials: 'include'
+      // headers: {
+      //     'x-api-key': API_KEY
+      // },
+      credentials: 'include'
     });
     
     if (!result.ok) {
@@ -35,10 +35,10 @@ export const getClients = async (client_name: string, baseUrl?: string) => {
   try {
     const apiUrl = `${baseUrl || DEFAULT_API_URL}/clients?clientName=${encodeURIComponent(client_name)}`;
     const result = await fetch(apiUrl, {
-      headers: {
-        'x-api-key': API_KEY || ''
-      },
-      // credentials: 'include'
+      // headers: {
+      //   'x-api-key': API_KEY || ''
+      // },
+      credentials: 'include'
     });
     
     if (!result.ok) {
