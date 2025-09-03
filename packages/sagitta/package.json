@@ -1,16 +1,17 @@
 {
   "name": "@bmb-inc/sagitta",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:app": "vite --config vite.config.ts",
     "build": "yarn clean && rollup -c",
-    "build:app": "tsc -b && vite build",
+    "build:app": "tsc -b && vite build --config vite.config.ts",
     "clean": "rm -rf dist node_modules/.cache 2>/dev/null || true",
-    "cleanall": "rm -rf dist node_modules/.cache .rollup.cache 2>/dev/null || true && (find . -name 'dist-*' -type d -exec rm -rf {} + 2>/dev/null || true)",
+    "cleanall": "rm -rf dist node_modules/.cache .rollup.cache dist-app 2>/dev/null || true && (find . -name 'dist-*' -type d -exec rm -rf {} + 2>/dev/null || true)",
     "build:safe": "yarn cleanall && yarn rollup -c",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview --config vite.config.ts"
   },
   "files": [
     "dist"
