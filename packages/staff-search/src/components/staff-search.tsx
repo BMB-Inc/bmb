@@ -9,6 +9,7 @@ import { useStaffSearch } from '../hooks/useStaffSearch';
 import { SearchFieldSelector } from './search-field-selector';
 import type { SearchField } from '../schemas/search-fields.schema';
 import { searchFieldOptions } from '../schemas/search-fields.schema';
+import { ExpenseDivisionGLCodes } from '@bmb-inc/types';
 
 interface StaffSearchProps extends Omit<SelectProps, 'onChange'> {
   label?: string;
@@ -38,7 +39,6 @@ function StaffSearch({ label, placeholder, onChange, showParamsSelection = true,
     selectedStaffCode || undefined, 
     undefined, 
     undefined, 
-    undefined, 
     undefined,
     baseUrl
   );
@@ -58,23 +58,31 @@ function StaffSearch({ label, placeholder, onChange, showParamsSelection = true,
   }, [searchError, selectedStaffError]);
   
   // Memoize transformed search options
-  const searchOptions = useMemo(() => 
-    transformStaffToOptions(searchResults),
-    [searchResults, transformStaffToOptions]
-  );
+  const searchOptions = useMemo(() => {
+    console.log("Search Results:", searchResults);
+    const options = transformStaffToOptions(searchResults);
+    console.log("Transformed Options:", options);
+    return options;
+  }, [searchResults, transformStaffToOptions]);
   
   // Memoize the selected staff and combined options
   const selectedStaff = selectedStaffData?.[0];
-  const combinedOptions = useMemo(() => 
-    combineStaffOptions(searchOptions, selectedStaff),
-    [searchOptions, selectedStaff, combineStaffOptions]
-  );
+  const combinedOptions = useMemo(() => {
+    console.log("Selected Staff:", selectedStaff);
+    const combined = combineStaffOptions(searchOptions, selectedStaff);
+    console.log("Final Combined Options:", combined);
+    return combined;
+  }, [searchOptions, selectedStaff, combineStaffOptions]);
 
+  // Check if the current search field is a division
+  const isDivisionField = searchField in ExpenseDivisionGLCodes;
+  
   // Memoize the placeholder text
-  const placeholderText = useMemo(() => 
-    placeholder || `Search by ${searchFieldOptions.find(option => option.value === searchField)?.label}`,
-    [placeholder, searchField]
-  );
+  const placeholderText = useMemo(() => {
+    if (placeholder) return placeholder;
+    if (isDivisionField) return `All staff in ${searchField}`;
+    return `Search by ${searchFieldOptions.find(option => option.value === searchField)?.label}`;
+  }, [placeholder, searchField, isDivisionField]);
   
   // Use callbacks for event handlers to prevent unnecessary rerenders
   const handleFieldChange = useCallback((field: SearchField) => {
@@ -92,6 +100,11 @@ function StaffSearch({ label, placeholder, onChange, showParamsSelection = true,
     }
   }, [updateStaffCode, onChange]);
 
+  console.log("About to render Select with data:", combinedOptions);
+  console.log("Data structure:", JSON.stringify(combinedOptions, null, 2));
+  console.log("Loading states - isLoading:", isLoading, "isLoadingSelected:", isLoadingSelected);
+  console.log("Search query:", searchQuery, "Debounced query:", debouncedQuery);
+
   return (
     <Group gap='xs' align="end">
       {showParamsSelection && (
@@ -105,12 +118,15 @@ function StaffSearch({ label, placeholder, onChange, showParamsSelection = true,
         data={combinedOptions}
         nothingFoundMessage="No staff found"
         error={error?.message}
-        leftSection={<IconSearch />}
+        leftSection={!isDivisionField ? <IconSearch /> : undefined}
         rightSection={(isLoading || isLoadingSelected) ? <Loader size="xs" /> : null}
-        searchable
+        searchable={!isDivisionField}
         clearable
-        onSearchChange={handleSearchChange}
-        searchValue={searchQuery}
+        onSearchChange={!isDivisionField ? (query) => {
+          console.log("Search query changed:", query);
+          handleSearchChange(query);
+        } : undefined}
+        searchValue={!isDivisionField ? searchQuery : undefined}
         value={selectedStaffCode}
         onChange={handleSelectionChange}
         style={{ flex: 1 }}

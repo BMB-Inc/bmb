@@ -1,5 +1,6 @@
 import { useGetStaff } from './useGetStaff';
 import type { SearchField } from '../schemas/search-fields.schema';
+import { ExpenseDivisionGLCodes } from '@bmb-inc/types';
 
 export function useStaffSearch(
   searchField: SearchField,
@@ -7,21 +8,24 @@ export function useStaffSearch(
   enabled: boolean = true,
   baseUrl?: string
 ) {
-  // Only fetch if there's a search query and it's enabled
-  const shouldFetch = enabled && query.trim().length > 0;
+  // Check if the search field is a division
+  const isDivisionField = searchField in ExpenseDivisionGLCodes;
+  
+  // For division fields, we don't need a query - just fetch all staff from that division
+  const shouldFetch = enabled && (isDivisionField || query.trim().length > 0);
   
   const queryParams = {
     staffCode: searchField === 'staffCode' ? query : undefined,
     staffName: searchField === 'staffName' ? query : undefined,
     email: searchField === 'email' ? query : undefined,
-    divisionNo: searchField === 'divisionNo' ? query : undefined,
+    // If it's a division field, use the division code from the enum
+    division: isDivisionField ? ExpenseDivisionGLCodes[searchField as keyof typeof ExpenseDivisionGLCodes]?.toString() : undefined,
   };
 
   return useGetStaff(
     shouldFetch ? queryParams.staffCode : undefined,
     shouldFetch ? queryParams.staffName : undefined,
-    undefined, // staffId - not using in search
-    shouldFetch ? queryParams.divisionNo : undefined,
+    shouldFetch ? queryParams.division : undefined,
     shouldFetch ? queryParams.email : undefined,
     baseUrl
   );

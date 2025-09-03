@@ -2,14 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 import { getStaff } from "../api/route";
 import type { Staff } from '@bmb-inc/types';
 
-export const useGetStaff = (staffCode?: string, staffName?: string, staffId?: number, divisionNo?: string, email?: string, baseUrl?: string) => {
+export const useGetStaff = (staffCode?: string, staffName?: string, division?: string, email?: string, baseUrl?: string) => {
   const { data: staffData, isLoading, error } = useQuery<Staff[]>({
-    queryKey: ["staff", staffCode, staffName, staffId, divisionNo, email],
+    queryKey: ["staff", staffCode, staffName, division, email, baseUrl],
     queryFn: async () => {
-      const result = await getStaff(staffCode, staffName, staffId, divisionNo, email, baseUrl);
+      const result = await getStaff(staffCode, staffName, division, email, baseUrl);
+      console.log("API Response:", result);
       return result;
     },
-    enabled: !!staffCode || !!staffName || !!staffId || !!divisionNo || !!email,
+    enabled: !!staffCode || !!staffName || !!division || !!email,
     staleTime: 30000, // 30 seconds
   });
   return { staffData: staffData || [], isLoading, error };
