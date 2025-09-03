@@ -12,7 +12,7 @@ export enum ExpenseCategory {
   Golf = "Golf",
   OfficeSupplies = "Office Supplies",
   Hunting = "Hunting",
-  Misc = "Miscellaneous"
+  Misc = "Misc",
 }
 
 export enum TicketsSubCategory {
@@ -95,6 +95,10 @@ export enum ExpenseDepartmentGLCodes {
   EdBritt = 80,
   Administrative = 81,
   Operations = 85,
+  Bonds = 50,
+  BondsManager = 55,
+  PropertyCasualty = 30,
+  PropertyCasualtyManager = 35,
 }
 
 export enum ExpenseType {
