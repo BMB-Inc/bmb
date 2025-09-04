@@ -3,7 +3,7 @@ import { z } from "zod/v4";
 export enum ExpenseCategory {
   Airfare = "Airfare",
   CarRental = "Car Rental",
-  Fuel = "Fuel",
+  Fuel = "Fuel/Mileage",
   Hotel = "Hotel",
   Meal = "Meal",
   Tickets = "Tickets",
