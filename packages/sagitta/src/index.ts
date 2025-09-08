@@ -6,11 +6,13 @@ export {
   type ClientFormValues,
   type FormValues
 } from './components/client-search-form';
+export { ClientFieldSelector } from './components/client-field-selector';
 export { FormExample } from './components/form-example';
 
 // Client Search Hooks
 export { useGetClients } from './hooks/useGetClients';
 export { useGetClientById } from './hooks/useGetClientById';
+export { useClientUrlParams } from './hooks/useClientUrlParams';
 
 // Client Search API
 export { getClients, getClientById } from './api/clients/route';
@@ -18,6 +20,10 @@ export { getClients, getClientById } from './api/clients/route';
 // Staff Search Exports
 export { StaffSearch } from './components/staff-search';
 export { SearchFieldSelector } from './components/search-field-selector';
+
+// Client Search Types and Schemas
+export type { ClientField } from './schemas/client-fields.schema';
+export { clientFieldOptions, ClientFieldSchema } from './schemas/client-fields.schema';
 
 // Staff Search Types and Schemas
 export type { SearchField } from './schemas/search-fields.schema';

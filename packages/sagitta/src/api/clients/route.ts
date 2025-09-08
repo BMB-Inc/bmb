@@ -1,16 +1,18 @@
+import type { ClientField } from '@schemas/client-fields.schema'; 
+
 // Default API URL that can be overridden
 const DEFAULT_API_URL = 'https://apps.bmbinc.com/api/sagitta';
-// const API_KEY = (import.meta as any).env.VITE_SAGITTA_API_KEY || '12345';
+const API_KEY = (import.meta as any).env.VITE_SAGITTA_API_KEY || '12345';
 export const getClientById = async (clientId: string, baseUrl?: string) => {
   if (!clientId) return null;
   
   try {
     const apiUrl = `${baseUrl || DEFAULT_API_URL}/clients?clientId=${encodeURIComponent(clientId)}`;
     const result = await fetch(apiUrl, {
-      // headers: {
-      //     'x-api-key': API_KEY
-      // },
-      credentials: 'include'
+      headers: {
+          'x-api-key': API_KEY
+      },
+      // credentials: 'include'
     });
     
     if (!result.ok) {
@@ -27,18 +29,19 @@ export const getClientById = async (clientId: string, baseUrl?: string) => {
   }
 };
 
-export const getClients = async (client_name: string, baseUrl?: string) => {
-  if (!client_name) {
+export const getClients = async (searchValue: string, searchField: ClientField = 'clientName', baseUrl?: string) => {
+  if (!searchValue) {
     return [];
   }
   
   try {
-    const apiUrl = `${baseUrl || DEFAULT_API_URL}/clients?clientName=${encodeURIComponent(client_name)}`;
+    const queryParam = searchField === 'clientCode' ? 'clientCode' : 'clientName';
+    const apiUrl = `${baseUrl || DEFAULT_API_URL}/clients?${queryParam}=${encodeURIComponent(searchValue)}`;
     const result = await fetch(apiUrl, {
-      // headers: {
-      //   'x-api-key': API_KEY || ''
-      // },
-      credentials: 'include'
+      headers: {
+        'x-api-key': API_KEY || ''
+      },
+      // credentials: 'include'
     });
     
     if (!result.ok) {

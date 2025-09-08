@@ -22,7 +22,11 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "declaration": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": {
+      "@schemas/*": ["./src/schemas/*"],
+      "@api/*": ["./src/api/*"]
+    }
   },
   "include": ["src"]
 }

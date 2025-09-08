@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getStaff } from "../api/staff/route";
+import { getStaff } from "@api/staff/route";
 import type { Staff } from '@bmb-inc/types';
 
 export const useGetStaff = (staffCode?: string, staffName?: string, email?: string, baseUrl?: string) => {

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getClientById } from "../api/clients/route";
+import { getClientById } from "@api/clients/route";
 
 export const useGetClientById = (clientId: string | null, baseUrl?: string) => {
   return useQuery({

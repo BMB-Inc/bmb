@@ -41,6 +41,9 @@ export const FormExample = () => {
   const handleSubmit = (values: ClientFormValues) => {
     console.log("Form submitted with:", values);
     setSubmittedValues(values);
+    
+    // Reset form after successful submission to demonstrate the fix
+    form.reset();
   };
 
   return (
@@ -72,7 +75,15 @@ export const FormExample = () => {
           />
 
           <Group justify="flex-end" mt="md">
-            <Button type="submit" color="blue" fullWidth>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => form.reset()}
+              style={{ flex: 1 }}
+            >
+              Reset Form
+            </Button>
+            <Button type="submit" color="blue" style={{ flex: 1 }}>
               Submit
             </Button>
           </Group>
