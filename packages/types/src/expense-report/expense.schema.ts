@@ -138,8 +138,11 @@ export enum ReviewStatus {
   PENDING = "PENDING",
   APPROVED = "APPROVED",
   REJECTED = "REJECTED",
-  INITIAL_REVIEW = "INITIAL_REVIEW",
-  FINAL_REVIEW = "FINAL_REVIEW",
+  INITIAL_REVIEW = "INITIAL_REVIEW", // Donna Wilson initial review.
+  GL_CODE_REVIEW = "GL_CODE_REVIEW", // Brenda Gray codes GL codes.
+  MANAGER_REVIEW = "MANAGER_REVIEW", // Manager double checks expenses.
+  ACCOUNTING_REVIEW = "ACCOUNTING_REVIEW", // Accounting double checks expenses.
+  FINAL_REVIEW = "FINAL_REVIEW", // Final review by accounting and final ACH transfer.
 }
 
 export const expenseZodObject = z.object({
