@@ -128,6 +128,7 @@ export enum Department {
   Claims = "Claims",
   FinancialServices = "Financial Services",
   Life = "Life",
+  LossControl = "Loss Control",
   Marketing = "Marketing",
   PEO = "PEO",
   PersonalLines = "Personal Lines",
