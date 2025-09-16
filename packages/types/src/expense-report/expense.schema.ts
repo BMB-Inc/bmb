@@ -128,7 +128,6 @@ export enum Department {
   Claims = "Claims",
   FinancialServices = "Financial Services",
   Life = "Life",
-  LossControl = "Loss Control",
   Marketing = "Marketing",
   PEO = "PEO",
   PersonalLines = "Personal Lines",
@@ -152,7 +151,7 @@ export const expenseZodObject = z.object({
   id: z.string(),
   expense_category: z.enum(ExpenseCategory),
   sub_category: z.string().nullable().optional(),
-  client_id: z.number().nullable().optional(),
+  client_id: z.coerce.number().nullable().optional(),
   expense_type: z.enum(ExpenseType),
   expense_amount: z.coerce.number().nonnegative(),
   date_of_expense: z.coerce
@@ -182,6 +181,11 @@ export const expenseZodObject = z.object({
   ach_voucher: z.string().nullable().optional(),
 });
 
+export type ExpenseWithClient = Expense & {
+  client_name?: string;
+  client_code?: string;
+};
+
 export const createExpenseSchema = expenseZodObject.omit({
   id: true,
   receipt: true,
@@ -201,7 +205,7 @@ export const expenseReviewSchema = z.object({
   ids: z
     .array(z.string())
     .min(1, "At least one expense ID must be provided to review."),
-  review_status: z.enum(ReviewStatus),
+  expensed_for_staff_code: z.string(),
 });
 
 export const expenseReviewRejectionSchema = expenseReviewSchema.extend({
