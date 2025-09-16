@@ -7,7 +7,7 @@ import { ClientFormValues as FormValues } from "./client-search-form";
 
 // Define form values for this example
 interface ClientFormValues extends FormValues {
-  clientId: string | null;
+  clientId: number | null;
   clientName: string;
   notes: string;
 }
@@ -24,8 +24,8 @@ export const FormExample = () => {
     },
     validate: {
       clientId: (value) => {
-        // Validation handled by the form system, not HTML required attribute
-        if (!value || value.trim() === "") {
+        // Validation for number clientId
+        if (!value || value === 0) {
           return "Please select a client";
         }
         return null;

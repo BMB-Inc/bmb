@@ -11,7 +11,7 @@ import type { ClientField } from "../schemas/client-fields.schema";
 
 // Define the common form values type used in client forms
 export interface ClientFormValues {
-  clientId: string | null;
+  clientId: number | null;
   [key: string]: any;
 }
 
@@ -82,7 +82,7 @@ export const ClientSearchForm = <T extends Record<string, any>, K extends keyof 
   // Convert client data to select options format and handle errors
   const clientOptions = Array.isArray(data) 
     ? data.map((client: ClientsSchema) => ({
-        value: client.CLIENTS_ID?.toString() || '',
+        value: (client.CLIENTS_ID || 0).toString(),
         label: `${client.CLIENTNAME || 'Unknown'} - ${client.CLIENT_CODE || 'No Code'}`,
       }))
     : [];
@@ -131,7 +131,7 @@ export const ClientSearchForm = <T extends Record<string, any>, K extends keyof 
           data={clientOptions}
           
           // Override value and onChange to work with our component
-          value={formValue ? String(formValue) : selectedClient?.CLIENTS_ID?.toString() || null}
+          value={formValue?.toString() || selectedClient?.CLIENTS_ID?.toString() || null}
           onChange={(selectedValue) => {
             setSearching(true);
             
@@ -140,8 +140,8 @@ export const ClientSearchForm = <T extends Record<string, any>, K extends keyof 
               const client = data?.find((c: ClientsSchema) => c.CLIENTS_ID?.toString() === selectedValue);
               setSelectedClient(client || null);
               
-              // Update the form with proper typing
-              form.setFieldValue(name.toString(), selectedValue as any);
+              // Update the form with proper typing (convert string back to number)
+              form.setFieldValue(name.toString(), parseInt(selectedValue, 10) as any);
               
               // Clear search query to stop further API requests
               setSearchQuery(null);
@@ -200,7 +200,7 @@ export const ClientSearchForm = <T extends Record<string, any>, K extends keyof 
       data={clientOptions}
       
       // Override value and onChange to work with our component
-      value={formValue ? String(formValue) : selectedClient?.CLIENTS_ID?.toString() || null}
+      value={formValue?.toString() || selectedClient?.CLIENTS_ID?.toString() || null}
       onChange={(selectedValue) => {
         setSearching(true);
         
@@ -209,8 +209,8 @@ export const ClientSearchForm = <T extends Record<string, any>, K extends keyof 
           const client = data?.find((c: ClientsSchema) => c.CLIENTS_ID?.toString() === selectedValue);
           setSelectedClient(client || null);
           
-          // Update the form with proper typing
-          form.setFieldValue(name.toString(), selectedValue as any);
+          // Update the form with proper typing (convert string back to number)
+          form.setFieldValue(name.toString(), parseInt(selectedValue, 10) as any);
           
           // Clear search query to stop further API requests
           setSearchQuery(null);

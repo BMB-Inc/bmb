@@ -49,7 +49,7 @@ export const ClientSearch = ({
   // Convert client data to select options format
   const clientOptions = Array.isArray(data) 
     ? data.map((client: ClientsSchema) => ({
-        value: client.CLIENTS_ID?.toString() || '',
+        value: (client.CLIENTS_ID || 0).toString(),
         label: `${client.CLIENTNAME || 'Unknown'} - ${client.CLIENT_CODE || 'No Code'}`,
       }))
     : [];
