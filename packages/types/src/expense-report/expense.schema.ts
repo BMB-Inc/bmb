@@ -133,6 +133,7 @@ export enum Department {
   PEO = "PEO",
   PersonalLines = "Personal Lines",
   PropertyCasualty = "Property & Casualty",
+  LossControl = "Loss Control",
 }
 
 export enum ReviewStatus {
@@ -143,6 +144,7 @@ export enum ReviewStatus {
   GL_CODE_REVIEW = "GL_CODE_REVIEW", // Brenda Gray codes GL codes.
   MANAGER_REVIEW = "MANAGER_REVIEW", // Manager double checks expenses.
   ACCOUNTING_REVIEW = "ACCOUNTING_REVIEW", // Accounting double checks expenses.
+  SAGITTA_VOUCHER_REVIEW = "SAGITTA_VOUCHER_REVIEW", // Sagitta Voucher upload
   FINAL_REVIEW = "FINAL_REVIEW", // Final review by accounting and final ACH transfer.
 }
 
@@ -152,14 +154,19 @@ export const expenseZodObject = z.object({
   sub_category: z.string().nullable().optional(),
   client_id: z.number().nullable().optional(),
   expense_type: z.enum(ExpenseType),
-  expense_amount: z.number().or(z.string()),
-  date_of_expense: z.date(),
+  expense_amount: z.coerce.number().nonnegative(),
+  date_of_expense: z.coerce
+    .date()
+    .refine(
+      (date) => date < new Date(),
+      "Date of expense cannot be in the future.",
+    ),
   explanation: z.string().nullable().optional(),
   person_entertained: z.string().nullable().optional(),
   location: z.string().nullable().optional(),
   office: z.enum(Office),
   department: z.enum(Department).nullable().optional(),
-  do_not_reimburse: z.boolean().nullable().optional(),
+  do_not_reimburse: z.coerce.boolean().nullable().optional(),
   mileage: z.number().or(z.string()).nullable().optional(),
   receipt: z.string().optional().nullable(),
   created_by: z.string(),
@@ -171,6 +178,8 @@ export const expenseZodObject = z.object({
   review_status: z.enum(ReviewStatus).nullable().optional(),
   review_reason: z.string().nullable().optional(),
   gl_code: z.string().nullable().optional(),
+  sagitta_voucher: z.string().nullable().optional(),
+  ach_voucher: z.string().nullable().optional(),
 });
 
 export const createExpenseSchema = expenseZodObject.omit({
@@ -183,12 +192,15 @@ export const createExpenseSchema = expenseZodObject.omit({
   submitted_expense_report_filename: true,
   expensed_for_staff_code: true,
   expensed_for: true,
+  created_by: true,
 });
 
 export const updateExpenseSchema = expenseZodObject.partial();
 
 export const expenseReviewSchema = z.object({
-  ids: z.array(z.string()),
+  ids: z
+    .array(z.string())
+    .min(1, "At least one expense ID must be provided to review."),
   review_status: z.enum(ReviewStatus),
 });
 
