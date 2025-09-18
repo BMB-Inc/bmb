@@ -153,7 +153,7 @@ export const expenseZodObject = z.object({
   sub_category: z.string().nullable().optional(),
   client_id: z.coerce.number().nullable().optional(),
   expense_type: z.enum(ExpenseType),
-  expense_amount: z.coerce.number().nonnegative(),
+  expense_amount: z.coerce.number(),
   date_of_expense: z.coerce
     .date()
     .refine(
