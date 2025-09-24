@@ -1,10 +1,12 @@
 import { getPages } from "@api/index";
 import { useQuery } from "@tanstack/react-query";
+import { type ImagerightPageParams } from "@bmb-inc/types";
 
-export const usePages = (documentId?: number) => {
+export const usePages = (params?: ImagerightPageParams) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["pages", documentId],
-    queryFn: () => getPages(documentId),
+    queryKey: ["pages", params?.documentId],
+    queryFn: () => getPages(params),
+    enabled: !!params?.documentId, // Only run query if documentId is provided
   });
   return { data, isLoading, error };
-}
+};

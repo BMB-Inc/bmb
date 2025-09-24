@@ -1,11 +1,26 @@
 import { fetcher } from "@api/fetcher";
+import { imagerightDocumentsSchema, type ImagerightDocumentParams } from "@bmb-inc/types";
 
-export const getDocuments = async (clientId?: number, parentId?: number) => {
-  const response = fetcher(`/documents${clientId ? `?clientId=${clientId}` : ''}${parentId ? `&parentId=${parentId}` : ''}`);
-  return response;
+export const getDocuments = async (params?: ImagerightDocumentParams) => {
+  if (!params) {
+    return [];
+  }
+  
+  const searchParams = new URLSearchParams();
+  if (params.clientId) {
+    searchParams.append('clientId', params.clientId.toString());
+  }
+  if (params.folderId) {
+    searchParams.append('folderId', params.folderId.toString());
+  }
+  
+  const queryString = searchParams.toString();
+  const url = queryString ? `/documents?${queryString}` : '/documents';
+  const response = await fetcher(url);
+  return imagerightDocumentsSchema.parse(response);
 }
 
 export const getDocumentById = async (id: number) => {
   const response = await fetcher(`/documents/${id}`);
-  return response;
+  return imagerightDocumentsSchema.parse(response);
 }

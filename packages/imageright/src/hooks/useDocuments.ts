@@ -1,10 +1,12 @@
 import { getDocumentById, getDocuments } from "@api/index";
 import { useQuery } from "@tanstack/react-query";
+import { type ImagerightDocumentParams } from "@bmb-inc/types";
 
-export const useDocuments = (clientId?: number, folderId?: number) => {
+export const useDocuments = (params?: ImagerightDocumentParams) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["documents", clientId, folderId],
-    queryFn: () => getDocuments(clientId, folderId),
+    queryKey: ["documents", params?.clientId, params?.folderId],
+    queryFn: () => getDocuments(params),
+    enabled: !!(params?.clientId || params?.folderId),
   });
   return { data, isLoading, error };
 }

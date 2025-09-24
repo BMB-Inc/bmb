@@ -7,18 +7,21 @@ export const useClients = () => {
   const clientCode = searchParams.get('clientCode') || '';
   const clientName = searchParams.get('clientName') || '';
   
-  // Create search params object from URL params
-  const params = (clientCode || clientName) ? {
-    clientCode,
-    clientName
-  } : undefined;
+  // Create search params object from URL params - only include non-empty values
+  const params: { clientCode?: string; clientName?: string } = {};
+  if (clientCode.trim()) {
+    params.clientCode = clientCode.trim();
+  }
+  if (clientName.trim()) {
+    params.clientName = clientName.trim();
+  }
   
-  const hasSearchQuery = clientCode.trim() || clientName.trim();
+  const hasSearchQuery = Object.keys(params).length > 0;
   
   const { data, isLoading, error } = useQuery({
     queryKey: ["clients", clientCode, clientName],
-    queryFn: () => getClients(params!),
-    enabled: !!hasSearchQuery, // Only run query if we have a search term
+    queryFn: () => getClients(params),
+    enabled: hasSearchQuery, // Only run query if we have a search term
   });
 
   if (!hasSearchQuery) {
