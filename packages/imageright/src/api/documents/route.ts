@@ -6,6 +6,6 @@ export const getDocuments = async (clientId?: number, parentId?: number) => {
 }
 
 export const getDocumentById = async (id: number) => {
-  const response = fetcher(`/documents/${id}`);
+  const response = await fetcher(`/documents/${id}`);
   return response;
 }

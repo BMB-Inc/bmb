@@ -1,17 +1,13 @@
-import { Button } from "@mantine/core";
-import { useClients } from "@hooks/index";
+import { Box, Title } from "@mantine/core";
+import { ImageRightFileBrowser } from "@components/imageright-file-browser";
 
 function App() {
-  const { data, isLoading, error } = useClients('123', 'John Doe');
 
   return (
-    <div>
-      <h1>ImageRight</h1>
-      <Button onClick={() => {}}>Get Clients</Button>
-      {isLoading && <div>Loading...</div>}
-      {error && <div>Error: {error.message}</div>}
-      {data && <div>Data: {JSON.stringify(data)}</div>}
-    </div>
+    <Box p="md">
+      <Title order={1} ta="center" mb="xl">ImageRight</Title>
+      <ImageRightFileBrowser />
+    </Box>
   );
 }
 

@@ -1,16 +1,22 @@
-import { useClients } from "@hooks/index";
-import { TextInput } from "@mantine/core";
-import { useDebouncedValue } from "@mantine/hooks";
+import { Loader, TextInput } from "@mantine/core";
 import { IconSearch } from '@tabler/icons-react';
-import { useState } from "react";
 
-export const ClientSearch = () => {
-  const [searchQuery, setSearchQuery] = useState<string | undefined>(undefined);
-  const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
-  const { data, isLoading, error } = useClients(debouncedSearchQuery, debouncedSearchQuery);
+interface ClientSearchProps {
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  isLoading?: boolean;
+  error?: string;
+}
 
-  return <TextInput placeholder="Search clients..." leftSection={<IconSearch />} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} data={data?.map((client: any) => ({
-    value: client.CLIENT_CODE,
-    label: client.CLIENT_NAME,
-  }))} />
+export const ClientSearch = ({ searchQuery, onSearchChange, isLoading, error }: ClientSearchProps) => {
+  return (
+    <TextInput 
+      placeholder="Search clients..." 
+      error={error} 
+      leftSection={<IconSearch />} 
+      rightSection={isLoading ? <Loader size="xs" color="blue" /> : undefined} 
+      value={searchQuery} 
+      onChange={(e) => onSearchChange(e.target.value)}
+    />
+  );
 };

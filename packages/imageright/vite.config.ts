@@ -9,6 +9,7 @@ export default defineConfig({
     alias: {
       '@api': resolve(__dirname, './src/api'),
       '@hooks': resolve(__dirname, './src/hooks'),
+      '@components': resolve(__dirname, './src/components'),
       '@tabler/icons-react': '@tabler/icons-react/dist/esm/icons/index.mjs',
     },
   },
