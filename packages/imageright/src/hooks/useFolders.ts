@@ -1,10 +1,18 @@
 import { getFolders } from "@api/index";
 import { useQuery } from "@tanstack/react-query";
 
-export const useFolders = (clientId?: number, parentFolderId?: number, folderTypes?: any, drawerType?: any) => {
+interface UseFoldersParams {
+  clientId?: number;
+  parentFolderId?: number;
+  folderTypes?: any;
+  drawerType?: any;
+}
+
+export const useFolders = (params?: UseFoldersParams) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["folders", clientId, parentFolderId, folderTypes, drawerType],
-    queryFn: () => getFolders(clientId, parentFolderId, folderTypes, drawerType),
+    queryKey: ["folders", params?.clientId, params?.parentFolderId, params?.folderTypes, params?.drawerType],
+    queryFn: () => getFolders(params?.clientId, params?.parentFolderId, params?.folderTypes, params?.drawerType),
+    enabled: !!(params?.clientId || params?.parentFolderId || params?.folderTypes || params?.drawerType),
   });
   return { data, isLoading, error };
 }

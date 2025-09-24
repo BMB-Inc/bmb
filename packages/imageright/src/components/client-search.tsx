@@ -1,22 +1,67 @@
-import { Loader, TextInput } from "@mantine/core";
+import { imagerightClientSearchParamsSchema } from "@bmb-inc/types";
+import { Group, Loader, Select, TextInput } from "@mantine/core";
 import { IconSearch } from '@tabler/icons-react';
+import { useDebouncedValue } from "@mantine/hooks";
+import { useState, useEffect } from "react";
+import { useUrlParams } from "@hooks/useUrlParams";
 
 interface ClientSearchProps {
-  searchQuery: string;
-  onSearchChange: (query: string) => void;
   isLoading?: boolean;
   error?: string;
 }
 
-export const ClientSearch = ({ searchQuery, onSearchChange, isLoading, error }: ClientSearchProps) => {
+export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
+  const { setParam, clearAllParams, getParam } = useUrlParams();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchBy, setSearchBy] = useState('clientCode');
+  const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
+  
+  // Update URL when debounced search changes
+  useEffect(() => {
+    if (debouncedSearchQuery.trim()) {
+      setParam(searchBy, debouncedSearchQuery);
+    } else {
+      // Clear all search params when query is empty
+      const searchOptions = Object.keys(imagerightClientSearchParamsSchema.shape);
+      searchOptions.forEach(param => {
+        if (getParam(param)) {
+          clearAllParams();
+        }
+      });
+    }
+  }, [debouncedSearchQuery, searchBy, setParam, clearAllParams, getParam]);
+  
+  const handleSearchByChange = (newSearchBy: string | null) => {
+    if (newSearchBy) {
+      clearAllParams();
+      setSearchQuery('');
+      setSearchBy(newSearchBy);
+    }
+  };
+
+  const searchByOptions = Object.keys(imagerightClientSearchParamsSchema.shape);
+  const normalizedSearchByOptions = searchByOptions.map((option) => ({
+    value: option,
+    label: option.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
+  }));
+
   return (
-    <TextInput 
-      placeholder="Search clients..." 
-      error={error} 
-      leftSection={<IconSearch />} 
-      rightSection={isLoading ? <Loader size="xs" color="blue" /> : undefined} 
-      value={searchQuery} 
-      onChange={(e) => onSearchChange(e.target.value)}
-    />
+    <Group>
+      <Select
+        placeholder="Search By"
+        data={normalizedSearchByOptions}
+        onChange={handleSearchByChange}
+        value={searchBy}
+      />
+      <TextInput
+        flex={1}
+        placeholder="Search clients..." 
+        error={error} 
+        leftSection={<IconSearch />} 
+        rightSection={isLoading ? <Loader size="xs" color="blue" /> : undefined} 
+        value={searchQuery} 
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
+    </Group>
   );
 };

@@ -1,22 +1,33 @@
-import { Card, Text, Stack, List } from "@mantine/core";
-import { useState } from "react";
-import { useDebouncedValue } from "@mantine/hooks";
-import { useClients } from "@hooks/index";
+import { Card, Text, Stack, Group } from "@mantine/core";
+import { useClients, useFolders } from "@hooks/index";
 import { ClientSearch } from "./client-search";
+import classes from "@modules/hover-card.module.css";
+import { useUrlParams } from "@hooks/useUrlParams";
+import { useEffect } from "react";
 
 export const ImageRightFileBrowser = () => {
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
-  const { data: clients, isLoading, error } = useClients(
-    debouncedSearchQuery ? { clientCode: debouncedSearchQuery, clientName: debouncedSearchQuery } : undefined
+  const { data: clients, isLoading, error } = useClients();
+  const { setParam, getParam } = useUrlParams();
+  
+  const selectedClientId = getParam('clientId');
+  const { data: folders, error: errorFolders } = useFolders(
+    selectedClientId ? { clientId: Number(selectedClientId) } : undefined
   );
+
+  // Console log folders data when it changes
+  useEffect(() => {
+    if (folders) {
+      console.log('Folders data:', folders);
+    }
+    if (errorFolders) {
+      console.error('Folders error:', errorFolders);
+    }
+  }, [folders, errorFolders]);
 
   return (
     <Card withBorder>
       <Stack>
-        <ClientSearch 
-          searchQuery={searchQuery} 
-          onSearchChange={setSearchQuery}
+        <ClientSearch
           isLoading={isLoading}
           error={error?.message}
         />
@@ -24,14 +35,37 @@ export const ImageRightFileBrowser = () => {
         {clients && clients.length > 0 && (
           <Stack>
             <Text fw={500}>Found {clients.length} client(s):</Text>
-            <List>
               {clients.map((client) => (
-                <List.Item key={client.id}>
-                  <Text size="sm">{client.description}</Text>
-                  <Text size="xs" c="dimmed">ID: {client.id} | Drawer: {client.drawerName}</Text>
-                </List.Item>
+                <Card key={client.id} withBorder className={classes.hoverCard} onClick={() => setParam('clientId', client.id)}>
+                  <Card.Section inheritPadding>
+                    <Group>
+                      <Text>{client.description}</Text>
+                      <Text>{client.fileNumberPart1}</Text>
+                    </Group>
+                  </Card.Section>
+                  <Text fw={600} fz="xl">{client.drawerDescription ?? client.drawerName}</Text>
+                </Card>
               ))}
-            </List>
+          </Stack>
+        )}
+
+        {folders && folders.length > 0 && (
+          <Stack>
+            <Text fw={500}>Found {folders.length} folder(s):</Text>
+            {folders.map((folder: ) => (
+              <Card key={folder.id} withBorder className={classes.hoverCard}>
+                <Text>{folder.name}</Text>
+                <Text>{folder.description}</Text>
+                <Text>{folder.type}</Text>
+                <Text>{folder.drawerName}</Text>
+                <Text>{folder.drawerDescription}</Text>
+                <Text>{folder.drawerType}</Text>
+                <Text>{folder.drawerId}</Text>
+                <Text>{folder.drawerDescription}</Text>
+                <Text>{folder.drawerType}</Text>
+                <Text>{folder.drawerId}</Text>
+              </Card>
+            ))}
           </Stack>
         )}
         

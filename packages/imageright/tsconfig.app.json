@@ -20,7 +20,8 @@
     "paths": {
       "@api/*": ["src/api/*"],
       "@hooks/*": ["src/hooks/*"],
-      "@components/*": ["src/components/*"]
+      "@components/*": ["src/components/*"],
+      "@modules/*": ["src/modules/*"]
     },
 
     /* Linting */

@@ -1,13 +1,22 @@
 import { getClients } from "@api/index";
-import type { ImagerightClientSearchParams } from "@bmb-inc/types";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 
-export const useClients = (params?: ImagerightClientSearchParams) => {
-  // Return empty array if no params or if both search fields are empty
-  const hasSearchQuery = params && (params.clientCode.trim() || params.clientName.trim());
+export const useClients = () => {
+  const [searchParams] = useSearchParams();
+  const clientCode = searchParams.get('clientCode') || '';
+  const clientName = searchParams.get('clientName') || '';
+  
+  // Create search params object from URL params
+  const params = (clientCode || clientName) ? {
+    clientCode,
+    clientName
+  } : undefined;
+  
+  const hasSearchQuery = clientCode.trim() || clientName.trim();
   
   const { data, isLoading, error } = useQuery({
-    queryKey: ["clients", params?.clientCode, params?.clientName],
+    queryKey: ["clients", clientCode, clientName],
     queryFn: () => getClients(params!),
     enabled: !!hasSearchQuery, // Only run query if we have a search term
   });
