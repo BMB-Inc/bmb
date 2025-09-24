@@ -7,9 +7,9 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@schemas': resolve(__dirname, './src/schemas'),
       '@api': resolve(__dirname, './src/api'),
       '@hooks': resolve(__dirname, './src/hooks'),
+      '@tabler/icons-react': '@tabler/icons-react/dist/esm/icons/index.mjs',
     },
   },
   // Proxy disabled - use CORS browser extension for development

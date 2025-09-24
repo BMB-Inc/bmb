@@ -1,17 +1,16 @@
-
-import { useGetAccounts } from '@hooks/accounts';
+import { Button } from "@mantine/core";
+import { useClients } from "@hooks/index";
 
 function App() {
-  // Test our actual hook from proper hooks directory
-  const { data, isLoading, error } = useGetAccounts();
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  const { data, isLoading, error } = useClients('123', 'John Doe');
 
   return (
     <div>
       <h1>ImageRight</h1>
-      <p>Data: {data?.name}</p>
+      <Button onClick={() => {}}>Get Clients</Button>
+      {isLoading && <div>Loading...</div>}
+      {error && <div>Error: {error.message}</div>}
+      {data && <div>Data: {JSON.stringify(data)}</div>}
     </div>
   );
 }
