@@ -1,9 +1,7 @@
 import { z } from "zod/v4";
-import { accountSchema } from "../accounts/account.schema";
 
 export const taskHistorySchema = z.object({
   active: z.boolean(),
-  assignedTo: accountSchema,
   dateAvailable: z.date(),
   dateInitiated: z.date(),
   deadline: z.date().nullable(),
@@ -35,7 +33,6 @@ export const taskHistorySchema = z.object({
   noteId: z.number().nullable(),
   objectId: z.number(),
   operation: z.string(),
-  operationByUser: accountSchema,
   operationTime: z.date(),
   pageDescription: z.string().nullable(),
   pageId: z.number().nullable(),
@@ -50,4 +47,4 @@ export const taskHistorySchema = z.object({
   attributeHistory: z.array(z.unknown()),
 });
 
-export type TaskHistory = z.infer<typeof taskHistorySchema>;
+export type ImagerightTaskHistory = z.infer<typeof taskHistorySchema>;

@@ -46,4 +46,5 @@ export const taskParamsSchema = z.object({
   top: z.number(),
 });
 
-export type TaskParams = z.infer<typeof taskParamsSchema>;
+export type ImagerightTaskParams = z.infer<typeof taskParamsSchema>;
+

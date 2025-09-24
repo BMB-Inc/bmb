@@ -5,7 +5,7 @@ const attributeSchema = z.object({
   Name: z.string(),
 });
 
-export const createDocumentSchema = z.object({
+export const createImagerightDocumentSchema = z.object({
   ParentId: z.number(),
   DocumentTypeId: z.number(),
   Description: z.string(),
@@ -14,34 +14,47 @@ export const createDocumentSchema = z.object({
   Attributes: z.array(attributeSchema),
 });
 
-export type CreateDocument = z.infer<typeof createDocumentSchema>;
+export type CreateImagerightDocument = z.infer<
+  typeof createImagerightDocumentSchema
+>;
 
-export const updateDocumentSchema = createDocumentSchema.partial();
+export const updateImagerightDocumentSchema =
+  createImagerightDocumentSchema.partial();
 
-export type UpdateDocument = z.infer<typeof updateDocumentSchema>;
+export type UpdateImagerightDocument = z.infer<
+  typeof updateImagerightDocumentSchema
+>;
 
-export const deleteDocumentSchema = updateDocumentSchema;
+export const deleteImagerightDocumentSchema = updateImagerightDocumentSchema;
 
-export type DeleteDocument = z.infer<typeof deleteDocumentSchema>;
+export type DeleteImagerightDocument = z.infer<
+  typeof deleteImagerightDocumentSchema
+>;
 
-export const documentSearchSchema = updateDocumentSchema;
+export const imagerightDocumentSearchSchema = updateImagerightDocumentSchema;
 
-export type DocumentSearch = z.infer<typeof documentSearchSchema>;
+export type ImagerightDocumentSearch = z.infer<
+  typeof imagerightDocumentSearchSchema
+>;
 
-export const moveDocumentSchema = z.object({
+export const moveImagerightDocumentSchema = z.object({
   DocumentIds: z.array(z.number()),
   TargetParentId: z.number(),
   TargetTypeConversionId: z.number(),
   TypeIdPath: z.array(z.number()),
 });
 
-export type MoveDocument = z.infer<typeof moveDocumentSchema>;
+export type MoveImagerightDocument = z.infer<
+  typeof moveImagerightDocumentSchema
+>;
 
-export const copyDocumentSchema = moveDocumentSchema;
+export const copyImagerightDocumentSchema = moveImagerightDocumentSchema;
 
-export type CopyDocument = z.infer<typeof copyDocumentSchema>;
+export type CopyImagerightDocument = z.infer<
+  typeof copyImagerightDocumentSchema
+>;
 
-export const updateDocumentPropertiesSchema = z.object({
+export const updateImagerightDocumentPropertiesSchema = z.object({
   Description: z.string(),
   DocumentDate: z.string().date(),
   ReceivedDate: z.string().datetime(),
@@ -51,4 +64,7 @@ export const updateDocumentPropertiesSchema = z.object({
   AttributesToRemove: z.array(z.number()),
 });
 
-export type UpdateDocumentProperties = z.infer<typeof updateDocumentPropertiesSchema>;
+export type UpdateDocumentProperties = z.infer<
+  typeof updateImagerightDocumentPropertiesSchema
+>;
+

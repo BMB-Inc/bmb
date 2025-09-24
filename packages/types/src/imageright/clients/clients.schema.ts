@@ -8,8 +8,7 @@ export const clientAttributeSchema = z.object({
   attributeType: z.number(),
 });
 
-// Main client schema based on actual ImageRight data structure
-export const clientSchema = z.object({
+export const imagerightClientSchema = z.object({
   id: z.number(),
   fileTypeId: z.number(),
   fileTypeName: z.string(),
@@ -34,10 +33,5 @@ export const clientSchema = z.object({
   locationName: z.null().or(z.string()),
 });
 
-// Schema for array of clients
-export const clientsSchema = z.array(clientSchema);
-
-// Export types
-export type ClientAttribute = z.infer<typeof clientAttributeSchema>;
-export type Client = z.infer<typeof clientSchema>;
-export type Clients = z.infer<typeof clientsSchema>;
+export type ImagerightClientAttribute = z.infer<typeof clientAttributeSchema>;
+export type ImagerightClient = z.infer<typeof imagerightClientSchema>;

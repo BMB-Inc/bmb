@@ -1,6 +1,5 @@
 import { z } from "zod/v4";
 
-
 const drawerSchema = z.object({
   id: z.number(),
   drawerTypeId: z.number(),
@@ -9,7 +8,8 @@ const drawerSchema = z.object({
   description: z.string(),
   created: z.date(),
   lastModified: z.date(),
-  effectivePermissions: z.number()
-})
+  effectivePermissions: z.number(),
+});
 
-export type Drawer = z.infer<typeof drawerSchema>
+export type ImagerightDrawer = z.infer<typeof drawerSchema>;
+

@@ -1,5 +1,4 @@
 import { z } from "zod/v4";
-import { accountSchema } from "../accounts/account.schema";
 
 export const taskSchema = z.object({
   id: z.number(),
@@ -19,9 +18,6 @@ export const taskSchema = z.object({
   rendezvousStepId: z.number().nullable(),
   subTaskIsRequired: z.boolean(),
   noteId: z.number().nullable(),
-  assignedTo: accountSchema,
-  sender: accountSchema,
-  lockedBy: accountSchema.nullable(),
   availableDate: z.date(),
   startDate: z.date(),
   lockExpiration: z.date(),
@@ -48,17 +44,19 @@ export const taskSchema = z.object({
   hasNotes: z.boolean(),
 });
 
-export type Task = z.infer<typeof taskSchema>;
+export type ImagerightTask = z.infer<typeof taskSchema>;
 
-export const taskResponseSchema = z.object({
+export const imagerightTaskResponseSchema = z.object({
   items: z.array(taskSchema),
   nextPageLink: z.string().nullable(),
   count: z.number(),
 });
 
-export type TaskResponse = z.infer<typeof taskResponseSchema>;
+export type ImagerightTaskResponse = z.infer<
+  typeof imagerightTaskResponseSchema
+>;
 
-export const createTaskSchema = z.object({
+export const createImagerightTaskSchema = z.object({
   ObjectId: z.number(),
   StepId: z.number(),
   Priority: z.number(),
@@ -74,8 +72,8 @@ export const createTaskSchema = z.object({
   DeadLine: z.date(),
 });
 
-export type CreateTask = z.infer<typeof createTaskSchema>;
+export type CreateImagerightTask = z.infer<typeof createImagerightTaskSchema>;
 
-export const updateTaskSchema = createTaskSchema.partial();
+export const updateImagerightTaskSchema = createImagerightTaskSchema.partial();
 
-export type UpdateTask = z.infer<typeof updateTaskSchema>;
+export type UpdateImagerightTask = z.infer<typeof updateImagerightTaskSchema>;
