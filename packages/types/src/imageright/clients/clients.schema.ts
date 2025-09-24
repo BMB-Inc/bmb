@@ -1,7 +1,7 @@
 import { z } from "zod/v4";
 
 // Schema for client attributes
-export const clientAttributeSchema = z.object({
+export const imagerightClientAttributeSchema = z.object({
   displayName: z.string(),
   name: z.string(),
   value: z.string(),
@@ -27,11 +27,13 @@ export const imagerightClientSchema = z.object({
   dateLastOpened: z.string(),
   lastModified: z.string(),
   dateCreated: z.string(),
-  attributes: z.array(clientAttributeSchema),
+  attributes: z.array(imagerightClientAttributeSchema),
   effectivePermissions: z.number(),
   isFrozen: z.boolean(),
   locationName: z.null().or(z.string()),
 });
 
-export type ImagerightClientAttribute = z.infer<typeof clientAttributeSchema>;
+export type ImagerightClientAttribute = z.infer<
+  typeof imagerightClientAttributeSchema
+>;
 export type ImagerightClient = z.infer<typeof imagerightClientSchema>;

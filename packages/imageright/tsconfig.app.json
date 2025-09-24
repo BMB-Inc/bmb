@@ -19,8 +19,9 @@
     "baseUrl": ".",
     "paths": {
       "@api/*": ["src/api/*"],
-      "@schemas/*": ["src/schemas/*"],
-      "@hooks/*": ["src/hooks/*"]
+      "@hooks/*": ["src/hooks/*"],
+      "@components/*": ["src/components/*"],
+      "@modules/*": ["src/modules/*"]
     },
 
     /* Linting */

@@ -1,0 +1,10 @@
+.hoverCard {
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.hoverCard:hover {
+  transform: translate(0, -2px);
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
+  border-color: var(--mantine-color-blue-5);
+}
