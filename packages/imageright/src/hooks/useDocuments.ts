@@ -1,10 +1,10 @@
 import { getDocumentById, getDocuments } from "@api/index";
 import { useQuery } from "@tanstack/react-query";
 
-export const useDocuments = (clientId?: number, parentId?: number) => {
+export const useDocuments = (clientId?: number, folderId?: number) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["documents", clientId, parentId],
-    queryFn: () => getDocuments(clientId, parentId),
+    queryKey: ["documents", clientId, folderId],
+    queryFn: () => getDocuments(clientId, folderId),
   });
   return { data, isLoading, error };
 }

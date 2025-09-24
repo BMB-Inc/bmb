@@ -1,10 +1,9 @@
-import { imagerightClientSearchParamsSchema } from "@bmb-inc/types";
-import { Group, Loader, Select, TextInput } from "@mantine/core";
-import { IconSearch } from '@tabler/icons-react';
+import { ActionIcon, Group, Loader, Select, TextInput } from "@mantine/core";
+import { IconSearch, IconX } from '@tabler/icons-react';
 import { useDebouncedValue } from "@mantine/hooks";
 import { useState, useEffect } from "react";
 import { useUrlParams } from "@hooks/useUrlParams";
-
+import { imagerightClientSearchSchema } from "@bmb-inc/types";
 interface ClientSearchProps {
   isLoading?: boolean;
   error?: string;
@@ -22,7 +21,7 @@ export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
       setParam(searchBy, debouncedSearchQuery);
     } else {
       // Clear all search params when query is empty
-      const searchOptions = Object.keys(imagerightClientSearchParamsSchema.shape);
+      const searchOptions = Object.keys(imagerightClientSearchSchema.shape);
       searchOptions.forEach(param => {
         if (getParam(param)) {
           clearAllParams();
@@ -39,7 +38,7 @@ export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
     }
   };
 
-  const searchByOptions = Object.keys(imagerightClientSearchParamsSchema.shape);
+  const searchByOptions = Object.keys(imagerightClientSearchSchema.shape);
   const normalizedSearchByOptions = searchByOptions.map((option) => ({
     value: option,
     label: option.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
@@ -58,7 +57,7 @@ export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
         placeholder="Search clients..." 
         error={error} 
         leftSection={<IconSearch />} 
-        rightSection={isLoading ? <Loader size="xs" color="blue" /> : undefined} 
+        rightSection={isLoading ? <Loader size="xs" color="blue" /> : searchQuery ? <ActionIcon size="xs" color="dimmed" variant="subtle" onClick={() => setSearchQuery('')}><IconX /></ActionIcon> : undefined} 
         value={searchQuery} 
         onChange={(e) => setSearchQuery(e.target.value)}
       />

@@ -33,7 +33,17 @@ export const imagerightClientSchema = z.object({
   locationName: z.null().or(z.string()),
 });
 
+export const imagerightClientsSchema = z.array(imagerightClientSchema);
+
 export type ImagerightClientAttribute = z.infer<
   typeof imagerightClientAttributeSchema
 >;
 export type ImagerightClient = z.infer<typeof imagerightClientSchema>;
+export type ImagerightClients = z.infer<typeof imagerightClientsSchema>;
+
+export const imagerightClientSearchSchema = z.object({
+  clientCode: z.string(),
+  clientName: z.string(),
+});
+
+export type ImagerightClientSearch = z.infer<typeof imagerightClientSearchSchema>;

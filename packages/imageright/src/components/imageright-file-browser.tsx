@@ -1,9 +1,10 @@
 import { Card, Text, Stack, Group } from "@mantine/core";
-import { useClients, useFolders } from "@hooks/index";
+import { useClients, useDocuments, useFolders } from "@hooks/index";
 import { ClientSearch } from "./client-search";
 import classes from "@modules/hover-card.module.css";
 import { useUrlParams } from "@hooks/useUrlParams";
 import { useEffect } from "react";
+import { type ImagerightFolder, type ImagerightClient } from "@bmb-inc/types";
 
 export const ImageRightFileBrowser = () => {
   const { data: clients, isLoading, error } = useClients();
@@ -14,6 +15,11 @@ export const ImageRightFileBrowser = () => {
     selectedClientId ? { clientId: Number(selectedClientId) } : undefined
   );
 
+  const selectedFolderId = getParam('folderId');
+  const { data: files, error: errorFiles } = useDocuments(
+    selectedFolderId ? Number(selectedFolderId) : undefined
+  );
+
   // Console log folders data when it changes
   useEffect(() => {
     if (folders) {
@@ -21,6 +27,12 @@ export const ImageRightFileBrowser = () => {
     }
     if (errorFolders) {
       console.error('Folders error:', errorFolders);
+    }
+    if (files) {
+      console.log('Files data:', files);
+    }
+    if (errorFiles) {
+      console.error('Files error:', errorFiles);
     }
   }, [folders, errorFolders]);
 
@@ -35,7 +47,7 @@ export const ImageRightFileBrowser = () => {
         {clients && clients.length > 0 && (
           <Stack>
             <Text fw={500}>Found {clients.length} client(s):</Text>
-              {clients.map((client) => (
+              {clients.map((client: ImagerightClient) => (
                 <Card key={client.id} withBorder className={classes.hoverCard} onClick={() => setParam('clientId', client.id)}>
                   <Card.Section inheritPadding>
                     <Group>
@@ -52,18 +64,9 @@ export const ImageRightFileBrowser = () => {
         {folders && folders.length > 0 && (
           <Stack>
             <Text fw={500}>Found {folders.length} folder(s):</Text>
-            {folders.map((folder: ) => (
-              <Card key={folder.id} withBorder className={classes.hoverCard}>
-                <Text>{folder.name}</Text>
-                <Text>{folder.description}</Text>
-                <Text>{folder.type}</Text>
-                <Text>{folder.drawerName}</Text>
-                <Text>{folder.drawerDescription}</Text>
-                <Text>{folder.drawerType}</Text>
-                <Text>{folder.drawerId}</Text>
-                <Text>{folder.drawerDescription}</Text>
-                <Text>{folder.drawerType}</Text>
-                <Text>{folder.drawerId}</Text>
+            {folders.map((folder: ImagerightFolder) => (
+              <Card key={folder.id} withBorder className={classes.hoverCard} onClick={() => setParam('folderId', folder.id)}>
+                <Text>{folder.folderTypeName ?? folder.folderTypeDescription}</Text>
               </Card>
             ))}
           </Stack>
