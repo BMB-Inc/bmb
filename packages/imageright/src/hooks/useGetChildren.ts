@@ -1,22 +1,38 @@
-import { getDocuments } from "@api/documents/route";
-import { getFolders } from "@api/folders/route";
-import type { ImagerightDocument, ImagerightDocumentParams, ImagerightFolder, ImagerightFoldersParams } from "@bmb-inc/types";
+import type { ImagerightDocument, ImagerightDocumentParams, ImagerightFolder, GetFoldersDto } from "@bmb-inc/types";
 import type { TreeNodeData } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { usePolicyFolders } from "./useFolders";
+import { useDocuments } from "./useDocuments";
 
-export const useGetChildren = (params?: ImagerightFoldersParams & ImagerightDocumentParams) => {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["children", params?.clientId, params?.folderId, params?.parentFolderId],
-    queryFn: async () => {
-      const [foldersData, documentsData] = await Promise.all([
-        getFolders(params),
-        getDocuments(params),
-      ]);
-      const folders: TreeNodeData[] = foldersData.map((folder: ImagerightFolder) => ({  }));
-      const documents: TreeNodeData[] = documentsData.map((document: ImagerightDocument) => ({ id: document.id, label: document.documentName, type: "document" }));
-      return [...folders, ...documents];
-    } ,
-    enabled: !!(params?.clientId || params?.folderId || params?.parentFolderId),
-  });
-  return { children: data, isLoading, error };
+export const useGetChildren = (params?: GetFoldersDto & ImagerightDocumentParams) => {
+  // Use the existing hooks to fetch data
+  const { data: foldersData, isLoading: foldersLoading, error: foldersError } = usePolicyFolders(params);
+  const { data: documentsData, isLoading: documentsLoading, error: documentsError } = useDocuments(params);
+
+  // Combine loading states and errors
+  const isLoading = foldersLoading || documentsLoading;
+  const error = foldersError || documentsError;
+
+  // Transform the data into TreeNodeData format
+  const children = useMemo((): TreeNodeData[] => {
+    if (!foldersData && !documentsData) {
+      return [];
+    }
+
+    const folders: TreeNodeData[] = (foldersData || []).map((folder: ImagerightFolder) => ({
+      value: `folder-${folder.id}`,
+      label: `${folder.attributes?.[0]?.displayName ?? 'Unknown Folder'} - ${folder.attributes?.[0]?.value ?? 'Unknown Value'}`,
+      children: [] // Folders can have children
+    }));
+
+    const documents: TreeNodeData[] = (documentsData || []).map((document: ImagerightDocument) => ({
+      value: `document-${document.id}`,
+      label: document.documentName || document.description || 'Unknown Document'
+      // Documents are leaf nodes, no children property needed
+    }));
+
+    return [...folders, ...documents];
+  }, [foldersData, documentsData]);
+
+  return { children, isLoading, error };
 }
