@@ -1,8 +1,9 @@
-import { ActionIcon, Loader, TextInput } from "@mantine/core";
+import { ActionIcon, Group, Loader, TextInput } from "@mantine/core";
 import { IconSearch, IconX } from '@tabler/icons-react';
 import { useDebouncedValue } from "@mantine/hooks";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { SearchBySelect } from "./search-by-select";
 // Removed custom params hook in favor of react-router's useSearchParams
 
 interface ClientSearchProps {
@@ -12,7 +13,15 @@ interface ClientSearchProps {
 
 export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(() => searchParams.get('clientCode') ?? '');
+  // Determine initial key and value from URL
+  const [searchKey, setSearchKey] = useState<'clientCode' | 'clientName'>(() => {
+    const hasClientName = !!searchParams.get('clientName');
+    return hasClientName ? 'clientName' : 'clientCode';
+  });
+  const [searchQuery, setSearchQuery] = useState(() => {
+    const initialValue = searchParams.get('clientName') ?? searchParams.get('clientCode') ?? '';
+    return initialValue;
+  });
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
 
   // Update URL params when the debounced query changes
@@ -20,31 +29,59 @@ export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
     setSearchParams(prev => {
       const params = new URLSearchParams(prev);
       const trimmed = debouncedSearchQuery.trim();
-      if (trimmed) {
-        params.set('clientCode', trimmed);
-      } else {
-        params.delete('clientCode');
-      }
+      const otherKey = searchKey === 'clientCode' ? 'clientName' : 'clientCode';
+      // Ensure only the active key exists
+      params.delete(otherKey);
+      if (trimmed) params.set(searchKey, trimmed); else params.delete(searchKey);
       return params;
     });
-  }, [debouncedSearchQuery, setSearchParams]);
+  }, [debouncedSearchQuery, searchKey, setSearchParams]);
+
+  // Keep local state in sync if URL changes externally (navigation)
+  useEffect(() => {
+    const clientName = searchParams.get('clientName');
+    const clientCode = searchParams.get('clientCode');
+    if (clientName && !clientCode && searchKey !== 'clientName') {
+      setSearchKey('clientName');
+      setSearchQuery(clientName);
+    } else if (clientCode && !clientName && searchKey !== 'clientCode') {
+      setSearchKey('clientCode');
+      setSearchQuery(clientCode);
+    } else if (!clientName && !clientCode && searchQuery !== '') {
+      setSearchQuery('');
+    }
+  }, [searchParams]);
 
   return (
-      <TextInput
-        flex={1}
-        placeholder="Search by client code..." 
-        error={error}
-        leftSection={<IconSearch />} 
-        rightSection={isLoading ? <Loader size="xs" color="blue" /> : searchQuery ? <ActionIcon size="xs" color="dimmed" variant="subtle" onClick={() => {
-          setSearchQuery('');
-          setSearchParams(prev => {
-            const params = new URLSearchParams(prev);
-            params.delete('clientCode');
-            return params;
-          });
-        }}><IconX /></ActionIcon> : undefined} 
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
+      <Group gap="xs" align="stretch">
+        <SearchBySelect searchKey={searchKey} setSearchKey={setSearchKey} setSearchQuery={setSearchQuery} />
+        <TextInput
+          flex={1}
+          placeholder={searchKey === 'clientCode' ? 'Search by client code...' : 'Search by client name...'} 
+          error={error}
+          leftSection={<IconSearch />} 
+          rightSection={isLoading ? <Loader size="xs" color="blue" /> : searchQuery ? <ActionIcon size="xs" color="dimmed" variant="subtle" onClick={() => {
+            setSearchQuery('');
+            setSearchParams(prev => {
+              const params = new URLSearchParams(prev);
+              params.delete(searchKey);
+              return params;
+            });
+          }}><IconX /></ActionIcon> : undefined} 
+          value={searchQuery}
+          onChange={(e) => {
+            const value = e.target.value;
+            setSearchQuery(value);
+            if (value.trim() === '') {
+              // Delete immediately when cleared, do not wait for debounce
+              setSearchParams(prev => {
+                const params = new URLSearchParams(prev);
+                params.delete(searchKey);
+                return params;
+              });
+            }
+          }}
+        />
+      </Group>
   );
 };
