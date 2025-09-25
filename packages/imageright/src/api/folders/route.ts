@@ -1,5 +1,5 @@
 import { fetcher } from "@api/fetcher";
-import { imagerightFoldersSchema, type ImagerightFoldersParams } from "@bmb-inc/types";
+import { type ImagerightFoldersParams } from "@bmb-inc/types";
 
 export const getFolders = async (params?: ImagerightFoldersParams) => {
   const searchParams = new URLSearchParams();
@@ -13,5 +13,5 @@ export const getFolders = async (params?: ImagerightFoldersParams) => {
   const queryString = searchParams.toString();
   const url = queryString ? `/folders?${queryString}` : '/folders';
   const response = await fetcher(url);
-  return imagerightFoldersSchema.parse(response);
+  return response;
 }

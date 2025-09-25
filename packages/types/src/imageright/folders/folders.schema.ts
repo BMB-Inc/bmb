@@ -11,8 +11,8 @@ export const imagerightFolderSchema = z.object({
   folderTypeDescription: z.string(),
   hasNotes: z.boolean().nullable(),
   isDeleted: z.boolean(),
-  lastModified: z.date(),
-  dateCreated: z.date(),
+  lastModified: z.string(),
+  dateCreated: z.string(),
   attributes: z.array(imagerightAttributeSchema),
   folderTypeName: z.string(),
 });

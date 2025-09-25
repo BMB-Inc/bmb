@@ -9,7 +9,7 @@ export const imagerightFileSchema = z.object({
   drawerId: z.number(),
   drawerName: z.string(),
   drawerDescription: z.string(),
-  hasNotes: z.null().or(z.boolean()),
+  hasNotes: z.boolean().nullable(),
   notesId: z.number(),
   description: z.string(),
   fileNumberPart1: z.string(),
@@ -23,5 +23,5 @@ export const imagerightFileSchema = z.object({
   attributes: z.array(imagerightAttributeSchema),
   effectivePermissions: z.number(),
   isFrozen: z.boolean(),
-  locationName: z.null().or(z.string()),
+  locationName: z.string(),
 });

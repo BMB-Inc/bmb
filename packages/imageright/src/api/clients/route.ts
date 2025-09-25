@@ -1,5 +1,5 @@
 import { fetcher } from "@api/fetcher";
-import { imagerightClientsSchema, type ImagerightClientSearch } from "@bmb-inc/types";
+import { type ImagerightClientSearch } from "@bmb-inc/types";
 
 export const getClients = async (params?: ImagerightClientSearch) => {
   if (!params) {
@@ -18,5 +18,5 @@ export const getClients = async (params?: ImagerightClientSearch) => {
   const url = queryString ? `/clients?${queryString}` : '/clients';
   
   const response = await fetcher(url);
-  return imagerightClientsSchema.parse(response);
+  return response;
 }
