@@ -1,12 +1,9 @@
 import { z } from 'zod/v4'
 
-export enum FolderTypes {
-	policies = 162
-}
 
 export const getFoldersDto = z.object({
-	clientId: z.number(),
-	folderTypes: z.enum(FolderTypes),
+	clientId: z.coerce.number(),
+	folderTypes: z.enum(["policies"]).array().optional().nullable(),
 	folderId: z.number().optional().nullable()
 })
 
