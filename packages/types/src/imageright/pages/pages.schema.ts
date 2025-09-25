@@ -38,8 +38,8 @@ export const imagerightPageSchema = z.object({
   marks: z.array(marksSchema), // Array of marks - structure unknown from sample
   importedFrom: z.string(),
   createdById: z.number(),
-  firstVersionCreated: z.date(), // ISO date string
-  latestVersionCreated: z.date(), // ISO date string
+  firstVersionCreated: z.string(), // ISO date string
+  latestVersionCreated: z.string(), // ISO date string
   pageSize: z.number(),
 });
 

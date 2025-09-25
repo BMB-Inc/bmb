@@ -1,5 +1,5 @@
 import { fetcher } from "@api/fetcher";
-import { imagerightDocumentsSchema, type ImagerightDocumentParams } from "@bmb-inc/types";
+import { type ImagerightDocumentParams } from "@bmb-inc/types";
 
 export const getDocuments = async (params?: ImagerightDocumentParams) => {
   if (!params) {
@@ -17,10 +17,10 @@ export const getDocuments = async (params?: ImagerightDocumentParams) => {
   const queryString = searchParams.toString();
   const url = queryString ? `/documents?${queryString}` : '/documents';
   const response = await fetcher(url);
-  return imagerightDocumentsSchema.parse(response);
+  return response;
 }
 
 export const getDocumentById = async (id: number) => {
   const response = await fetcher(`/documents/${id}`);
-  return imagerightDocumentsSchema.parse(response);
+  return response;
 }

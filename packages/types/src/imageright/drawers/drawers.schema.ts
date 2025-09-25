@@ -6,8 +6,8 @@ const drawerSchema = z.object({
   parentId: z.number(),
   name: z.string(),
   description: z.string(),
-  created: z.date(),
-  lastModified: z.date(),
+  created: z.string(),
+  lastModified: z.string(),
   effectivePermissions: z.number(),
 });
 
