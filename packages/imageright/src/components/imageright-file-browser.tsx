@@ -4,7 +4,7 @@ import { useClients } from '@hooks/index';
 import { useGetChildren } from '@hooks/useGetChildren';
 import { ClientSearch } from './client-search';
 import { FileTree } from './file-tree';
-import { FolderTypes, type ImagerightClient } from '@bmb-inc/types';
+import { type ImagerightClient } from '@bmb-inc/types';
 
 export const ImageRightFileBrowser = () => {
   const { data: clients, isLoading: clientsLoading, error: clientsError } = useClients();
@@ -12,7 +12,7 @@ export const ImageRightFileBrowser = () => {
   
   // Fetch children for the expanded client
   const { children, isLoading: childrenLoading } = useGetChildren(
-    expandedClientId ? { clientId: Number(expandedClientId), folderTypes: FolderTypes.policies } : undefined
+    expandedClientId ? { clientId: Number(expandedClientId) } : undefined
   );
 
   // Handle node expansion

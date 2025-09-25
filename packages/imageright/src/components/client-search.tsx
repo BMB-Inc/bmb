@@ -3,7 +3,7 @@ import { IconSearch, IconX } from '@tabler/icons-react';
 import { useDebouncedValue } from "@mantine/hooks";
 import { useState, useEffect } from "react";
 import { useUrlParams } from "@hooks/useUrlParams";
-import { imagerightClientSearchSchema } from "@bmb-inc/types";
+import { getClientsDto } from "@bmb-inc/types";
 interface ClientSearchProps {
   isLoading?: boolean;
   error?: string;
@@ -21,7 +21,7 @@ export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
       setParam(searchBy, debouncedSearchQuery);
     } else {
       // Clear all search params when query is empty
-      const searchOptions = Object.keys(imagerightClientSearchSchema.shape);
+      const searchOptions = Object.keys(getClientsDto.shape);
       searchOptions.forEach(param => {
         if (getParam(param)) {
           clearAllParams();
@@ -38,7 +38,7 @@ export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
     }
   };
 
-  const searchByOptions = Object.keys(imagerightClientSearchSchema.shape);
+  const searchByOptions = Object.keys(getClientsDto.shape);
   const normalizedSearchByOptions = searchByOptions.map((option) => ({
     value: option,
     label: option.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),

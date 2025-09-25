@@ -21,7 +21,7 @@ export const useGetChildren = (params?: GetFoldersDto & ImagerightDocumentParams
 
     const folders: TreeNodeData[] = (foldersData || []).map((folder: ImagerightFolder) => ({
       value: `folder-${folder.id}`,
-      label: `${folder.attributes?.[0]?.displayName} - ${folder.attributes?.[0]?.value}` || 'Unknown Folder',
+      label: `${folder.attributes?.[0]?.displayName ?? 'Unknown Folder'} - ${folder.attributes?.[0]?.value ?? 'Unknown Value'}`,
       children: [] // Folders can have children
     }));
 
