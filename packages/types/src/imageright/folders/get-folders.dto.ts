@@ -6,7 +6,7 @@ export enum FolderTypes {
 
 export const getFoldersDto = z.object({
 	clientId: z.coerce.number(),
-	folderTypes: z.enum([FolderTypes.policies]).optional().nullable(),
+	folderTypes: z.enum(FolderTypes).optional().nullable(),
 	folderId: z.number().optional().nullable()
 })
 

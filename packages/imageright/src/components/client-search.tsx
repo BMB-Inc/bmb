@@ -12,7 +12,7 @@ interface ClientSearchProps {
 export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
   const { setParam, clearAllParams, getParam } = useUrlParams();
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchBy, setSearchBy] = useState('clientCode');
+  const [searchBy, setSearchBy] = useState(Object.keys(getClientsDto.shape)[0]);
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
   
   // Update URL when debounced search changes
