@@ -1,66 +1,50 @@
-import { ActionIcon, Group, Loader, Select, TextInput } from "@mantine/core";
+import { ActionIcon, Loader, TextInput } from "@mantine/core";
 import { IconSearch, IconX } from '@tabler/icons-react';
 import { useDebouncedValue } from "@mantine/hooks";
 import { useState, useEffect } from "react";
-import { useUrlParams } from "@hooks/useUrlParams";
-import { getClientsDto } from "@bmb-inc/types";
+import { useSearchParams } from "react-router-dom";
+// Removed custom params hook in favor of react-router's useSearchParams
+
 interface ClientSearchProps {
-  isLoading?: boolean;
-  error?: string;
+  isLoading: boolean;
+  error: string | undefined;
 }
 
 export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
-  const { setParam, clearAllParams, getParam } = useUrlParams();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchBy, setSearchBy] = useState(Object.keys(getClientsDto.shape)[0]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(() => searchParams.get('clientCode') ?? '');
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
-  
-  // Update URL when debounced search changes
-  useEffect(() => {
-    if (debouncedSearchQuery.trim()) {
-      setParam(searchBy, debouncedSearchQuery);
-    } else {
-      // Clear all search params when query is empty
-      const searchOptions = Object.keys(getClientsDto.shape);
-      searchOptions.forEach(param => {
-        if (getParam(param)) {
-          clearAllParams();
-        }
-      });
-    }
-  }, [debouncedSearchQuery, searchBy, setParam, clearAllParams, getParam]);
-  
-  const handleSearchByChange = (newSearchBy: string | null) => {
-    if (newSearchBy) {
-      clearAllParams();
-      setSearchQuery('');
-      setSearchBy(newSearchBy);
-    }
-  };
 
-  const searchByOptions = Object.keys(getClientsDto.shape);
-  const normalizedSearchByOptions = searchByOptions.map((option) => ({
-    value: option,
-    label: option.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
-  }));
+  // Update URL params when the debounced query changes
+  useEffect(() => {
+    setSearchParams(prev => {
+      const params = new URLSearchParams(prev);
+      const trimmed = debouncedSearchQuery.trim();
+      if (trimmed) {
+        params.set('clientCode', trimmed);
+      } else {
+        params.delete('clientCode');
+      }
+      return params;
+    });
+  }, [debouncedSearchQuery, setSearchParams]);
 
   return (
-    <Group>
-      <Select
-        placeholder="Search By"
-        data={normalizedSearchByOptions}
-        onChange={handleSearchByChange}
-        value={searchBy}
-      />
       <TextInput
         flex={1}
-        placeholder="Search clients..." 
-        error={error} 
+        placeholder="Search by client code..." 
+        error={error}
         leftSection={<IconSearch />} 
-        rightSection={isLoading ? <Loader size="xs" color="blue" /> : searchQuery ? <ActionIcon size="xs" color="dimmed" variant="subtle" onClick={() => setSearchQuery('')}><IconX /></ActionIcon> : undefined} 
-        value={searchQuery} 
+        rightSection={isLoading ? <Loader size="xs" color="blue" /> : searchQuery ? <ActionIcon size="xs" color="dimmed" variant="subtle" onClick={() => {
+          setSearchQuery('');
+          setSearchParams(prev => {
+            const params = new URLSearchParams(prev);
+            params.delete('clientCode');
+            return params;
+          });
+        }}><IconX /></ActionIcon> : undefined} 
+        value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
-    </Group>
   );
 };

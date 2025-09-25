@@ -1,19 +1,29 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
 import { Card, Stack, type TreeNodeData } from '@mantine/core';
 import { useClients } from '@hooks/index';
 import { useGetChildren } from '@hooks/useGetChildren';
 import { ClientSearch } from './client-search';
 import { FileTree } from './file-tree';
 import { type ImagerightClient } from '@bmb-inc/types';
+import { useSearchParams } from 'react-router-dom';
 
 export const ImageRightFileBrowser = () => {
   const { data: clients, isLoading: clientsLoading, error: clientsError } = useClients();
   const [expandedClientId, setExpandedClientId] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
   
   // Fetch children for the expanded client
   const { children, isLoading: childrenLoading } = useGetChildren(
     expandedClientId ? { clientId: Number(expandedClientId) } : undefined
   );
+
+  // Initialize expanded client from URL param if present
+  useEffect(() => {
+    const id = searchParams.get('clientId');
+    if (id && id !== expandedClientId) {
+      setExpandedClientId(id);
+    }
+  }, [searchParams]);
 
   // Handle node expansion
   const handleNodeExpand = useCallback((nodeValue: string) => {

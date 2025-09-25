@@ -10,6 +10,9 @@ export const getClients = async (params?: GetClientsDto) => {
   if (params.clientId) {
     searchParams.append('clientId', params.clientId.toString());
   }
+  if (params.clientCode) {
+    searchParams.append('clientCode', params.clientCode);
+  }
   if (params.clientName) {
     searchParams.append('clientName', params.clientName);
   }
