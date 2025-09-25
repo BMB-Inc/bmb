@@ -7,10 +7,9 @@ type SearchKey = Exclude<keyof GetClientsDto, 'clientId'>;
 interface SearchBySelectProps {
   searchKey: SearchKey;
   setSearchKey: (key: SearchKey) => void;
-  setSearchQuery: (query: string) => void;
 }
 
-export const SearchBySelect = ({ searchKey, setSearchKey, setSearchQuery }: SearchBySelectProps) => {
+export const SearchBySelect = ({ searchKey, setSearchKey }: SearchBySelectProps) => {
   const [, setSearchParams] = useSearchParams();
 
   const schemaKeys = getClientsDto.keyof().options as readonly (keyof GetClientsDto)[];
@@ -30,15 +29,15 @@ export const SearchBySelect = ({ searchKey, setSearchKey, setSearchQuery }: Sear
         if (!value) return;
         const nextKey = value as SearchKey;
         if (!searchKeys.includes(nextKey)) return;
-        setSearchKey(nextKey);
-        // Clear the current value and remove all related params immediately
-        setSearchQuery('');
+        // Enforce only one search key in URL: remove all known keys, then set the selected one with the current value
         setSearchParams(prev => {
           const params = new URLSearchParams(prev);
-          // Remove all search keys derived from the schema
+          const currentValue = params.get(searchKey) ?? '';
           for (const key of searchKeys) params.delete(key);
+          if (currentValue) params.set(nextKey, currentValue);
           return params;
         });
+        setSearchKey(nextKey);
       }}
     />
   );

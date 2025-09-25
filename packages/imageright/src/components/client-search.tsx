@@ -39,22 +39,13 @@ export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
 
   // Keep local state in sync if URL changes externally (navigation)
   useEffect(() => {
-    const clientName = searchParams.get('clientName');
-    const clientCode = searchParams.get('clientCode');
-    if (clientName && !clientCode && searchKey !== 'clientName') {
-      setSearchKey('clientName');
-      setSearchQuery(clientName);
-    } else if (clientCode && !clientName && searchKey !== 'clientCode') {
-      setSearchKey('clientCode');
-      setSearchQuery(clientCode);
-    } else if (!clientName && !clientCode && searchQuery !== '') {
-      setSearchQuery('');
-    }
-  }, [searchParams]);
+    const value = searchParams.get(searchKey) ?? '';
+    if (value !== searchQuery) setSearchQuery(value);
+  }, [searchParams, searchKey]);
 
   return (
       <Group gap="xs" align="stretch">
-        <SearchBySelect searchKey={searchKey} setSearchKey={setSearchKey} setSearchQuery={setSearchQuery} />
+        <SearchBySelect searchKey={searchKey} setSearchKey={setSearchKey} />
         <TextInput
           flex={1}
           placeholder={searchKey === 'clientCode' ? 'Search by client code...' : 'Search by client name...'} 
@@ -62,25 +53,9 @@ export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
           leftSection={<IconSearch />} 
           rightSection={isLoading ? <Loader size="xs" color="blue" /> : searchQuery ? <ActionIcon size="xs" color="dimmed" variant="subtle" onClick={() => {
             setSearchQuery('');
-            setSearchParams(prev => {
-              const params = new URLSearchParams(prev);
-              params.delete(searchKey);
-              return params;
-            });
           }}><IconX /></ActionIcon> : undefined} 
           value={searchQuery}
-          onChange={(e) => {
-            const value = e.target.value;
-            setSearchQuery(value);
-            if (value.trim() === '') {
-              // Delete immediately when cleared, do not wait for debounce
-              setSearchParams(prev => {
-                const params = new URLSearchParams(prev);
-                params.delete(searchKey);
-                return params;
-              });
-            }
-          }}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
       </Group>
   );
