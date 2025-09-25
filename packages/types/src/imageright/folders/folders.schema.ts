@@ -21,10 +21,3 @@ export const imagerightFoldersSchema = z.array(imagerightFolderSchema);
 
 export type ImagerightFolder = z.infer<typeof imagerightFolderSchema>;
 export type ImagerightFolders = z.infer<typeof imagerightFoldersSchema>;
-
-export const imagerightFoldersParamsSchema = z.object({
-  clientId: z.number().optional(),
-  parentFolderId: z.number().optional(),
-});
-
-export type ImagerightFoldersParams = z.infer<typeof imagerightFoldersParamsSchema>;

@@ -11,7 +11,7 @@ export const imagerightDocumentSchema = z.object({
   pageCount: z.number(),
   dateCreated: z.string(),  
   dateLastModified: z.string(),
-  documentDate: z.string(),
+  documentDate: z.date(),
   receivedDate: z.string(),
   deleted: z.boolean(),
   documentTypeId: z.number(),

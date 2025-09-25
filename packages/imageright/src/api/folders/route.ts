@@ -1,13 +1,16 @@
 import { fetcher } from "@api/fetcher";
-import { type ImagerightFoldersParams } from "@bmb-inc/types";
+import { type GetFoldersDto } from "@bmb-inc/types";
 
-export const getFolders = async (params?: ImagerightFoldersParams) => {
+export const getFolders = async (params?: GetFoldersDto) => {
   const searchParams = new URLSearchParams();
   if (params?.clientId) {
     searchParams.append('clientId', params.clientId.toString());
   }
-  if (params?.parentFolderId) {
-    searchParams.append('parentFolderId', params.parentFolderId.toString());
+  if (params?.folderId) {
+    searchParams.append('folderId', params.folderId.toString());
+  }
+  if (params?.folderTypes) {
+    searchParams.append('folderTypes', params.folderTypes.toString());
   }
   
   const queryString = searchParams.toString();

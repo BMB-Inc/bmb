@@ -1,21 +1,21 @@
 import { getFolders } from "@api/index";
 import { useQuery } from "@tanstack/react-query";
-import { type ImagerightFoldersParams } from "@bmb-inc/types";
+import { FolderTypes, type GetFoldersDto } from '@bmb-inc/types';
 
-export const useFolders = (params?: ImagerightFoldersParams) => {
+export const useFolders = (params?: GetFoldersDto) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["folders", params?.clientId, params?.parentFolderId],
+    queryKey: ["folders", params?.clientId, params?.folderId],
     queryFn: () => getFolders(params),
-    enabled: !!(params?.clientId || params?.parentFolderId),
+    enabled: !!(params?.clientId || params?.folderId),
   });
   return { data, isLoading, error };
 }
 
-export const usePolicyFolders = (params?: ImagerightFoldersParams) => {
+export const usePolicyFolders = (params?: GetFoldersDto) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["policyFolders", params?.clientId, params?.parentFolderId],
-    queryFn: () => getFolders(params),
-    enabled: !!(params?.clientId || params?.parentFolderId),
+    queryKey: ["policyFolders", params?.clientId, params?.folderId],
+    queryFn: () => getFolders({ ...params, folderTypes: FolderTypes.policies } as GetFoldersDto),
+    enabled: !!(params?.clientId || params?.folderId),
   });
   return { data, isLoading, error };
 }
