@@ -1,7 +1,7 @@
 import { z } from "zod/v4";
-import { imagerightFileSchema } from "../file.schema";
 import { imagerightAttributeSchema } from "../attribute.schema";
 import { imagerightFolderSchema } from "../folders";
+import { imagerightClientSchema } from "../clients";
 
 // Main document schema
 export const imagerightDocumentSchema = z.object({
@@ -9,9 +9,9 @@ export const imagerightDocumentSchema = z.object({
   description: z.string(),
   effectivePermissions: z.number(),
   pageCount: z.number(),
-  dateCreated: z.string(),  
+  dateCreated: z.string(),
   dateLastModified: z.string(),
-  documentDate: z.date(),
+  documentDate: z.string(),
   receivedDate: z.string(),
   deleted: z.boolean(),
   documentTypeId: z.number(),
@@ -20,15 +20,12 @@ export const imagerightDocumentSchema = z.object({
   cutOffDate: z.string(),
   retentionDate: z.string(),
   documentName: z.string(),
-  file: imagerightFileSchema,
+  file: imagerightClientSchema,
   folder: z.array(imagerightFolderSchema),
 });
 
-// Schema for array of documents
 export const imagerightDocumentsSchema = z.array(imagerightDocumentSchema);
 
-// Export types
-export type ImagerightDocumentFile = z.infer<typeof imagerightFileSchema>;
 export type ImagerightDocument = z.infer<typeof imagerightDocumentSchema>;
 export type ImagerightDocuments = z.infer<typeof imagerightDocumentsSchema>;
 
@@ -37,4 +34,6 @@ export const imagerightDocumentParamsSchema = z.object({
   folderId: z.number().optional(),
 });
 
-export type ImagerightDocumentParams = z.infer<typeof imagerightDocumentParamsSchema>;
+export type ImagerightDocumentParams = z.infer<
+  typeof imagerightDocumentParamsSchema
+>;
