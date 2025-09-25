@@ -6,7 +6,8 @@ export const useDocuments = (params?: ImagerightDocumentParams) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["documents", params?.clientId, params?.folderId],
     queryFn: () => getDocuments(params),
-    enabled: !!(params?.clientId || params?.folderId),
+    // Only fetch documents when a specific folder is selected/expanded
+    enabled: !!params?.folderId,
   });
   return { data, isLoading, error };
 }

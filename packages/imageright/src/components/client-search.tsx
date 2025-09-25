@@ -3,6 +3,7 @@ import { IconSearch, IconX } from '@tabler/icons-react';
 import { useDebouncedValue } from "@mantine/hooks";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { getClientsDto, type GetClientsDto } from "@bmb-inc/types";
 import { SearchBySelect } from "./search-by-select";
 // Removed custom params hook in favor of react-router's useSearchParams
 
@@ -11,17 +12,19 @@ interface ClientSearchProps {
   error: string | undefined;
 }
 
+type SearchKey = Exclude<keyof GetClientsDto, 'clientId'>;
+
 export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const schemaKeys = getClientsDto.keyof().options as readonly (keyof GetClientsDto)[];
+  const searchKeys: SearchKey[] = schemaKeys.filter((k): k is SearchKey => k !== 'clientId');
   // Determine initial key and value from URL
-  const [searchKey, setSearchKey] = useState<'clientCode' | 'clientName'>(() => {
-    const hasClientName = !!searchParams.get('clientName');
-    return hasClientName ? 'clientName' : 'clientCode';
+  const [searchKey, setSearchKey] = useState<SearchKey>(() => {
+    // Prefer the first key from the schema that exists in URL; otherwise fall back to the first allowed key
+    const found = searchKeys.find(k => !!searchParams.get(k as string));
+    return (found ?? searchKeys[0] ?? 'clientCode') as SearchKey;
   });
-  const [searchQuery, setSearchQuery] = useState(() => {
-    const initialValue = searchParams.get('clientName') ?? searchParams.get('clientCode') ?? '';
-    return initialValue;
-  });
+  const [searchQuery, setSearchQuery] = useState(() => searchParams.get((searchKeys.find(k => !!searchParams.get(k as string)) ?? 'clientCode') as string) ?? '');
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
 
   // Update URL params when the debounced query changes
@@ -29,9 +32,10 @@ export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
     setSearchParams(prev => {
       const params = new URLSearchParams(prev);
       const trimmed = debouncedSearchQuery.trim();
-      const otherKey = searchKey === 'clientCode' ? 'clientName' : 'clientCode';
-      // Ensure only the active key exists
-      params.delete(otherKey);
+      // Ensure only the active key exists among all allowed keys
+      for (const key of searchKeys) {
+        if (key !== searchKey) params.delete(key);
+      }
       if (trimmed) params.set(searchKey, trimmed); else params.delete(searchKey);
       return params;
     });
