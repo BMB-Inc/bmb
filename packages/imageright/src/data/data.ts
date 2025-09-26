@@ -1,4 +1,4 @@
-import type { ImagerightClient, ImagerightDocument, ImagerightFolder } from '@bmb-inc/types';
+import type { ImagerightClient, ImagerightDocument, ImagerightFolder, ImagerightPage } from '@bmb-inc/types';
 
 export const clientData: ImagerightClient[] = [
   {
@@ -243,5 +243,98 @@ export const documentsData: ImagerightDocument[] = [
     documentName: 'Loss-Summary.pdf',
     file: clientData[1],
     folder: [foldersData[2]]
+  }
+]
+
+export const pagesData: ImagerightPage[] = [
+  {
+    documentId: 700001,
+    id: 70000101,
+    description: 'Page 1',
+    pagenumber: 1,
+    version: 1,
+    deleted: false,
+    deleteOpType: 0,
+    latestImages: {
+      rotation: 0,
+      preRotation: 0,
+      imageMetadata: [
+        {
+          id: 1,
+          imageType: 0,
+          contentType: 0,
+          version: 1,
+          size: 1024,
+          extension: 'png',
+          imageData: 'placeholder'
+        }
+      ]
+    },
+    marks: [],
+    importedFrom: 'test',
+    createdById: 1,
+    firstVersionCreated: '2025-09-20T12:30:00.000Z',
+    latestVersionCreated: '2025-09-20T12:30:00.000Z',
+    pageSize: 1
+  },
+  {
+    documentId: 700001,
+    id: 70000102,
+    description: 'Page 2',
+    pagenumber: 2,
+    version: 1,
+    deleted: false,
+    deleteOpType: 0,
+    latestImages: {
+      rotation: 0,
+      preRotation: 0,
+      imageMetadata: [
+        {
+          id: 2,
+          imageType: 0,
+          contentType: 0,
+          version: 1,
+          size: 2048,
+          extension: 'png',
+          imageData: 'placeholder'
+        }
+      ]
+    },
+    marks: [],
+    importedFrom: 'test',
+    createdById: 1,
+    firstVersionCreated: '2025-09-20T12:31:00.000Z',
+    latestVersionCreated: '2025-09-20T12:31:00.000Z',
+    pageSize: 1
+  },
+  {
+    documentId: 700002,
+    id: 70000201,
+    description: 'Page 1',
+    pagenumber: 1,
+    version: 1,
+    deleted: false,
+    deleteOpType: 0,
+    latestImages: {
+      rotation: 0,
+      preRotation: 0,
+      imageMetadata: [
+        {
+          id: 3,
+          imageType: 0,
+          contentType: 0,
+          version: 1,
+          size: 1536,
+          extension: 'png',
+          imageData: 'placeholder'
+        }
+      ]
+    },
+    marks: [],
+    importedFrom: 'test',
+    createdById: 2,
+    firstVersionCreated: '2025-09-18T08:30:00.000Z',
+    latestVersionCreated: '2025-09-18T08:30:00.000Z',
+    pageSize: 1
   }
 ]

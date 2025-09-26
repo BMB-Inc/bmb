@@ -4,7 +4,7 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getClientsDto, type GetClientsDto } from "@bmb-inc/types";
-import { SearchBySelect } from "./search-by-select";
+import { SearchBy } from "./SearchBy";
 // Removed custom params hook in favor of react-router's useSearchParams
 
 interface ClientSearchProps {
@@ -49,7 +49,7 @@ export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
 
   return (
       <Group gap="xs" align="stretch">
-        <SearchBySelect searchKey={searchKey} setSearchKey={setSearchKey} />
+        <SearchBy searchKey={searchKey} setSearchKey={setSearchKey} />
         <TextInput
           flex={1}
           placeholder={searchKey === 'clientCode' ? 'Search by client code...' : 'Search by client name...'} 

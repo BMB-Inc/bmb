@@ -1,6 +1,31 @@
 .root {
   font-family: var(--mantine-font-family-monospace);
   font-size: 13px;
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.root:hover {
+  transform: translate(0, -2px);
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
+  border-color: var(--mantine-color-gray-5);
+  background-color: var(--mantine-color-gray-0);
+}
+
+.rootExpanded {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 13px;
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+  @mixin light {
+    background-color: var(--mantine-color-blue-0);
+    border-color: var(--mantine-color-blue-4);
+  }
+
+  @mixin dark {
+    background-color: alpha(var(--mantine-color-blue-8), 0.35);
+    border-color: var(--mantine-color-blue-6);
+  }
 }
 
 .label {
@@ -29,5 +54,127 @@
       background-color: alpha(var(--mantine-color-blue-8), 0.35);
       color: var(--mantine-color-blue-0);
     }
+  }
+}
+
+.children {
+  padding-left: 16px;
+  border-left: 2px solid var(--mantine-color-gray-3);
+  margin-left: 6px;
+  margin-top: 6px;
+}
+
+.childItem {
+  padding: 4px 6px;
+  border-radius: var(--mantine-radius-sm);
+  cursor: pointer;
+
+  @mixin where-light {
+    background-color: var(--mantine-color-gray-0);
+  }
+
+  @mixin where-dark {
+    background-color: var(--mantine-color-dark-6);
+    color: var(--mantine-color-white);
+  }
+
+  &:hover {
+    @mixin where-light {
+      background-color: var(--mantine-color-gray-1);
+    }
+
+    @mixin where-dark {
+      background-color: var(--mantine-color-dark-5);
+      color: var(--mantine-color-white);
+    }
+  }
+}
+
+.childItemExpanded {
+  padding: 4px 6px;
+  border-radius: var(--mantine-radius-sm);
+  cursor: pointer;
+  @mixin light {
+    background-color: var(--mantine-color-blue-0);
+    border-color: var(--mantine-color-blue-4);
+  }
+  @mixin dark {
+    background-color: alpha(var(--mantine-color-blue-8), 0.35);
+    border-color: var(--mantine-color-blue-6);
+  }
+
+  &:hover {
+    @mixin light {
+      background-color: var(--mantine-color-blue-1);
+    }
+    @mixin dark {
+      background-color: alpha(var(--mantine-color-blue-8), 0.45);
+    }
+  }
+}
+
+.documentItem {
+  padding: 2px 6px;
+  border-radius: var(--mantine-radius-xs);
+  cursor: pointer;
+  @mixin where-light {
+    background-color: var(--mantine-color-gray-0);
+  }
+  @mixin where-dark {
+    background-color: var(--mantine-color-dark-6);
+    color: var(--mantine-color-white);
+  }
+
+  &:hover {
+    @mixin where-light {
+      background-color: var(--mantine-color-gray-1);
+    }
+    @mixin where-dark {
+      background-color: var(--mantine-color-dark-5);
+      color: var(--mantine-color-white);
+    }
+  }
+}
+
+.documentItemExpanded {
+  padding: 2px 6px;
+  border-radius: var(--mantine-radius-xs);
+  cursor: pointer;
+  @mixin light {
+    background-color: var(--mantine-color-blue-0);
+    border-color: var(--mantine-color-blue-4);
+  }
+  @mixin dark {
+    background-color: alpha(var(--mantine-color-blue-8), 0.35);
+    border-color: var(--mantine-color-blue-6);
+  }
+
+  &:hover {
+    @mixin light {
+      background-color: var(--mantine-color-blue-1);
+    }
+    @mixin dark {
+      background-color: alpha(var(--mantine-color-blue-8), 0.45);
+    }
+  }
+}
+
+/* Optional: for document pages nesting later */
+.pages {
+  padding-left: 16px;
+  border-left: 2px solid var(--mantine-color-gray-3);
+  margin-left: 6px;
+  margin-top: 6px;
+}
+
+.pageItem {
+  padding: 2px 6px;
+  border-radius: var(--mantine-radius-xs);
+  @mixin where-light {
+    background-color: var(--mantine-color-gray-0);
+  }
+  @mixin where-dark {
+    background-color: var(--mantine-color-dark-6);
+    color: var(--mantine-color-white);
   }
 }

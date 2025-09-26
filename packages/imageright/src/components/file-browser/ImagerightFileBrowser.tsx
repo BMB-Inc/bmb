@@ -1,11 +1,14 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Card, Stack, Skeleton, Box, Text } from '@mantine/core';
+import { Card, Stack, Skeleton } from '@mantine/core';
 import { useClients } from '@hooks/index';
 import { useGetChildren } from '@hooks/useGetChildren';
-import { ClientSearch } from './client-search';
+import { ClientSearch } from '../client-search/ClientSearch';
 import { type ImagerightClient } from '@bmb-inc/types';
 import { useSearchParams } from 'react-router-dom';
-import classes from '../modules/hover-card.module.css';
+import treeClasses from '@modules/file-tree.module.css';
+import { ClientCard } from './ClientCard';
+import { FolderRow } from './FolderRow';
+import { DocumentRow } from './DocumentRow';
 
 export const ImageRightFileBrowser = () => {
   const { data: clients, isLoading: clientsLoading, error: clientsError } = useClients();
@@ -56,60 +59,64 @@ export const ImageRightFileBrowser = () => {
           isLoading={clientsLoading}
           error={clientsError?.message}
         />
-        
-        {/* Simple text-based tree rendering */}
+
+        {/* Card-based tree rendering using reusable components */}
         <Stack>
           {(!clients || !Array.isArray(clients)) ? null : clients.map((client: ImagerightClient) => {
             const isClientExpanded = expandedClientId === client.id.toString();
             return (
-              <Card withBorder key={`client-${client.id}`} className={classes.hoverCard}>
-                <Box
-                  style={{ cursor: 'pointer', padding: 8, fontWeight: 600 }}
-                  onClick={() => toggleClient(client.id.toString())}
-                  aria-expanded={isClientExpanded}
-                >
-                  <Text fw={600}>
-                    ▸ {client.description} - {client.fileNumberPart1} ({client.drawerName})
-                  </Text>
-                </Box>
+              <div key={`client-${client.id}`}>
+                <ClientCard
+                  label={`${client.description} - ${client.fileNumberPart1} ${client.drawerName ? `(${client.drawerName})` : ''}`}
+                  expanded={isClientExpanded}
+                  onToggle={() => toggleClient(client.id.toString())}
+                />
+
                 {isClientExpanded && (
-                  <Stack style={{ paddingLeft: 16 }}>
+                  <Stack className={treeClasses.children}>
                     {clientChildrenLoading && (
-                      Array.from({ length: 10 }).map((_, i) => (
-                        <Box key={`client-${client.id}-skeleton-${i}`} style={{ opacity: 0.6 }}>
-                          <Skeleton height={12} width="60%" radius="sm" />
-                        </Box>
+                      Array.from({ length: 5 }).map((_, i) => (
+                        <Skeleton key={`client-${client.id}-skeleton-${i}`} height={12} width="60%" radius="sm" />
                       ))
                     )}
                     {!clientChildrenLoading && clientChildren && clientChildren.map(child => {
                       const isFolder = String(child.value).startsWith('folder-');
                       const folderId = isFolder ? String(child.value).replace('folder-', '') : null;
                       const isThisFolderExpanded = isFolder && expandedFolderId === folderId;
+                      const label = child.label as React.ReactNode;
                       return (
-                        <Card withBorder key={child.value} className={classes.hoverCard} onClick={() => isFolder && folderId && toggleFolder(folderId)}>
-                            <Text fw={isFolder ? 500 : 400}>
-                              {isFolder ? '▸' : '•'} {child.label}
-                            </Text>
+                        <div key={child.value}>
+                          <FolderRow
+                            label={label}
+                            expanded={!!isThisFolderExpanded}
+                            hasChildren={isFolder}
+                            onToggle={() => folderId && toggleFolder(folderId)}
+                          />
                           {isThisFolderExpanded && (
-                            <Stack style={{ paddingLeft: 16 }}>
+                            <Stack className={treeClasses.children}>
                               {folderChildrenLoading && (
-                                <Text fs="italic" style={{ opacity: 0.7 }}>Loading...</Text>
+                                <Skeleton height={12} width="40%" radius="sm" />
                               )}
-                              {!folderChildrenLoading && folderChildren && folderChildren.map(sub => (
-                                <Box key={sub.value}>
-                                  <Text fw={String(sub.value).startsWith('folder-') ? 500 : 400}>
-                                    {String(sub.value).startsWith('folder-') ? '▸' : '•'} {sub.label}
-                                  </Text>
-                                </Box>
-                              ))}
+                              {!folderChildrenLoading && folderChildren && folderChildren.map(sub => {
+                                const isSubFolder = String(sub.value).startsWith('folder-');
+                                return (
+                                  <DocumentRow
+                                    key={sub.value}
+                                    label={sub.label as React.ReactNode}
+                                    expanded={false}
+                                    hasChildren={!isSubFolder}
+                                    onToggle={() => {}}
+                                  />
+                                );
+                              })}
                             </Stack>
                           )}
-                        </Card>
+                        </div>
                       );
                     })}
                   </Stack>
                 )}
-              </Card>
+              </div>
             );
           })}
         </Stack>

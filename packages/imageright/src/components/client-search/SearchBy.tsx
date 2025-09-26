@@ -9,7 +9,7 @@ interface SearchBySelectProps {
   setSearchKey: (key: SearchKey) => void;
 }
 
-export const SearchBySelect = ({ searchKey, setSearchKey }: SearchBySelectProps) => {
+export const SearchBy = ({ searchKey, setSearchKey }: SearchBySelectProps) => {
   const [, setSearchParams] = useSearchParams();
 
   const schemaKeys = getClientsDto.keyof().options as readonly (keyof GetClientsDto)[];
