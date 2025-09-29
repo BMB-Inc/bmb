@@ -6,9 +6,10 @@ type DetailsTableProps = {
   items: BrowserItem[];
   onFolderOpen: (id: number) => void;
   onClientOpen?: (id: number) => void;
+  onDocumentOpen?: (id: number) => void;
 };
 
-export function DetailsTable({ items, onFolderOpen, onClientOpen }: DetailsTableProps) {
+export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen }: DetailsTableProps) {
   return (
     <Table withRowBorders={false} verticalSpacing="xs" highlightOnHover>
       <Table.Thead>
@@ -25,8 +26,9 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen }: DetailsTable
             onClick={() => {
               if (item.kind === 'folder') onFolderOpen(item.id);
               if (item.kind === 'client') onClientOpen?.(item.id);
+              if (item.kind === 'document') onDocumentOpen?.(item.id);
             }}
-            style={{ cursor: item.kind === 'folder' || item.kind === 'client' ? 'pointer' : 'default' }}
+            style={{ cursor: item.kind === 'folder' || item.kind === 'client' || item.kind === 'document' ? 'pointer' : 'default' }}
           >
             <Table.Td>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

@@ -10,6 +10,7 @@ import { useBrowserNavigation } from '../../hooks/useBrowserNavigation';
 import { useClients } from '@hooks/index';
 import { usePolicyFolders } from '@hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
+import DocumentPages from './DocumentPages';
 
 export const ImageRightFileBrowser = () => {
   // Real data hooks
@@ -17,11 +18,13 @@ export const ImageRightFileBrowser = () => {
   const {
     clientId: expandedClientId,
     folderId: expandedFolderId,
+    documentId: expandedDocumentId,
     currentFolderId,
     navigateToClients: clearToClients,
     navigateToClient,
     navigateToClientRoot: goToClientRoot,
     navigateIntoFolder,
+    navigateToDocument,
   } = useBrowserNavigation();
   // No local label state; derive labels from data for simplicity
 
@@ -39,6 +42,7 @@ export const ImageRightFileBrowser = () => {
       : undefined,
   );
   const currentLoading = foldersLoading || documentsLoading;
+
 
   // Build current level items (clients, folders, documents) for details view
   const currentItems = useMemo(() => {
@@ -162,7 +166,13 @@ export const ImageRightFileBrowser = () => {
               <DetailsTable
                 items={currentItems}
                 onFolderOpen={(id) => navigateIntoFolder(id.toString())}
+                onDocumentOpen={(id) => navigateToDocument(id.toString())}
               />
+            )}
+
+            {/* Pages panel for selected document */}
+            {expandedDocumentId && (
+              <DocumentPages documentId={Number(expandedDocumentId)} />
             )}
           </Stack>
         )}
