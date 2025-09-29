@@ -30,13 +30,17 @@ export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
   // Update URL params when the debounced query changes
   useEffect(() => {
     setSearchParams(prev => {
-      const params = new URLSearchParams(prev);
       const trimmed = debouncedSearchQuery.trim();
+      if (!trimmed) {
+        // When cleared, reset to empty state (remove all params)
+        return new URLSearchParams();
+      }
+      const params = new URLSearchParams(prev);
       // Ensure only the active key exists among all allowed keys
       for (const key of searchKeys) {
         if (key !== searchKey) params.delete(key);
       }
-      if (trimmed) params.set(searchKey, trimmed); else params.delete(searchKey);
+      params.set(searchKey, trimmed);
       return params;
     });
   }, [debouncedSearchQuery, searchKey, setSearchParams]);
@@ -56,7 +60,9 @@ export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
           error={error}
           leftSection={<IconSearch />} 
           rightSection={isLoading ? <Loader size="xs" color="blue" /> : searchQuery ? <ActionIcon size="xs" color="dimmed" variant="subtle" onClick={() => {
+            // Immediate clear: input + URL params → empty state
             setSearchQuery('');
+            setSearchParams(new URLSearchParams());
           }}><IconX /></ActionIcon> : undefined} 
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}

@@ -1,125 +1,171 @@
-import { useState, useCallback, useEffect } from 'react';
-import { Card, Stack, Skeleton } from '@mantine/core';
-import { useClients } from '@hooks/index';
-import { useGetChildren } from '@hooks/useGetChildren';
+import { useMemo, useEffect, useState } from 'react';
+import { Card, Stack, Skeleton, Center, Text } from '@mantine/core';
 import { ClientSearch } from '../client-search/ClientSearch';
 import { type ImagerightClient } from '@bmb-inc/types';
-import { useSearchParams } from 'react-router-dom';
-import treeClasses from '@modules/file-tree.module.css';
-import { ClientCard } from './ClientCard';
-import { FolderRow } from './FolderRow';
-import { DocumentRow } from './DocumentRow';
+// ClientCard used inside ClientList
+import BreadcrumbNav from './BreadcrumbNav';
+import DetailsTable from './DetailsTable';
+import { IconSearch } from '@tabler/icons-react';
+import { useBrowserNavigation } from '../../hooks/useBrowserNavigation';
+import { useClients } from '@hooks/index';
+import { usePolicyFolders } from '@hooks/useFolders';
+import { useDocuments } from '@hooks/useDocuments';
 
 export const ImageRightFileBrowser = () => {
-  const { data: clients, isLoading: clientsLoading, error: clientsError } = useClients();
-  const [expandedClientId, setExpandedClientId] = useState<string | null>(null);
-  const [expandedFolderId, setExpandedFolderId] = useState<string | null>(null);
-  const [searchParams] = useSearchParams();
-  
-  // Fetch client-level children (folders only; documents gated by folderId)
-  const { children: clientChildren, isLoading: clientChildrenLoading } = useGetChildren(
-    expandedClientId ? { clientId: Number(expandedClientId) } : undefined,
-  );
+  // Real data hooks
+  const { data: clients = [], isLoading: clientsLoading } = useClients();
+  const {
+    clientId: expandedClientId,
+    folderId: expandedFolderId,
+    currentFolderId,
+    navigateToClients: clearToClients,
+    navigateToClient,
+    navigateToClientRoot: goToClientRoot,
+    navigateIntoFolder,
+  } = useBrowserNavigation();
+  // No local label state; derive labels from data for simplicity
 
-  // Fetch folder-level children (subfolders + documents)
-  const { children: folderChildren, isLoading: folderChildrenLoading } = useGetChildren(
-    expandedClientId && expandedFolderId
-      ? { clientId: Number(expandedClientId), folderId: Number(expandedFolderId) }
+  // Current-level folders and documents
+  const { data: folders = [], isLoading: foldersLoading } = usePolicyFolders(
+    expandedClientId
+      ? (currentFolderId
+          ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId) }
+          : { clientId: Number(expandedClientId) })
       : undefined,
   );
+  const { data: documents = [], isLoading: documentsLoading } = useDocuments(
+    expandedClientId && currentFolderId
+      ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId) }
+      : undefined,
+  );
+  const currentLoading = foldersLoading || documentsLoading;
 
-  useEffect(() => {
-    console.log('clientChildren', clientChildren);
-    console.log('folderChildren', folderChildren);
-  }, [clientChildren, folderChildren]);
+  // Build current level items (clients, folders, documents) for details view
+  const currentItems = useMemo(() => {
+    const toDateStr = (iso?: string | null) => {
+      if (!iso) return '';
+      const dt = new Date(iso);
+      return isNaN(dt.getTime()) ? '' : dt.toLocaleDateString();
+    };
+    const toTs = (iso?: string | null) => {
+      if (!iso) return 0;
+      const dt = new Date(iso);
+      return isNaN(dt.getTime()) ? 0 : dt.getTime();
+    };
 
-  // Initialize expanded client from URL param if present
-  useEffect(() => {
-    const id = searchParams.get('clientId');
-    if (id && id !== expandedClientId) {
-      setExpandedClientId(id);
+    if (!expandedClientId) {
+      return (clients || []).map((c: any) => ({
+        kind: 'client' as const,
+        id: c.id,
+        name: `${c.description} - ${c.fileNumberPart1} ${c.drawerName ? `(${c.drawerName})` : ''}`,
+        type: c.fileTypeName || 'Client',
+        modified: c.lastModified ? toDateStr(c.lastModified) : '',
+      })) as import('./types').BrowserItem[];
     }
-  }, [searchParams]);
 
-  // No external tree expand handler needed with text-based renderer
+    // Sort folders by lastModified desc before mapping
+    const folderItems = (folders || [])
+      .slice()
+      .sort((a: any, b: any) => toTs(b?.lastModified) - toTs(a?.lastModified))
+      .map((f: any) => ({
+      kind: 'folder' as const,
+      id: f.id,
+      name: f.description || `Folder ${f.id}`,
+      type: f.folderTypeName || f.folderTypeDescription || 'Folder',
+      modified: toDateStr((f as any).lastModified),
+    }));
+    if (!currentFolderId) {
+      return folderItems as import('./types').BrowserItem[];
+    }
 
-  const toggleClient = useCallback((clientId: string) => {
-    setExpandedClientId(prev => (prev === clientId ? null : clientId));
-    setExpandedFolderId(null);
-  }, []);
-  
-  const toggleFolder = useCallback((folderId: string) => {
-    setExpandedFolderId(prev => (prev === folderId ? null : folderId));
-  }, []);
+    // Sort documents by dateLastModified/dateCreated desc before mapping
+    const documentItems = (documents || [])
+      .slice()
+      .sort((a: any, b: any) => toTs(b?.dateLastModified || b?.dateCreated) - toTs(a?.dateLastModified || a?.dateCreated))
+      .map((d: any) => ({
+      kind: 'document' as const,
+      id: d.id,
+      name: d.documentName || d.description || `Document ${d.id}`,
+      type: d.documentTypeDescription || 'Document',
+      modified: toDateStr(d.dateLastModified || d.dateCreated),
+    }));
+    return [...folderItems, ...documentItems] as import('./types').BrowserItem[];
+  }, [clients, expandedClientId, folders, documents, currentFolderId]);
+
+  const hasClients = Array.isArray(clients) && clients.length > 0;
+
+  const [folderLabelMap, setFolderLabelMap] = useState<Record<string, string>>({});
+  useEffect(() => {
+    if (folders && folders.length) {
+      setFolderLabelMap(prev => {
+        const next = { ...prev };
+        for (const f of folders as any[]) {
+          next[String(f.id)] = f.description || `Folder ${f.id}`;
+        }
+        return next;
+      });
+    }
+  }, [folders]);
+
+  const breadcrumbItems = (
+    <BreadcrumbNav
+      expandedClientId={expandedClientId}
+      clientLabel={(() => {
+          const found = (clients || []).find((c: ImagerightClient) => c.id.toString() === expandedClientId);
+          return found
+            ? `${found.description} - ${found.fileNumberPart1} ${found.drawerName ? `(${found.drawerName})` : ''}`
+            : undefined;
+        })()}
+      folderId={expandedFolderId}
+      folderLabel={expandedFolderId ? folderLabelMap[expandedFolderId] : undefined}
+      onClientsClick={clearToClients}
+      onClientRootClick={goToClientRoot}
+    />
+  );
 
   return (
     <Card withBorder>
       <Stack>
         <ClientSearch
           isLoading={clientsLoading}
-          error={clientsError?.message}
+          error={undefined}
         />
 
-        {/* Card-based tree rendering using reusable components */}
-        <Stack>
-          {(!clients || !Array.isArray(clients)) ? null : clients.map((client: ImagerightClient) => {
-            const isClientExpanded = expandedClientId === client.id.toString();
-            return (
-              <div key={`client-${client.id}`}>
-                <ClientCard
-                  label={`${client.description} - ${client.fileNumberPart1} ${client.drawerName ? `(${client.drawerName})` : ''}`}
-                  expanded={isClientExpanded}
-                  onToggle={() => toggleClient(client.id.toString())}
-                />
+        {(expandedClientId || hasClients) && breadcrumbItems}
 
-                {isClientExpanded && (
-                  <Stack className={treeClasses.children}>
-                    {clientChildrenLoading && (
-                      Array.from({ length: 5 }).map((_, i) => (
-                        <Skeleton key={`client-${client.id}-skeleton-${i}`} height={12} width="60%" radius="sm" />
-                      ))
-                    )}
-                    {!clientChildrenLoading && clientChildren && clientChildren.map(child => {
-                      const isFolder = String(child.value).startsWith('folder-');
-                      const folderId = isFolder ? String(child.value).replace('folder-', '') : null;
-                      const isThisFolderExpanded = isFolder && expandedFolderId === folderId;
-                      const label = child.label as React.ReactNode;
-                      return (
-                        <div key={child.value}>
-                          <FolderRow
-                            label={label}
-                            expanded={!!isThisFolderExpanded}
-                            hasChildren={isFolder}
-                            onToggle={() => folderId && toggleFolder(folderId)}
-                          />
-                          {isThisFolderExpanded && (
-                            <Stack className={treeClasses.children}>
-                              {folderChildrenLoading && (
-                                <Skeleton height={12} width="40%" radius="sm" />
-                              )}
-                              {!folderChildrenLoading && folderChildren && folderChildren.map(sub => {
-                                const isSubFolder = String(sub.value).startsWith('folder-');
-                                return (
-                                  <DocumentRow
-                                    key={sub.value}
-                                    label={sub.label as React.ReactNode}
-                                    expanded={false}
-                                    hasChildren={!isSubFolder}
-                                    onToggle={() => {}}
-                                  />
-                                );
-                              })}
-                            </Stack>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </Stack>
-                )}
-              </div>
-            );
-          })}
-        </Stack>
+        {/* Single-pane content area */}
+        {!expandedClientId && (
+          hasClients ? (
+            <DetailsTable
+              items={currentItems}
+              onFolderOpen={() => {}}
+              onClientOpen={(id) => navigateToClient(id.toString())}
+            />
+          ) : (
+            <Center mih={160} style={{ border: '1px dashed var(--mantine-color-gray-4)', borderRadius: 6 }}>
+              <Stack gap={6} align="center">
+                <IconSearch size={20} color="var(--mantine-color-gray-6)" />
+                <Text c="dimmed" size="sm">Search for a client by code or name to get started</Text>
+              </Stack>
+            </Center>
+          )
+        )}
+
+        {expandedClientId && (
+          <Stack>
+            {currentLoading && (
+              Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={`skeleton-${i}`} height={12} width={i % 2 === 0 ? '60%' : '40%'} radius="sm" />
+              ))
+            )}
+            {!currentLoading && (
+              <DetailsTable
+                items={currentItems}
+                onFolderOpen={(id) => navigateIntoFolder(id.toString())}
+              />
+            )}
+          </Stack>
+        )}
       </Stack>
     </Card>
   );
