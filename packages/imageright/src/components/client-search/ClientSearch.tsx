@@ -27,23 +27,27 @@ export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
   const [searchQuery, setSearchQuery] = useState(() => searchParams.get((searchKeys.find(k => !!searchParams.get(k as string)) ?? 'clientCode') as string) ?? '');
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
 
-  // Update URL params when the debounced query changes
+  // Update URL params; when input empty remove only search keys, otherwise set on debounce
   useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setSearchParams(prev => {
+        const params = new URLSearchParams(prev);
+        for (const key of searchKeys) params.delete(key);
+        return params;
+      });
+      return;
+    }
     setSearchParams(prev => {
       const trimmed = debouncedSearchQuery.trim();
-      if (!trimmed) {
-        // When cleared, reset to empty state (remove all params)
-        return new URLSearchParams();
-      }
       const params = new URLSearchParams(prev);
       // Ensure only the active key exists among all allowed keys
       for (const key of searchKeys) {
         if (key !== searchKey) params.delete(key);
       }
-      params.set(searchKey, trimmed);
+      if (trimmed) params.set(searchKey, trimmed);
       return params;
     });
-  }, [debouncedSearchQuery, searchKey, setSearchParams]);
+  }, [searchQuery, debouncedSearchQuery, searchKey, setSearchParams]);
 
   // Keep local state in sync if URL changes externally (navigation)
   useEffect(() => {

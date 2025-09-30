@@ -30,8 +30,14 @@ export function useBrowserNavigation() {
 
   const navigateToClient = useCallback((clientId: string) => {
     setState({ clientId, folderId: null, documentId: null, pageId: null });
-    setSearchParams({ clientId }, { replace: false });
-  }, [setSearchParams]);
+    const params = new URLSearchParams(searchParams);
+    // Preserve existing search keys (e.g., clientCode/clientName), update clientId
+    params.set('clientId', clientId);
+    params.delete('folderId');
+    params.delete('documentId');
+    params.delete('pageId');
+    setSearchParams(params, { replace: false });
+  }, [searchParams, setSearchParams]);
 
   const navigateToClientRoot = useCallback(() => {
     if (!state.clientId) return;
@@ -64,6 +70,18 @@ export function useBrowserNavigation() {
     setSearchParams(params, { replace: false });
   }, [searchParams, setSearchParams, state.clientId, state.folderId]);
 
+  const clearNavigation = useCallback(() => {
+    setState(prev => ({ ...prev, clientId: null, folderId: null, documentId: null, pageId: null }));
+    setSearchParams(prev => {
+      const params = new URLSearchParams(prev);
+      params.delete('clientId');
+      params.delete('folderId');
+      params.delete('documentId');
+      params.delete('pageId');
+      return params;
+    }, { replace: false });
+  }, [setSearchParams]);
+
   const navigateToPage = useCallback((pageId: string) => {
     setState(prev => ({ ...prev, pageId }));
     const params = new URLSearchParams(searchParams);
@@ -85,6 +103,7 @@ export function useBrowserNavigation() {
     navigateToClientRoot,
     navigateIntoFolder,
     navigateToDocument,
+    clearNavigation,
     navigateToPage,
   } as const;
 }

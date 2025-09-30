@@ -10,7 +10,7 @@ interface SearchFieldSelectorProps {
 }
 
 export function SearchFieldSelector({ 
-  defaultField = 'staffName', 
+  defaultField = 'staffCode', 
   onFieldChange, 
   width = '120px' 
 }: SearchFieldSelectorProps) {
