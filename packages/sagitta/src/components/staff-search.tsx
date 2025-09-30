@@ -1,7 +1,7 @@
 import { Group, Loader, Select, type SelectProps } from '@mantine/core';
 import { useGetStaff } from '../hooks/useGetStaff';
 import { IconSearch } from '@tabler/icons-react';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useStaffUrlParams } from '../hooks/useStaffUrlParams';
 import { useStaffDataTransform } from '../hooks/useStaffDataTransform';
@@ -22,7 +22,7 @@ function StaffSearch({ label, placeholder, onChange, showParamsSelection = true,
   // State management
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery] = useDebouncedValue(searchQuery, 800);
-  const [searchField, setSearchField] = useState<SearchField>('staffName');
+  const [searchField, setSearchField] = useState<SearchField>('staffCode');
   const [error, setError] = useState<Error | null>(null);
   
   // Custom hooks for URL params and data transformation
@@ -87,6 +87,29 @@ function StaffSearch({ label, placeholder, onChange, showParamsSelection = true,
       onChange(value);
     }
   }, [updateStaffCode, onChange]);
+
+  // Auto-select when the search yields exactly one result
+  useEffect(() => {
+    if (isLoading || isLoadingSelected) return;
+    if (!debouncedQuery || debouncedQuery.trim().length === 0) return;
+    if (searchOptions.length !== 1) return;
+
+    const only = searchOptions[0];
+    let value: string | null = null;
+
+    if (typeof only === 'string') {
+      value = only;
+    } else if (only && typeof only === 'object') {
+      if ('items' in only) return; // It's a group, ignore
+      if ('value' in only && typeof only.value === 'string') {
+        value = only.value;
+      }
+    }
+
+    if (value && value !== selectedStaffCode) {
+      handleSelectionChange(value);
+    }
+  }, [searchOptions, isLoading, isLoadingSelected, debouncedQuery, selectedStaffCode, handleSelectionChange]);
 
 
 
