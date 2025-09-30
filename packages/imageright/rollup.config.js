@@ -3,6 +3,10 @@ import dts from "rollup-plugin-dts";
 import replace from "@rollup/plugin-replace";
 import alias from '@rollup/plugin-alias';
 import path from 'node:path';
+import dotenv from 'dotenv';
+
+// Load environment variables from .env if present
+dotenv.config();
 
 // Custom plugin to handle CSS modules - exports empty object since styles will be handled by consuming app
 const cssModulePlugin = () => ({
@@ -67,7 +71,20 @@ export default [
       cssModulePlugin(),
       replace({
         preventAssignment: true,
-        values: {}
+        values: (() => {
+          // Add any VITE_* keys your package needs here
+          const envKeys = [
+            'VITE_IMAGERIGHT_API_URL',
+          ];
+          const values = {};
+          for (const key of envKeys) {
+            const val = process.env[key] ?? '';
+            // Support both import.meta.env.KEY and (import.meta as any).env.KEY forms
+            values[`import.meta.env.${key}`] = JSON.stringify(val);
+            values[`(import.meta as any).env.${key}`] = JSON.stringify(val);
+          }
+          return values;
+        })()
       }),
       typescript({ 
         tsconfig: "tsconfig.json",
