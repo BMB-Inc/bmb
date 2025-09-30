@@ -36,7 +36,9 @@
     "build:auth-context": "yarn workspace @bmb-inc/auth-context build",
     "publish:auth-context": "yarn workspace @bmb-inc/auth-context version patch && yarn workspace @bmb-inc/auth-context npm publish",
     "build:sagitta": "yarn workspace @bmb-inc/sagitta build",
-    "publish:sagitta": "yarn workspace @bmb-inc/sagitta version patch && yarn workspace @bmb-inc/sagitta npm publish"
+    "publish:sagitta": "yarn workspace @bmb-inc/sagitta version patch && yarn workspace @bmb-inc/sagitta npm publish",
+    "build:imageright": "yarn workspace @bmb-inc/imageright build",
+    "publish:imageright": "yarn workspace @bmb-inc/imageright version patch && yarn workspace @bmb-inc/imageright npm publish"
   },
   "keywords": [
     "bmb",

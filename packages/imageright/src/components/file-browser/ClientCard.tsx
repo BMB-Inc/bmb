@@ -1,6 +1,6 @@
 import { Card, Group, Text } from "@mantine/core";
 import { IconBuilding, IconChevronDown, IconChevronRight } from '@tabler/icons-react';
-import classes from '@modules/file-tree.module.css'
+import classes from '../../modules/file-tree.module.css'
 
 type ClientCardProps = {
   label: string;

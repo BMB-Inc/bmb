@@ -1,6 +1,6 @@
 import { Checkbox, Group, Text } from "@mantine/core";
 import { IconFile } from '@tabler/icons-react';
-import classes from '@modules/file-tree.module.css'
+import classes from '../../modules/file-tree.module.css'
 
 type PageRowProps = {
   label: string;

@@ -1,6 +1,6 @@
 import { Group, Text } from "@mantine/core";
 import { IconChevronDown, IconChevronRight, IconFileText } from '@tabler/icons-react';
-import classes from '@modules/file-tree.module.css'
+import classes from '../../modules/file-tree.module.css'
 import type { ReactNode } from 'react';
 
 type DocumentRowProps = {

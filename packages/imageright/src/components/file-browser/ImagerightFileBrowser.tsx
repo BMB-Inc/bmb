@@ -48,7 +48,6 @@ export const ImageRightFileBrowser = () => {
     if (Array.isArray(documents) && documents.length > 0) {
       const firstDoc: any = documents[0];
       const firstFolder = firstDoc?.folder;
-      console.log('first folder', firstFolder);
       if (firstFolder?.description) return String(firstFolder.description);
     }
     return undefined;
