@@ -130,6 +130,7 @@ function StaffSearch({ label, placeholder, onChange, showParamsSelection = true,
         rightSection={(isLoading || isLoadingSelected) ? <Loader size="xs" /> : null}
         searchable
         clearable
+        allowDeselect={false}
         onSearchChange={(query) => {
           // Don't clear search results when the component clears the input after selection
           if (query !== '' || combinedOptions.length === 0) {

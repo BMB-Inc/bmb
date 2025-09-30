@@ -2,6 +2,8 @@ import { Stack, Divider, Title, Skeleton } from '@mantine/core';
 import { useBrowserNavigation } from '../../hooks/useBrowserNavigation';
 import { usePages } from '@hooks/usePages';
 import PageRow from './PageRow';
+import { useCallback, useEffect } from 'react';
+import { useSelectedPages } from '@hooks/index';
 
 type DocumentPagesProps = {
   documentId: number;
@@ -9,7 +11,20 @@ type DocumentPagesProps = {
 
 export function DocumentPages({ documentId }: DocumentPagesProps) {
   const { data: pages = [], isLoading } = usePages({ documentId });
-  const { navigateToPage, pageId } = useBrowserNavigation();
+  const { navigateToPage } = useBrowserNavigation();
+  const { isSelected, toggleSelected, clearSelected } = useSelectedPages();
+
+  const isChecked = useCallback((id: number) => isSelected(id), [isSelected]);
+  const toggleChecked = useCallback((id: number, value?: boolean) => {
+    toggleSelected(id, value);
+  }, [toggleSelected]);
+  useEffect(() => {
+    // Clear selected pages when the document changes
+    clearSelected();
+  }, [documentId, clearSelected]);
+
+
+  
 
   if (isLoading) {
     return (
@@ -33,26 +48,11 @@ export function DocumentPages({ documentId }: DocumentPagesProps) {
         <PageRow
           key={p.id}
           label={p.description || `Page ${p.pagenumber ?? ''}`}
-          selected={String(p.id) === pageId}
+          checked={isChecked(p.id)}
+          onCheckedChange={(v) => toggleChecked(p.id, v)}
           onSelect={() => navigateToPage(String(p.id))}
           onDoubleClick={async () => {
-            try {
-              const imageMeta = p.latestImages?.imageMetadata?.[0];
-              if (!imageMeta?.id) return;
-              const res = await (await import('@api/images/route')).getImages(
-                Number(p.id),
-                Number(imageMeta.id),
-                imageMeta?.version ? Number(imageMeta.version) : undefined,
-              );
-              const contentType = res.headers.get('content-type') || 'application/octet-stream';
-              const buf = await res.arrayBuffer();
-              const bytes = new Uint8Array(buf);
-              console.log('getImages bytes:', { contentType, length: bytes.length });
-              const event = new CustomEvent('imageright:image-bytes', { detail: { pageId: p.id, bytes, contentType } });
-              window.dispatchEvent(event);
-            } catch (e) {
-              console.error('Failed to fetch image bytes', e);
-            }
+            toggleChecked(p.id, true);
           }}
         />
       ))}

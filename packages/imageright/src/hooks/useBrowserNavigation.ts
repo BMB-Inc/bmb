@@ -25,7 +25,14 @@ export function useBrowserNavigation() {
 
   const navigateToClients = useCallback(() => {
     setState({ clientId: null, folderId: null, documentId: null, pageId: null });
-    setSearchParams({}, { replace: false });
+    setSearchParams(prev => {
+      const params = new URLSearchParams(prev);
+      params.delete('clientId');
+      params.delete('folderId');
+      params.delete('documentId');
+      params.delete('pageId');
+      return params;
+    }, { replace: false });
   }, [setSearchParams]);
 
   const navigateToClient = useCallback((clientId: string) => {

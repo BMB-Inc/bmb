@@ -7,9 +7,10 @@ type DetailsTableProps = {
   onFolderOpen: (id: number) => void;
   onClientOpen?: (id: number) => void;
   onDocumentOpen?: (id: number) => void;
+  selectedDocumentId?: number | null;
 };
 
-export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen }: DetailsTableProps) {
+export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen, selectedDocumentId }: DetailsTableProps) {
   return (
     <Table withRowBorders={false} verticalSpacing="xs" highlightOnHover>
       <Table.Thead>
@@ -28,13 +29,16 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
               if (item.kind === 'client') onClientOpen?.(item.id);
               if (item.kind === 'document') onDocumentOpen?.(item.id);
             }}
-            style={{ cursor: item.kind === 'folder' || item.kind === 'client' || item.kind === 'document' ? 'pointer' : 'default' }}
+            style={{
+              cursor: item.kind === 'folder' || item.kind === 'client' || item.kind === 'document' ? 'pointer' : 'default',
+              backgroundColor: item.kind === 'document' && selectedDocumentId === item.id ? 'var(--mantine-color-blue-0)' : undefined,
+            }}
           >
             <Table.Td>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 {item.kind === 'folder' && <IconFolder size={16} color="var(--mantine-color-yellow-7)" />}
                 {item.kind === 'client' && <IconBuilding size={16} color="var(--mantine-color-blue-5)" />}
-                {item.kind === 'document' && <IconFileText size={16} color="var(--mantine-color-blue-7)" />}
+                {item.kind === 'document' && <IconFileText size={16} color={selectedDocumentId === item.id ? 'var(--mantine-color-blue-9)' : 'var(--mantine-color-blue-7)'} />}
                 {item.name}
               </div>
             </Table.Td>

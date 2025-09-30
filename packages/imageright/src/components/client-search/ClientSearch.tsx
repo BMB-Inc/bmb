@@ -30,11 +30,8 @@ export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
   // Update URL params; when input empty remove only search keys, otherwise set on debounce
   useEffect(() => {
     if (searchQuery.trim() === '') {
-      setSearchParams(prev => {
-        const params = new URLSearchParams(prev);
-        for (const key of searchKeys) params.delete(key);
-        return params;
-      });
+      // Clear all params to reset to empty state (no breadcrumbs, no selection)
+      setSearchParams(new URLSearchParams());
       return;
     }
     setSearchParams(prev => {

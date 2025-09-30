@@ -43,6 +43,17 @@ export const ImageRightFileBrowser = () => {
   );
   const currentLoading = foldersLoading || documentsLoading;
 
+  // Prefer folder name from the first document's folder info when available
+  const folderLabelFromDocs = useMemo(() => {
+    if (Array.isArray(documents) && documents.length > 0) {
+      const firstDoc: any = documents[0];
+      const firstFolder = firstDoc?.folder;
+      console.log('first folder', firstFolder);
+      if (firstFolder?.description) return String(firstFolder.description);
+    }
+    return undefined;
+  }, [documents]);
+
 
   // Build current level items (clients, folders, documents) for details view
   const currentItems = useMemo(() => {
@@ -104,7 +115,8 @@ export const ImageRightFileBrowser = () => {
       setFolderLabelMap(prev => {
         const next = { ...prev };
         for (const f of folders as any[]) {
-          next[String(f.id)] = f.description || `Folder ${f.id}`;
+          const label = f.description || `Folder ${f.id}`;
+          next[String(f.id)] = label;
         }
         return next;
       });
@@ -121,7 +133,7 @@ export const ImageRightFileBrowser = () => {
             : undefined;
         })()}
       folderId={expandedFolderId}
-      folderLabel={expandedFolderId ? folderLabelMap[expandedFolderId] : undefined}
+      folderLabel={expandedFolderId ? (folderLabelFromDocs ?? folderLabelMap[expandedFolderId]) : undefined}
       onClientsClick={clearToClients}
       onClientRootClick={goToClientRoot}
     />
@@ -167,6 +179,7 @@ export const ImageRightFileBrowser = () => {
                 items={currentItems}
                 onFolderOpen={(id) => navigateIntoFolder(id.toString())}
                 onDocumentOpen={(id) => navigateToDocument(id.toString())}
+                selectedDocumentId={expandedDocumentId ? Number(expandedDocumentId) : null}
               />
             )}
 
