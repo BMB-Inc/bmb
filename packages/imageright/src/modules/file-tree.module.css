@@ -171,6 +171,7 @@
   padding: 2px 6px;
   border-radius: var(--mantine-radius-xs);
   cursor: pointer;
+  user-select: none;
   @mixin where-light {
     background-color: var(--mantine-color-gray-0);
   }

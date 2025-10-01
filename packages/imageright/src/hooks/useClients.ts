@@ -1,5 +1,5 @@
+import { useEffect, useState } from "react";
 import { getClients } from "@api/index";
-import { useQuery } from "@tanstack/react-query";
 import { useQueryStates, parseAsString } from "nuqs";
 
 export const useClients = () => {
@@ -10,18 +10,28 @@ export const useClients = () => {
 
   const code = (clientCode ?? '').trim();
   const name = (clientName ?? '').trim();
-
   const hasSearchQuery = !!code || !!name;
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["clients", code, name],
-    queryFn: () => getClients({ ...(code && { clientCode: code }), ...(name && { clientName: name }) }),
-    enabled: hasSearchQuery,
-  });
+  const [data, setData] = useState<Awaited<ReturnType<typeof getClients>> | []>([]);
+  const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
-  if (!hasSearchQuery) {
-    return { data: [], isLoading: false, error: null };
-  }
+  useEffect(() => {
+    let cancelled = false;
+    if (!hasSearchQuery) {
+      setData([]);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    getClients({ ...(code && { clientCode: code }), ...(name && { clientName: name }) })
+      .then((res) => { if (!cancelled) setData(res ?? []); })
+      .catch((err: unknown) => { if (!cancelled) setError(err as Error); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [code, name, hasSearchQuery]);
 
-  return { data: data || [], isLoading, error };
+  return { data, isLoading, error } as const;
 }

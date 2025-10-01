@@ -52,7 +52,8 @@ export function DocumentPages({ documentId }: DocumentPagesProps) {
           onCheckedChange={(v) => toggleChecked(p.id, v)}
           onSelect={() => navigateToPage(String(p.id))}
           onDoubleClick={async () => {
-            toggleChecked(p.id, true);
+            const currentlySelected = isChecked(p.id);
+            toggleChecked(p.id, !currentlySelected);
           }}
         />
       ))}
