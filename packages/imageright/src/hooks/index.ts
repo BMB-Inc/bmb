@@ -4,5 +4,4 @@ export * from './useFolders';
 export * from './useDocuments';
 export * from './usePages';
 export * from './useImages';
-export * from './useUrlParams';
 export * from './useSelectedPages';

@@ -170,11 +170,22 @@
 .pageItem {
   padding: 2px 6px;
   border-radius: var(--mantine-radius-xs);
+  cursor: pointer;
   @mixin where-light {
     background-color: var(--mantine-color-gray-0);
   }
   @mixin where-dark {
     background-color: var(--mantine-color-dark-6);
     color: var(--mantine-color-white);
+  }
+
+  &:hover {
+    @mixin where-light {
+      background-color: var(--mantine-color-gray-1);
+    }
+    @mixin where-dark {
+      background-color: var(--mantine-color-dark-5);
+      color: var(--mantine-color-white);
+    }
   }
 }

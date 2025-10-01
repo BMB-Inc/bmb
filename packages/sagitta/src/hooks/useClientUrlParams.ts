@@ -1,19 +1,7 @@
-import { useSearchParams } from 'react-router-dom';
+import { useQueryState, parseAsString } from 'nuqs';
 
 export function useClientUrlParams() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const clientId = searchParams.get('clientId');
-  
-  const updateClientId = (value: string | null) => {
-    setSearchParams(params => {
-      if (value) {
-        params.set('clientId', value);
-      } else {
-        params.delete('clientId');
-      }
-      return params;
-    }, { replace: true });
-  };
-
+  const [clientId, setClientId] = useQueryState('clientId', parseAsString);
+  const updateClientId = (value: string | null) => setClientId(value, { history: 'replace' });
   return { clientId, updateClientId };
 }

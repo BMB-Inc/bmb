@@ -1,19 +1,7 @@
-import { useSearchParams } from 'react-router-dom';
+import { useQueryState, parseAsString } from 'nuqs';
 
 export function useStaffUrlParams() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const staffCode = searchParams.get('staffCode');
-  
-  const updateStaffCode = (value: string | null) => {
-    setSearchParams(params => {
-      if (value) {
-        params.set('staffCode', value);
-      } else {
-        params.delete('staffCode');
-      }
-      return params;
-    }, { replace: true });
-  };
-
+  const [staffCode, setStaffCode] = useQueryState('staffCode', parseAsString);
+  const updateStaffCode = (value: string | null) => setStaffCode(value, { history: 'replace' });
   return { staffCode, updateStaffCode };
 }

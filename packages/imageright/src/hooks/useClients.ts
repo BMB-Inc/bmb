@@ -1,27 +1,22 @@
 import { getClients } from "@api/index";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "react-router-dom";
+import { useQueryStates, parseAsString } from "nuqs";
 
 export const useClients = () => {
-  const [searchParams] = useSearchParams();
-  const clientCode = searchParams.get('clientCode') || '';
-  const clientName = searchParams.get('clientName') || '';
-  
-  // Create search params object from URL params - only include non-empty values
-  const params: { clientCode?: string; clientName?: string } = {};
-  if (clientCode.trim()) {
-    params.clientCode = clientCode.trim();
-  }
-  if (clientName.trim()) {
-    params.clientName = clientName.trim();
-  }
-  
-  const hasSearchQuery = Object.keys(params).length > 0;
-  
+  const [{ clientCode, clientName }] = useQueryStates({
+    clientCode: parseAsString,
+    clientName: parseAsString,
+  });
+
+  const code = (clientCode ?? '').trim();
+  const name = (clientName ?? '').trim();
+
+  const hasSearchQuery = !!code || !!name;
+
   const { data, isLoading, error } = useQuery({
-    queryKey: ["clients", clientCode, clientName],
-    queryFn: () => getClients(params),
-    enabled: hasSearchQuery, // Only run query if we have a search term
+    queryKey: ["clients", code, name],
+    queryFn: () => getClients({ ...(code && { clientCode: code }), ...(name && { clientName: name }) }),
+    enabled: hasSearchQuery,
   });
 
   if (!hasSearchQuery) {
