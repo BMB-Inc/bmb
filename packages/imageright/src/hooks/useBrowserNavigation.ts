@@ -26,6 +26,9 @@ export function useBrowserNavigation() {
   const navigateToPage = (id: string) =>
     setQs({ clientId: clientId ?? null, folderId: folderId ?? null, documentId: documentId ?? null, pageId: id }, { history: 'push' });
 
+  const clearDocumentSelection = () =>
+    setQs({ clientId: clientId ?? null, folderId: folderId ?? null, documentId: null, pageId: null }, { history: 'push' });
+
   return {
     clientId,
     folderId,
@@ -38,5 +41,6 @@ export function useBrowserNavigation() {
     navigateIntoFolder,
     navigateToDocument,
     navigateToPage,
+    clearDocumentSelection,
   } as const;
 }

@@ -25,6 +25,7 @@ export const ImageRightFileBrowser = () => {
     navigateToClientRoot: goToClientRoot,
     navigateIntoFolder,
     navigateToDocument,
+    clearDocumentSelection,
   } = useBrowserNavigation();
   // No local label state; derive labels from data for simplicity
 
@@ -179,6 +180,7 @@ export const ImageRightFileBrowser = () => {
                 onFolderOpen={(id) => navigateIntoFolder(id.toString())}
                 onDocumentOpen={(id) => navigateToDocument(id.toString())}
                 selectedDocumentId={expandedDocumentId ? Number(expandedDocumentId) : null}
+                onDocumentClear={clearDocumentSelection}
               />
             )}
 

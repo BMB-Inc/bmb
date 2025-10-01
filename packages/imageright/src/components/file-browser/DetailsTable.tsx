@@ -8,9 +8,10 @@ type DetailsTableProps = {
   onClientOpen?: (id: number) => void;
   onDocumentOpen?: (id: number) => void;
   selectedDocumentId?: number | null;
+  onDocumentClear?: () => void;
 };
 
-export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen, selectedDocumentId }: DetailsTableProps) {
+export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen, selectedDocumentId, onDocumentClear }: DetailsTableProps) {
   return (
     <Table withRowBorders={false} verticalSpacing="xs" highlightOnHover>
       <Table.Thead>
@@ -25,9 +26,25 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
           <Table.Tr
             key={`${item.kind}-${item.id}`}
             onClick={() => {
+              if (item.kind === 'document') {
+                if (selectedDocumentId === item.id) {
+                  onDocumentClear?.();
+                } else {
+                  onDocumentOpen?.(item.id);
+                }
+                return;
+              }
               if (item.kind === 'folder') onFolderOpen(item.id);
               if (item.kind === 'client') onClientOpen?.(item.id);
-              if (item.kind === 'document') onDocumentOpen?.(item.id);
+            }}
+            onDoubleClick={() => {
+              if (item.kind === 'document') {
+                if (selectedDocumentId === item.id) {
+                  onDocumentClear?.();
+                } else {
+                  onDocumentOpen?.(item.id);
+                }
+              }
             }}
             style={{
               cursor: item.kind === 'folder' || item.kind === 'client' || item.kind === 'document' ? 'pointer' : 'default',
