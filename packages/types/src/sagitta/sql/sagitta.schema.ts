@@ -1,9 +1,9 @@
 import { LossesSchema } from "./losses/losses.schema";
 import {
-  BACoveragesSchema,
-  BAUnderwritingSchema,
-  DriversSchema,
-  VehiclesSchema,
+	BACoveragesSchema,
+	BAUnderwritingSchema,
+	DriversSchema,
+	VehiclesSchema,
 } from "./auto";
 import { ClientsSchema } from "./clients";
 import { CPCoveragesSchema } from "./commercial";
@@ -16,25 +16,27 @@ import { Staff } from "./staff";
 import { UMCoveragesSchema, UMUnderwritingSchema } from "./umbrella";
 import { UsersDB } from "@bmb-inc/types/users";
 import { WcCoveragesSchema, WCUnderwritingSchema } from "./workers-comp";
+import { InsurorsSchema } from "./insurors";
 
 export interface SagittaDB {
-  BACoverages: BACoveragesSchema;
-  BAUnderwriting: BAUnderwritingSchema;
-  Clients: ClientsSchema;
-  Contacts: ContactsSchema;
-  COVERAGES: CoveragesSchema;
-  CPCoverages: CPCoveragesSchema;
-  Drivers: DriversSchema;
-  GLCoverages: GlCoveragesSchema;
-  GLUnderwriting: GlUnderwritingSchema;
-  Locations: LocationsSchema;
-  Losses: LossesSchema;
-  Policies: PoliciesSchema;
-  Staff: Staff;
-  UMCoverages: UMCoveragesSchema;
-  UMUnderwriting: UMUnderwritingSchema;
-  Users: UsersDB;
-  Vehicles: VehiclesSchema;
-  WCCoverages: WcCoveragesSchema;
-  WCUnderwriting: WCUnderwritingSchema;
+	BACoverages: BACoveragesSchema;
+	BAUnderwriting: BAUnderwritingSchema;
+	Clients: ClientsSchema;
+	Contacts: ContactsSchema;
+	COVERAGES: CoveragesSchema;
+	CPCoverages: CPCoveragesSchema;
+	Drivers: DriversSchema;
+	GLCoverages: GlCoveragesSchema;
+	GLUnderwriting: GlUnderwritingSchema;
+	Insurors: InsurorsSchema;
+	Locations: LocationsSchema;
+	Losses: LossesSchema;
+	Policies: PoliciesSchema;
+	Staff: Staff;
+	UMCoverages: UMCoveragesSchema;
+	UMUnderwriting: UMUnderwritingSchema;
+	Users: UsersDB;
+	Vehicles: VehiclesSchema;
+	WCCoverages: WcCoveragesSchema;
+	WCUnderwriting: WCUnderwritingSchema;
 }
