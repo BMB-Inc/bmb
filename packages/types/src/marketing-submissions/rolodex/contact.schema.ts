@@ -6,11 +6,11 @@ export const marketingSubmissionsContactSchema = z.object({
 	email: z.email(),
 	active: z.boolean().default(true),
 	lob: z.string(),
-	carriers_id: z.string()
+	carrier_id: z.string()
 });
 
 export const createMarketingSubmissionsContactSchema =
-	marketingSubmissionsContactSchema.omit({ id: true, carriers_id: true, active: true });
+	marketingSubmissionsContactSchema.omit({ id: true, carrier_id: true, active: true });
 export const updateMarketingSubmissionsContactSchema =
 	createMarketingSubmissionsContactSchema.partial();
 
@@ -24,5 +24,5 @@ export type UpdateMarketingSubmissionsContactSchema = z.infer<
 	typeof updateMarketingSubmissionsContactSchema
 >;
 
-export const getContactsDto = marketingSubmissionsContactSchema.pick({ name: true, carriers_id: true, id: true })
-export type GetContactsDto = z.infer<typeof getContactsDto>
+export const getMarketingSubmissionsContactsDto = marketingSubmissionsContactSchema.pick({ name: true, carrier_id: true, id: true }).partial()
+export type GetMarketingSubmissionsContactsDto = z.infer<typeof getMarketingSubmissionsContactsDto>
