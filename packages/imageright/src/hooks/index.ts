@@ -5,3 +5,4 @@ export * from './useDocuments';
 export * from './usePages';
 export * from './useImages';
 export * from './useSelectedPages';
+export * from './useSelectedDocuments';
