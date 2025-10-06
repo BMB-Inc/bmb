@@ -34,17 +34,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ authUrl, devMode, ch
   const fetchCurrentUser = useCallback(async () => {
     try {
       const fetchOptions = devMode 
-        ? {headers: {'x-api-key': process.env.API_KEY || '12345'}}
-        : { credentials: 'include' as RequestCredentials };
+				? {headers: {'x-api-key': process.env.API_KEY || '12345'}}
+				: { credentials: 'include' as RequestCredentials };
       const response = await fetch(whoamiUrl, fetchOptions);
       if (!response.ok) return null;
       const data: User = await response.json();
-      setUser(data ?? null);
-      return data ?? null;
+			return data ?? null;
     } catch {
       return null;
     }
-  }, [whoamiUrl]);
+	}, [whoamiUrl, devMode]);
 
   const logout = useCallback(async () => {
     try {
@@ -56,19 +55,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ authUrl, devMode, ch
     }
   }, [logoutUrl]);
 
-  useEffect(() => {
-    let isMounted = true;
-    (async () => {
-      const data = await fetchCurrentUser();
-      if (!isMounted) return;
-      if (!data) {
-        window.location.href = loginUrl;
-        return;
-      }
-      setLoading(false);
-    })();
-    return () => { isMounted = false; };
-  }, [fetchCurrentUser, loginUrl]);
+	useEffect(() => {
+		let isActive = true;
+		(async () => {
+			const data = await fetchCurrentUser();
+			if (!isActive) return;
+			if (!data) {
+				window.location.href = loginUrl;
+				return;
+			}
+			setUser(data);
+			setLoading(false);
+		})();
+		return () => { isActive = false; };
+	}, [fetchCurrentUser, loginUrl]);
 
   const isUserAuthenticated = !!user;
 
