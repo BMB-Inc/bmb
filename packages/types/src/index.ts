@@ -5,3 +5,4 @@ export * from "./merrimac-marketing";
 export * from "./users";
 export * from "./expense-report";
 export * from "./imageright";
+export * from "./apps";
