@@ -5,7 +5,7 @@ export const marketingSubmissionsFileSchema = z.object({
 	name: z.string(),
 	type: z.string(),
 	size: z.int(),
-	imageright_id: z.int(),
+	submission_id: z.int(),
 	latest_version: z.int()
 });
 
