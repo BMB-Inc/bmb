@@ -2,6 +2,7 @@ import { z } from "zod/v4";
 
 export enum FolderTypes {
 	policies = "policies",
+	submissions = "submissions"
 }
 
 export const getFoldersDto = z.object({

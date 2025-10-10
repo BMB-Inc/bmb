@@ -7,6 +7,12 @@ export enum MarketingSubmissionsEmailCategory {
 
 // TODO: Finish the marketing submissions email schema.
 
+export enum MarketingSubmissionsEmailStatus {
+	DRAFT = "DRAFT",
+	SENT = "SENT",
+	FAILED = "FAILED",
+}
+
 export const marketingSubmissionsEmailSchema = z.object({
 	id: z.uuid(),
 	content: z.string(),
@@ -17,7 +23,7 @@ export const marketingSubmissionsEmailSchema = z.object({
 	internet_message_id: z.string(),
 	sent_to: z.string().array(),
 	sent_at: z.date(),
-	delivery_status: z.string()
+	delivery_status: z.enum(MarketingSubmissionsEmailStatus)
 });
 
 export const createMarketingSubmissionsEmailSchema =
