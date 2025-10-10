@@ -5,9 +5,8 @@ export const marketingSubmissionsFileSchema = z.object({
 	name: z.string(),
 	type: z.string(),
 	size: z.int(),
-	graph_attachment_id: z.uuid(),
 	imageright_id: z.int(),
-	submission_id: z.int()
+	latest_version: z.int()
 });
 
 export const createMarketingSubmissionsFileSchema =

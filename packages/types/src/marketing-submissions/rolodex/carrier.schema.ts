@@ -1,19 +1,19 @@
 import z from "zod/v4";
 
-export const carrierSchema = z.object({
+export const marketingSubmissionsCarrierSchema = z.object({
 	id: z.uuid(),
 	name: z.string(),
-	date_created: z.coerce.date().default(new Date())
+	created_at: z.coerce.date().default(new Date())
 });
 
-export const createCarrierSchema = carrierSchema.omit({ id: true, date_created: true });
+export const createMarketingSubmissionsCarrierSchema = marketingSubmissionsCarrierSchema.omit({ id: true, created_at: true });
 
-export const updateCarrierSchema = createCarrierSchema.partial();
+export const updateMarketingSubmissionsCarrierSchema = createMarketingSubmissionsCarrierSchema.partial();
 
-export type CarrierSchema = z.infer<typeof carrierSchema>;
-export type CreateCarrierSchema = z.infer<typeof createCarrierSchema>;
-export type UpdateCarrierSchema = z.infer<typeof updateCarrierSchema>;
+export type MarketingSubmissionsCarrierSchema = z.infer<typeof marketingSubmissionsCarrierSchema>;
+export type CreateMarketingSubmissionsCarrierSchema = z.infer<typeof createMarketingSubmissionsCarrierSchema>;
+export type UpdateMarketingSubmissionsCarrierSchema = z.infer<typeof updateMarketingSubmissionsCarrierSchema>;
 
-export const getCarriersDto = carrierSchema.pick({ id: true, name: true })
+export const getMarketingSubmissionsCarriersDto = marketingSubmissionsCarrierSchema.pick({ id: true, name: true }).partial()
 
-export type GetCarriersDto = z.infer<typeof getCarriersDto>
+export type GetMarketingSubmissionsCarriersDto = z.infer<typeof getMarketingSubmissionsCarriersDto>

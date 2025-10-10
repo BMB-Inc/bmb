@@ -1,38 +1,39 @@
 import z from "zod/v4";
 
 export enum MarketingSubmissionsEmailCategory {
-  SUBMISSION = "SUBMISSION",
-  RESUBMISSION = "RESUBMISSION",
+	SUBMISSION = "SUBMISSION",
+	RESUBMISSION = "RESUBMISSION",
 }
 
 // TODO: Finish the marketing submissions email schema.
 
 export const marketingSubmissionsEmailSchema = z.object({
-  id: z.uuid(),
-  content: z.string(),
-  subject: z.string(),
-  submission_type: z.enum(MarketingSubmissionsEmailCategory),
-  date_sent: z.date().default(new Date()),
-  contact_id: z.uuid(),
-  carrier_id: z.uuid(),
-  attachment_ids: z.uuid().array(),
-  thread_id: z.uuid(),
+	id: z.uuid(),
+	content: z.string(),
+	subject: z.string(),
+	submission_type: z.enum(MarketingSubmissionsEmailCategory),
+	contact_id: z.uuid(),
+	thread_id: z.uuid(),
+	internet_message_id: z.string(),
+	sent_to: z.string().array(),
+	sent_at: z.date(),
+	delivery_status: z.string()
 });
 
 export const createMarketingSubmissionsEmailSchema =
-  marketingSubmissionsEmailSchema.omit({
-    id: true,
-  });
+	marketingSubmissionsEmailSchema.omit({
+		id: true,
+	});
 
 export const updateMarketingSubmissionsEmailSchema =
-  createMarketingSubmissionsEmailSchema.partial();
+	createMarketingSubmissionsEmailSchema.partial();
 
 export type MarketingSubmissionsEmailSchema = z.infer<
-  typeof marketingSubmissionsEmailSchema
+	typeof marketingSubmissionsEmailSchema
 >;
 export type CreateMarketingSubmissionsEmailSchema = z.infer<
-  typeof createMarketingSubmissionsEmailSchema
+	typeof createMarketingSubmissionsEmailSchema
 >;
 export type UpdateMarketingSubmissionsEmailSchema = z.infer<
-  typeof updateMarketingSubmissionsEmailSchema
+	typeof updateMarketingSubmissionsEmailSchema
 >;
