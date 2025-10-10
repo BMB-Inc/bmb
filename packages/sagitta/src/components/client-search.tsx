@@ -50,7 +50,7 @@ export const ClientSearch = ({
   const clientOptions = Array.isArray(data) 
     ? data.map((client: ClientsSchema) => ({
         value: (client.CLIENTS_ID || 0).toString(),
-        label: `${client.CLIENTNAME || 'Unknown'} - ${client.CLIENT_CODE || 'No Code'}`,
+        label: `${client.CLIENTNAME || 'Unknown'} - ${client.CLIENT_CODE || 'No Code'}${client.PROD1 ? ` - ${client.PROD1}` : ''}`,
       }))
     : [];
 

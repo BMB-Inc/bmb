@@ -7,6 +7,8 @@ export const useFolders = (params?: GetFoldersDto) => {
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
+  console.log('params', params);
+
   const enabled = !!(params?.clientId || params?.folderId);
 
   useEffect(() => {

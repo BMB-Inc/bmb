@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client'
 import { MantineProvider } from '@mantine/core'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter } from 'react-router-dom'
-import { NuqsAdapter } from 'nuqs/adapters/react-router'
 import App from './App'
 import '@mantine/core/styles.css'
 
@@ -21,9 +20,7 @@ createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <MantineProvider>
         <BrowserRouter>
-          <NuqsAdapter>
             <App />
-          </NuqsAdapter>
         </BrowserRouter>
       </MantineProvider>
     </QueryClientProvider>

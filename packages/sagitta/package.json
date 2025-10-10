@@ -1,6 +1,6 @@
 {
   "name": "@bmb-inc/sagitta",
-  "version": "0.1.11",
+  "version": "0.1.14",
   "type": "module",
   "scripts": {
     "dev": "vite",

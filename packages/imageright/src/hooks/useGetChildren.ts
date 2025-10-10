@@ -1,25 +1,37 @@
 import type { ImagerightDocument, ImagerightDocumentParams, ImagerightFolder, GetFoldersDto } from "@bmb-inc/types";
 import type { TreeNodeData } from "@mantine/core";
 import { useMemo } from "react";
-import { usePolicyFolders } from "./useFolders";
+import { useFolders, usePolicyFolders } from "./useFolders";
 import { useDocuments } from "./useDocuments";
 
 export const useGetChildren = (params?: GetFoldersDto & ImagerightDocumentParams) => {
   // Use the existing hooks to fetch data
   const { data: foldersData, isLoading: foldersLoading, error: foldersError } = usePolicyFolders(params);
+  // Only fetch regular folders when a specific folder is selected (i.e., when browsing inside a policy folder)
+  const {
+    data: submissionFoldersData,
+    isLoading: submissionFoldersLoading,
+    error: submissionFoldersError
+  } = useFolders(params?.folderId ? params : undefined);
   const { data: documentsData, isLoading: documentsLoading, error: documentsError } = useDocuments(params);
 
   // Combine loading states and errors
-  const isLoading = foldersLoading || documentsLoading;
-  const error = foldersError || documentsError;
+  const isLoading = foldersLoading || documentsLoading || submissionFoldersLoading;
+  const error = foldersError || documentsError || submissionFoldersError;
 
   // Transform the data into TreeNodeData format
   const children = useMemo((): TreeNodeData[] => {
-    if (!foldersData && !documentsData) {
+    if (!foldersData && !documentsData && !submissionFoldersData) {
       return [];
     }
 
-    const folders: TreeNodeData[] = (foldersData || []).map((folder: ImagerightFolder) => ({
+    const policyFolders: TreeNodeData[] = (foldersData || []).map((folder: ImagerightFolder) => ({
+      value: `folder-${folder.id}`,
+      label: `${folder.attributes?.[0]?.displayName ?? 'Unknown Folder'} - ${folder.attributes?.[0]?.value ?? 'Unknown Value'}`,
+      children: [] // Folders can have children
+    }));
+
+    const folders: TreeNodeData[] = (submissionFoldersData || []).map((folder: ImagerightFolder) => ({
       value: `folder-${folder.id}`,
       label: `${folder.attributes?.[0]?.displayName ?? 'Unknown Folder'} - ${folder.attributes?.[0]?.value ?? 'Unknown Value'}`,
       children: [] // Folders can have children
@@ -31,8 +43,8 @@ export const useGetChildren = (params?: GetFoldersDto & ImagerightDocumentParams
       // Documents are leaf nodes, no children property needed
     }));
 
-    return [...folders, ...documents];
-  }, [foldersData, documentsData]);
+    return [...policyFolders, ...folders, ...documents];
+  }, [foldersData, submissionFoldersData, documentsData]);
 
   return { children, isLoading, error };
 }

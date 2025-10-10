@@ -9,10 +9,11 @@ import { IconSearch } from '@tabler/icons-react';
 import { useBrowserNavigation } from '../../hooks/useBrowserNavigation';
 import { useClients } from '@hooks/index';
 import { usePolicyFolders } from '@hooks/useFolders';
+import { useFolders } from '../../hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
 import DocumentPages from './DocumentPages';
 
-export const ImageRightFileBrowser = () => {
+export const ImageRightFileBrowser = ({documentType}: {documentType?: string}) => {
   // Real data hooks
   const { data: clients = [], isLoading: clientsLoading } = useClients();
   const {
@@ -30,13 +31,20 @@ export const ImageRightFileBrowser = () => {
   // No local label state; derive labels from data for simplicity
 
   // Current-level folders and documents
-  const { data: folders = [], isLoading: foldersLoading } = usePolicyFolders(
-    expandedClientId
-      ? (currentFolderId
-          ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId) }
-          : { clientId: Number(expandedClientId) })
+  // Policy-level folders at client root
+  const { data: policyFolders = [], isLoading: policyFoldersLoading } = usePolicyFolders(
+    expandedClientId && !currentFolderId
+      ? { clientId: Number(expandedClientId) }
       : undefined,
   );
+  // Regular folders when inside a selected policy folder
+  const { data: regularFolders = [], isLoading: regularFoldersLoading } = useFolders(
+    expandedClientId && currentFolderId
+      ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId) }
+      : undefined,
+  );
+  const folders = currentFolderId ? regularFolders : policyFolders;
+  const foldersLoading = currentFolderId ? regularFoldersLoading : policyFoldersLoading;
   const { data: documents = [], isLoading: documentsLoading } = useDocuments(
     expandedClientId && currentFolderId
       ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId) }
