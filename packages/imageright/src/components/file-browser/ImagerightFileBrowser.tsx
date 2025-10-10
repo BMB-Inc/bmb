@@ -12,8 +12,7 @@ import { usePolicyFolders } from '@hooks/useFolders';
 import { useFolders } from '../../hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
 import DocumentPages from './DocumentPages';
-import { FolderTypes } from '../../../../types/src/imageright/folders/get-folders.dto';
-import { DocumentTypes } from '../../../../types/src/imageright/documents/get-documents.dto';
+import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
  
 export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTypes?: FolderTypes[], documentType?: DocumentTypes }) => {
   // Real data hooks

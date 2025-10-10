@@ -2,7 +2,7 @@ import type { ImagerightDocument, ImagerightDocumentParams, ImagerightFolder, Ge
 import type { TreeNodeData } from "@mantine/core";
 import { useMemo } from "react";
 import { useFolders, usePolicyFolders } from "./useFolders";
-import { FolderTypes } from "../../../types/src/imageright/folders/get-folders.dto";
+import { FolderTypes } from "@bmb-inc/types";
 import { useDocuments } from "./useDocuments";
 
 export const useGetChildren = (params?: GetFoldersDto & ImagerightDocumentParams) => {

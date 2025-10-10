@@ -1,6 +1,5 @@
 import { fetcher } from "@api/fetcher";
-import { type ImagerightDocumentParams } from "@bmb-inc/types";
-import { DocumentTypes } from "../../../../types/src/imageright/documents/get-documents.dto";
+import { DocumentTypes, type ImagerightDocumentParams } from "@bmb-inc/types";
 
 export const getDocuments = async (params?: ImagerightDocumentParams, documentType?: DocumentTypes) => {
   if (!params) {

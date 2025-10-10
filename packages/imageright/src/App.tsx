@@ -2,8 +2,7 @@ import { ImageRightFileBrowser } from "@components/file-browser/ImagerightFileBr
 import { useSelectedDocuments } from "@hooks/useSelectedDocuments";
 import { useSelectedPages } from "@hooks/useSelectedPages";
 import { Stack, Title } from "@mantine/core";
-import { FolderTypes } from "../../types/src/imageright/folders/get-folders.dto";
-import { DocumentTypes } from "../../types/src/imageright/documents/get-documents.dto";
+import { DocumentTypes, FolderTypes } from "@bmb-inc/types";
 
 function App() {
   const { selectedPageIds } = useSelectedPages();

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getFolders } from "@api/index";
-import { FolderTypes } from "../../../types/src/imageright/folders/get-folders.dto";
+import { FolderTypes } from "@bmb-inc/types";
 type FoldersQueryParams = {
   clientId?: number;
   folderId?: number | null;
