@@ -1,7 +1,12 @@
 import { fetcher } from "@api/fetcher";
-import { type GetFoldersDto } from "@bmb-inc/types";
 
-export const getFolders = async (params?: GetFoldersDto) => {
+type FoldersQueryParams = {
+  clientId?: number;
+  folderId?: number | null;
+  folderTypes?: string | string[] | null;
+};
+
+export const getFolders = async (params?: FoldersQueryParams) => {
   const searchParams = new URLSearchParams();
   if (params?.clientId) {
     searchParams.append('clientId', params.clientId.toString());
@@ -10,7 +15,10 @@ export const getFolders = async (params?: GetFoldersDto) => {
     searchParams.append('folderId', params.folderId.toString());
   }
   if (params?.folderTypes) {
-    searchParams.append('folderTypes', params.folderTypes.toString());
+    const value = Array.isArray(params.folderTypes)
+      ? params.folderTypes.join(',')
+      : params.folderTypes;
+    searchParams.append('folderTypes', value);
   }
   
   const queryString = searchParams.toString();

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { getDocumentById, getDocuments } from "@api/index";
 import { type ImagerightDocumentParams } from "@bmb-inc/types";
+import { DocumentTypes } from "../../../types/src/imageright/documents/get-documents.dto";
 
-export const useDocuments = (params?: ImagerightDocumentParams) => {
+export const useDocuments = (params?: ImagerightDocumentParams, documentType?: DocumentTypes) => {
   const [data, setData] = useState<Awaited<ReturnType<typeof getDocuments>> | undefined>(undefined);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -19,7 +20,7 @@ export const useDocuments = (params?: ImagerightDocumentParams) => {
     }
     setLoading(true);
     setError(null);
-    getDocuments(params)
+    getDocuments(params, documentType)
       .then((res) => {
         if (!cancelled) setData(res);
       })
@@ -32,7 +33,7 @@ export const useDocuments = (params?: ImagerightDocumentParams) => {
     return () => {
       cancelled = true;
     };
-  }, [params?.clientId, params?.folderId]);
+  }, [params?.clientId, params?.folderId, documentType]);
 
   return { data, isLoading, error } as const;
 }

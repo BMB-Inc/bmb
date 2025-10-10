@@ -2,17 +2,24 @@ import type { ImagerightDocument, ImagerightDocumentParams, ImagerightFolder, Ge
 import type { TreeNodeData } from "@mantine/core";
 import { useMemo } from "react";
 import { useFolders, usePolicyFolders } from "./useFolders";
+import { FolderTypes } from "../../../types/src/imageright/folders/get-folders.dto";
 import { useDocuments } from "./useDocuments";
 
 export const useGetChildren = (params?: GetFoldersDto & ImagerightDocumentParams) => {
   // Use the existing hooks to fetch data
-  const { data: foldersData, isLoading: foldersLoading, error: foldersError } = usePolicyFolders(params);
+  const { data: foldersData, isLoading: foldersLoading, error: foldersError } = usePolicyFolders(
+    params?.clientId ? { clientId: params.clientId } : undefined
+  );
   // Only fetch regular folders when a specific folder is selected (i.e., when browsing inside a policy folder)
   const {
     data: submissionFoldersData,
     isLoading: submissionFoldersLoading,
     error: submissionFoldersError
-  } = useFolders(params?.folderId ? params : undefined);
+  } = useFolders(
+    params?.folderId
+      ? { clientId: params.clientId, folderId: params.folderId, folderTypes: [FolderTypes.submissions, FolderTypes.applications] }
+      : undefined
+  );
   const { data: documentsData, isLoading: documentsLoading, error: documentsError } = useDocuments(params);
 
   // Combine loading states and errors

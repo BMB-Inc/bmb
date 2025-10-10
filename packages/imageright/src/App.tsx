@@ -2,6 +2,8 @@ import { ImageRightFileBrowser } from "@components/file-browser/ImagerightFileBr
 import { useSelectedDocuments } from "@hooks/useSelectedDocuments";
 import { useSelectedPages } from "@hooks/useSelectedPages";
 import { Stack, Title } from "@mantine/core";
+import { FolderTypes } from "../../types/src/imageright/folders/get-folders.dto";
+import { DocumentTypes } from "../../types/src/imageright/documents/get-documents.dto";
 
 function App() {
   const { selectedPageIds } = useSelectedPages();
@@ -11,7 +13,7 @@ function App() {
   return (
     <Stack m='lg'>
       <Title order={1} ta="center" mb="xl">ImageRight</Title>
-      <ImageRightFileBrowser />
+      <ImageRightFileBrowser folderTypes={[FolderTypes.submissions, FolderTypes.applications]} documentType={DocumentTypes.applications} />
     </Stack>
   );
 }

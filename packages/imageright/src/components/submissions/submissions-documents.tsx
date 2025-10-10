@@ -2,21 +2,17 @@ import { useMemo, useEffect, useState } from 'react';
 import { Card, Stack, Skeleton, Center, Text } from '@mantine/core';
 import { ClientSearch } from '../client-search/ClientSearch';
 import { type ImagerightClient } from '@bmb-inc/types';
-// ClientCard used inside ClientList
-import BreadcrumbNav from './BreadcrumbNav';
-import DetailsTable from './DetailsTable';
+import { DocumentTypes } from '../../../../types/src/imageright/documents/get-documents.dto';
+import { FolderTypes } from '../../../../types/src/imageright/folders/get-folders.dto';
+import BreadcrumbNav from '../file-browser/BreadcrumbNav';
+import DetailsTable from '../file-browser/DetailsTable';
 import { IconSearch } from '@tabler/icons-react';
 import { useBrowserNavigation } from '../../hooks/useBrowserNavigation';
 import { useClients } from '@hooks/index';
-import { usePolicyFolders } from '@hooks/useFolders';
-import { useFolders } from '../../hooks/useFolders';
+import { usePolicyFolders, useFolders } from '@hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
-import DocumentPages from './DocumentPages';
-import { FolderTypes } from '../../../../types/src/imageright/folders/get-folders.dto';
-import { DocumentTypes } from '../../../../types/src/imageright/documents/get-documents.dto';
- 
-export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTypes?: FolderTypes[], documentType?: DocumentTypes }) => {
-  // Real data hooks
+
+export const SubmissionsDocuments = () => {
   const { data: clients = [], isLoading: clientsLoading } = useClients();
   const {
     clientId: expandedClientId,
@@ -30,32 +26,50 @@ export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTyp
     navigateToDocument,
     clearDocumentSelection,
   } = useBrowserNavigation();
-  // No local label state; derive labels from data for simplicity
 
-  // Current-level folders and documents
-  // Policy-level folders at client root
+  // Track the first-level selected folder under a client (policy folder level)
+  const [policyLevelFolderId, setPolicyLevelFolderId] = useState<string | null>(null);
+  // Reset on client change or when leaving folder context
+  useEffect(() => {
+    setPolicyLevelFolderId(null);
+  }, [expandedClientId]);
+  useEffect(() => {
+    if (!expandedClientId || !currentFolderId) {
+      setPolicyLevelFolderId(null);
+      return;
+    }
+    if (policyLevelFolderId == null) {
+      setPolicyLevelFolderId(currentFolderId);
+    }
+  }, [expandedClientId, currentFolderId, policyLevelFolderId]);
+
+  const atClientRoot = !!expandedClientId && !currentFolderId;
+  const atPolicyFolderLevel = !!expandedClientId && !!currentFolderId && policyLevelFolderId === currentFolderId;
+  const atInnerFolderLevel = !!expandedClientId && !!currentFolderId && policyLevelFolderId !== null && policyLevelFolderId !== currentFolderId;
+
+  // Folders: policy at client root, regular inside a policy folder
   const { data: policyFolders = [], isLoading: policyFoldersLoading } = usePolicyFolders(
-    expandedClientId && !currentFolderId
+    atClientRoot
       ? { clientId: Number(expandedClientId) }
       : undefined,
   );
-  // Regular folders when inside a selected policy folder
   const { data: regularFolders = [], isLoading: regularFoldersLoading } = useFolders(
-    expandedClientId && currentFolderId
-      ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId), folderTypes }
+    (atPolicyFolderLevel || atInnerFolderLevel)
+      ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId), folderTypes: [FolderTypes.submissions, FolderTypes.applications] }
       : undefined,
   );
-  const folders = currentFolderId ? regularFolders : policyFolders;
-  const foldersLoading = currentFolderId ? regularFoldersLoading : policyFoldersLoading;
+  const folders = atClientRoot ? policyFolders : (atPolicyFolderLevel || atInnerFolderLevel) ? regularFolders : [];
+  const foldersLoading = atClientRoot ? policyFoldersLoading : (atPolicyFolderLevel || atInnerFolderLevel) ? regularFoldersLoading : false;
+
+  // Documents: only when inside a policy folder, filtered to applications
   const { data: documents = [], isLoading: documentsLoading } = useDocuments(
-    expandedClientId && currentFolderId
+    atInnerFolderLevel
       ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId) }
       : undefined,
-    documentType
+    DocumentTypes.applications,
   );
   const currentLoading = foldersLoading || documentsLoading;
 
-  // Prefer folder name from the first document's folder info when available
   const folderLabelFromDocs = useMemo(() => {
     if (Array.isArray(documents) && documents.length > 0) {
       const firstDoc: any = documents[0];
@@ -65,20 +79,18 @@ export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTyp
     return undefined;
   }, [documents]);
 
+  const toDateStr = (iso?: string | null) => {
+    if (!iso) return '';
+    const dt = new Date(iso);
+    return isNaN(dt.getTime()) ? '' : dt.toLocaleDateString();
+  };
+  const toTs = (iso?: string | null) => {
+    if (!iso) return 0;
+    const dt = new Date(iso);
+    return isNaN(dt.getTime()) ? 0 : dt.getTime();
+  };
 
-  // Build current level items (clients, folders, documents) for details view
   const currentItems = useMemo(() => {
-    const toDateStr = (iso?: string | null) => {
-      if (!iso) return '';
-      const dt = new Date(iso);
-      return isNaN(dt.getTime()) ? '' : dt.toLocaleDateString();
-    };
-    const toTs = (iso?: string | null) => {
-      if (!iso) return 0;
-      const dt = new Date(iso);
-      return isNaN(dt.getTime()) ? 0 : dt.getTime();
-    };
-
     if (!expandedClientId) {
       return (clients || []).map((c: any) => ({
         kind: 'client' as const,
@@ -86,40 +98,37 @@ export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTyp
         name: `${c.description} - ${c.fileNumberPart1} ${c.drawerName ? `(${c.drawerName})` : ''}`,
         type: c.fileTypeName || 'Client',
         modified: c.lastModified ? toDateStr(c.lastModified) : '',
-      })) as import('./types').BrowserItem[];
+      })) as import('../file-browser/types').BrowserItem[];
     }
 
-    // Sort folders by lastModified desc before mapping
     const folderItems = (folders || [])
       .slice()
       .sort((a: any, b: any) => toTs(b?.lastModified) - toTs(a?.lastModified))
       .map((f: any) => ({
-      kind: 'folder' as const,
-      id: f.id,
-      name: f.description || `Folder ${f.id}`,
-      type: f.folderTypeName || f.folderTypeDescription || 'Folder',
-      modified: toDateStr((f as any).lastModified),
-    }));
-    if (!currentFolderId) {
-      return folderItems as import('./types').BrowserItem[];
+        kind: 'folder' as const,
+        id: f.id,
+        name: f.description || `Folder ${f.id}`,
+        type: f.folderTypeName || f.folderTypeDescription || 'Folder',
+        modified: toDateStr((f as any).lastModified),
+      }));
+    if (!currentFolderId || atPolicyFolderLevel) {
+      return folderItems as import('../file-browser/types').BrowserItem[];
     }
 
-    // Sort documents by dateLastModified/dateCreated desc before mapping
     const documentItems = (documents || [])
       .slice()
       .sort((a: any, b: any) => toTs(b?.dateLastModified || b?.dateCreated) - toTs(a?.dateLastModified || a?.dateCreated))
       .map((d: any) => ({
-      kind: 'document' as const,
-      id: d.id,
-      name: d.documentName || d.description || `Document ${d.id}`,
-      type: d.documentTypeDescription || 'Document',
-      modified: toDateStr(d.dateLastModified || d.dateCreated),
-    }));
-    return [...folderItems, ...documentItems] as import('./types').BrowserItem[];
+        kind: 'document' as const,
+        id: d.id,
+        name: d.documentName || d.description || `Document ${d.id}`,
+        type: d.documentTypeDescription || 'Document',
+        modified: toDateStr(d.dateLastModified || d.dateCreated),
+      }));
+    return [...folderItems, ...documentItems] as import('../file-browser/types').BrowserItem[];
   }, [clients, expandedClientId, folders, documents, currentFolderId]);
 
   const hasClients = Array.isArray(clients) && clients.length > 0;
-
   const [folderLabelMap, setFolderLabelMap] = useState<Record<string, string>>({});
   useEffect(() => {
     if (folders && folders.length) {
@@ -138,11 +147,11 @@ export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTyp
     <BreadcrumbNav
       expandedClientId={expandedClientId}
       clientLabel={(() => {
-          const found = (clients || []).find((c: ImagerightClient) => c.id.toString() === expandedClientId);
-          return found
-            ? `${found.description} - ${found.fileNumberPart1} ${found.drawerName ? `(${found.drawerName})` : ''}`
-            : undefined;
-        })()}
+        const found = (clients || []).find((c: ImagerightClient) => c.id.toString() === expandedClientId);
+        return found
+          ? `${found.description} - ${found.fileNumberPart1} ${found.drawerName ? `(${found.drawerName})` : ''}`
+          : undefined;
+      })()}
       folderId={expandedFolderId}
       folderLabel={expandedFolderId ? (folderLabelFromDocs ?? folderLabelMap[expandedFolderId]) : undefined}
       onClientsClick={clearToClients}
@@ -160,7 +169,6 @@ export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTyp
 
         {(expandedClientId || hasClients) && breadcrumbItems}
 
-        {/* Single-pane content area */}
         {!expandedClientId && (
           hasClients ? (
             <DetailsTable
@@ -193,11 +201,6 @@ export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTyp
                 selectedDocumentId={expandedDocumentId ? Number(expandedDocumentId) : null}
                 onDocumentClear={clearDocumentSelection}
               />
-            )}
-
-            {/* Pages panel for selected document */}
-            {expandedDocumentId && (
-              <DocumentPages documentId={Number(expandedDocumentId)} />
             )}
           </Stack>
         )}

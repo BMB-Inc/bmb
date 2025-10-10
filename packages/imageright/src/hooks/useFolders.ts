@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { getFolders } from "@api/index";
-import { FolderTypes, type GetFoldersDto } from '@bmb-inc/types';
+import { FolderTypes } from "../../../types/src/imageright/folders/get-folders.dto";
+type FoldersQueryParams = {
+  clientId?: number;
+  folderId?: number | null;
+  folderTypes?: FolderTypes[] | null;
+};
 
-export const useFolders = (params?: GetFoldersDto) => {
+export const useFolders = (params?: FoldersQueryParams) => {
   const [data, setData] = useState<Awaited<ReturnType<typeof getFolders>> | undefined>(undefined);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-
-  console.log('params', params);
 
   const enabled = !!(params?.clientId || params?.folderId);
 
@@ -26,18 +29,18 @@ export const useFolders = (params?: GetFoldersDto) => {
       .catch((err: unknown) => { if (!cancelled) setError(err as Error); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [params?.clientId, params?.folderId]);
+  }, [params?.clientId, params?.folderId, JSON.stringify(params?.folderTypes ?? null)]);
 
   return { data, isLoading, error } as const;
 }
 
-export const usePolicyFolders = (params?: GetFoldersDto) => {
+export const usePolicyFolders = (params?: FoldersQueryParams) => {
   const [data, setData] = useState<Awaited<ReturnType<typeof getFolders>> | undefined>(undefined);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   const enabled = !!(params?.clientId || params?.folderId);
-  const effectiveParams = { ...params, folderTypes: FolderTypes.policies } as GetFoldersDto;
+  const effectiveParams: FoldersQueryParams = { ...params, folderTypes: [FolderTypes.policies] };
 
   useEffect(() => {
     let cancelled = false;
@@ -54,7 +57,7 @@ export const usePolicyFolders = (params?: GetFoldersDto) => {
       .catch((err: unknown) => { if (!cancelled) setError(err as Error); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [params?.clientId, params?.folderId]);
+  }, [params?.clientId, params?.folderId, JSON.stringify(params?.folderTypes ?? null)]);
 
   return { data, isLoading, error } as const;
 }
