@@ -19,7 +19,7 @@ export const marketingSubmissionsEmailSchema = z.object({
 	subject: z.string(),
 	submission_type: z.enum(MarketingSubmissionsEmailCategory),
 	contact_id: z.uuid(),
-	thread_id: z.uuid(),
+	conversation_id: z.uuid(),
 	internet_message_id: z.string(),
 	sent_to: z.string().array(),
 	sent_at: z.date(),
