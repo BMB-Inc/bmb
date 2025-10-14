@@ -31,6 +31,13 @@ export const createMarketingSubmissionsEmailSchema =
 		id: true,
 	});
 
+export const sendMarketingSubmissionEmailDto = z.object({
+	subject: z.string(),
+	body: z.string()
+})
+
+export type SendMarketingSubmissionEmailDto = z.infer<typeof sendMarketingSubmissionEmailDto>
+
 export const updateMarketingSubmissionsEmailSchema =
 	createMarketingSubmissionsEmailSchema.partial();
 
