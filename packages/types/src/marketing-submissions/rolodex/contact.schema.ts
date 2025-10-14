@@ -5,7 +5,7 @@ export const marketingSubmissionsContactSchema = z.object({
 	name: z.string(),
 	email: z.email(),
 	active: z.boolean().default(true),
-	lob: z.string(),
+	lob: z.array(z.string()),
 	carrier_id: z.string()
 });
 
@@ -24,5 +24,5 @@ export type UpdateMarketingSubmissionsContactSchema = z.infer<
 	typeof updateMarketingSubmissionsContactSchema
 >;
 
-export const getMarketingSubmissionsContactsDto = marketingSubmissionsContactSchema.pick({ name: true, carrier_id: true, id: true }).partial()
+export const getMarketingSubmissionsContactsDto = marketingSubmissionsContactSchema.pick({ name: true, carrier_id: true, id: true, lob: true }).partial()
 export type GetMarketingSubmissionsContactsDto = z.infer<typeof getMarketingSubmissionsContactsDto>
