@@ -110,7 +110,7 @@ export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTyp
       .map((d: any) => ({
       kind: 'document' as const,
       id: d.id,
-      name: d.documentName || d.description || `Document ${d.id}`,
+      name: d.description || `Document ${d.id}`,
       type: d.documentTypeDescription || 'Document',
       modified: toDateStr(d.dateLastModified || d.dateCreated),
     }));

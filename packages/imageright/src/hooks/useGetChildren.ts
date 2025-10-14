@@ -22,6 +22,8 @@ export const useGetChildren = (params?: GetFoldersDto & ImagerightDocumentParams
   );
   const { data: documentsData, isLoading: documentsLoading, error: documentsError } = useDocuments(params);
 
+  console.log(documentsData);
+
   // Combine loading states and errors
   const isLoading = foldersLoading || documentsLoading || submissionFoldersLoading;
   const error = foldersError || documentsError || submissionFoldersError;
@@ -46,7 +48,7 @@ export const useGetChildren = (params?: GetFoldersDto & ImagerightDocumentParams
 
     const documents: TreeNodeData[] = (documentsData || []).map((document: ImagerightDocument) => ({
       value: `document-${document.id}`,
-      label: document.documentName || document.description || 'Unknown Document'
+      label: document.description || 'Unknown Document'
       // Documents are leaf nodes, no children property needed
     }));
 
