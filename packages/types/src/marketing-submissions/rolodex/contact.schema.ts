@@ -25,5 +25,5 @@ export type UpdateMarketingSubmissionsContactSchema = z.infer<
 	typeof updateMarketingSubmissionsContactSchema
 >;
 
-export const getMarketingSubmissionsContactsDto = marketingSubmissionsContactSchema.pick({ name: true, carrier_id: true, id: true }).partial()
+export const getMarketingSubmissionsContactsDto = marketingSubmissionsContactSchema.pick({ name: true, carrier_id: true, id: true, tags: true, lob: true }).partial()
 export type GetMarketingSubmissionsContactsDto = z.infer<typeof getMarketingSubmissionsContactsDto>
