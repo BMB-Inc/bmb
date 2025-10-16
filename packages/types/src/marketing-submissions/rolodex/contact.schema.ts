@@ -26,3 +26,16 @@ export type UpdateMarketingSubmissionsContactSchema = z.infer<
 
 export const getMarketingSubmissionsContactsDto = marketingSubmissionsContactSchema.pick({ name: true, carrier_id: true, id: true, lob: true }).partial()
 export type GetMarketingSubmissionsContactsDto = z.infer<typeof getMarketingSubmissionsContactsDto>
+
+export const marketingSubmissionsContactTagsSchema = z.object({
+	id: z.uuid(),
+	contacts_id: z.uuid(),
+	tag: z.string()
+})
+
+export const createMarketingSubmissionsContactTagsSchema = marketingSubmissionsContactTagsSchema.omit({ id: true })
+export const updateMarketingSubmissionsContactTagsSchema = createMarketingSubmissionsContactSchema.partial()
+
+export type MarketingSubmissionsContactTagsSchema = z.infer<typeof marketingSubmissionsContactTagsSchema>;
+export type CreateMarketingSubmissionsContactTagsSchema = z.infer<typeof createMarketingSubmissionsContactTagsSchema>;
+export type UpdateMarketingSubmissionsContactTagsSchema = z.infer<typeof updateMarketingSubmissionsContactTagsSchema>;

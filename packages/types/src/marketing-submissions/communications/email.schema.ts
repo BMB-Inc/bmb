@@ -1,40 +1,40 @@
 import z from "zod/v4";
 
-export enum MarketingSubmissionsEmailCategory {
-	SUBMISSION = "SUBMISSION",
-	RESUBMISSION = "RESUBMISSION",
-}
-
-// TODO: Finish the marketing submissions email schema.
-
-export enum MarketingSubmissionsEmailStatus {
-	DRAFT = "DRAFT",
-	SENT = "SENT",
-	FAILED = "FAILED",
+export enum MarketingSubmissionsEmailDirection {
+	INBOUND = "inbound",
+	OUTBOUND = "outbound"
 }
 
 export const marketingSubmissionsEmailSchema = z.object({
 	id: z.uuid(),
-	content: z.string(),
 	subject: z.string(),
-	submission_type: z.enum(MarketingSubmissionsEmailCategory),
-	contact_id: z.uuid(),
-	conversation_id: z.uuid(),
+	contact_id: z.uuid().nullable().optional(),
+	thread_id: z.uuid(),
 	internet_message_id: z.string(),
-	sent_to: z.string().array(),
+	sent_to: z.email(),
+	sent_from: z.email(),
 	sent_at: z.date(),
-	delivery_status: z.enum(MarketingSubmissionsEmailStatus)
+	received_at: z.date().nullable().optional(),
+	direction: z.enum(MarketingSubmissionsEmailDirection)
 });
 
 export const createMarketingSubmissionsEmailSchema =
 	marketingSubmissionsEmailSchema.omit({
-		id: true,
+		id: true
 	});
 
 export const sendMarketingSubmissionEmailDto = z.object({
 	subject: z.string(),
 	body: z.string()
 })
+
+export const sendMarketingSubmissionQueryDto = z.object({
+	submission_id: z.int(),
+	contact_ids: z.array(z.uuid()),
+	document_id: z.int()
+})
+
+export type SendMarketingSubmissionQueryDto = z.infer<typeof sendMarketingSubmissionQueryDto>
 
 export type SendMarketingSubmissionEmailDto = z.infer<typeof sendMarketingSubmissionEmailDto>
 
