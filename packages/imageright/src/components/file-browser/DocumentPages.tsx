@@ -41,22 +41,29 @@ export function DocumentPages({ documentId }: DocumentPagesProps) {
     return null;
   }
 
+  console.log(pages);
+
   return (
     <Stack gap={6} mt="sm">
       <Divider labelPosition="left" label={<Title order={6}>Pages ({pages.length})</Title>} />
-      {pages.map((p: any) => (
-        <PageRow
-          key={p.id}
-          label={p.description || `Page ${p.pagenumber ?? ''}`}
-          checked={isChecked(p.id)}
-          onCheckedChange={(v) => toggleChecked(p.id, v)}
-          onSelect={() => navigateToPage(String(p.id))}
-          onDoubleClick={async () => {
-            const currentlySelected = isChecked(p.id);
-            toggleChecked(p.id, !currentlySelected);
-          }}
-        />
-      ))}
+      {pages.map((p: any) => {
+        const baseLabel = p.description || `Page ${p.pagenumber ?? ''}`;
+        const ext = p?.latestImages?.imageMetadata?.[0]?.extension;
+        const label = ext ? `${baseLabel} (${String(ext).toUpperCase()})` : baseLabel;
+        return (
+          <PageRow
+            key={p.id}
+            label={label}
+            checked={isChecked(p.id)}
+            onCheckedChange={(v) => toggleChecked(p.id, v)}
+            onSelect={() => navigateToPage(String(p.id))}
+            onDoubleClick={async () => {
+              const currentlySelected = isChecked(p.id);
+              toggleChecked(p.id, !currentlySelected);
+            }}
+          />
+        );
+      })}
     </Stack>
   );
 }
