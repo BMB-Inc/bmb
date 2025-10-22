@@ -5,6 +5,16 @@ export enum MarketingSubmissionsEmailDirection {
 	OUTBOUND = "outbound"
 }
 
+export enum MarketingSubmissionsEmailContentType {
+	HTML = "html",
+	TEXT = "text"
+}
+
+const marketingSubmissionsEmailBodySchema = z.object({
+	contentType: z.enum(MarketingSubmissionsEmailContentType),
+	content: z.string()
+});
+
 export const marketingSubmissionsEmailSchema = z.object({
 	id: z.uuid(),
 	subject: z.string(),
@@ -13,9 +23,11 @@ export const marketingSubmissionsEmailSchema = z.object({
 	internet_message_id: z.string(),
 	sent_to: z.email(),
 	sent_from: z.email(),
-	sent_at: z.date(),
-	received_at: z.date().nullable().optional(),
-	direction: z.enum(MarketingSubmissionsEmailDirection)
+	sent_at: z.coerce.date(),
+	received_at: z.coerce.date().nullable().optional(),
+	direction: z.enum(MarketingSubmissionsEmailDirection),
+	body: marketingSubmissionsEmailBodySchema,
+	uniqueBody: marketingSubmissionsEmailBodySchema
 });
 
 export const createMarketingSubmissionsEmailSchema =
