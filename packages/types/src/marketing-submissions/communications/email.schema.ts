@@ -21,7 +21,7 @@ export const marketingSubmissionsEmailSchema = z.object({
 	contact_id: z.uuid().nullable().optional(),
 	thread_id: z.uuid(),
 	internet_message_id: z.string(),
-	sent_to: z.email(),
+	sent_to: z.array(z.email()),
 	sent_from: z.email(),
 	sent_at: z.coerce.date(),
 	received_at: z.coerce.date().nullable().optional(),
