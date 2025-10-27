@@ -185,18 +185,32 @@ export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTyp
               ))
             )}
             {!currentLoading && (
-              <DetailsTable
-                items={currentItems}
-                onFolderOpen={(id) => navigateIntoFolder(id.toString())}
-                onDocumentOpen={(id) => navigateToDocument(id.toString())}
-                selectedDocumentId={expandedDocumentId ? Number(expandedDocumentId) : null}
-                onDocumentClear={clearDocumentSelection}
-              />
-            )}
-
-            {/* Pages panel for selected document */}
-            {expandedDocumentId && (
-              <DocumentPages documentId={Number(expandedDocumentId)} />
+              expandedDocumentId ? (
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'minmax(360px, 1fr) minmax(280px, 0.6fr)',
+                    gap: 'var(--mantine-spacing-md)'
+                  }}
+                >
+                  <DetailsTable
+                    items={currentItems}
+                    onFolderOpen={(id) => navigateIntoFolder(id.toString())}
+                    onDocumentOpen={(id) => navigateToDocument(id.toString())}
+                    selectedDocumentId={expandedDocumentId ? Number(expandedDocumentId) : null}
+                    onDocumentClear={clearDocumentSelection}
+                  />
+                  <DocumentPages documentId={Number(expandedDocumentId)} />
+                </div>
+              ) : (
+                <DetailsTable
+                  items={currentItems}
+                  onFolderOpen={(id) => navigateIntoFolder(id.toString())}
+                  onDocumentOpen={(id) => navigateToDocument(id.toString())}
+                  selectedDocumentId={expandedDocumentId ? Number(expandedDocumentId) : null}
+                  onDocumentClear={clearDocumentSelection}
+                />
+              )
             )}
           </Stack>
         )}
