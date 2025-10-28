@@ -7,6 +7,7 @@ export const marketingSubmissionsFileSchema = z.object({
 	size: z.int(),
 	submission_id: z.int(),
 	latest_version: z.int(),
+	deleted: z.boolean().default(false)
 });
 
 export const createMarketingSubmissionsFileSchema =
