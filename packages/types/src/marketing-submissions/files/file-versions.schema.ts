@@ -7,6 +7,7 @@ export const marketingSubmissionsFileVersionSchema = z.object({
 	uploaded_by_user: z.uuid(),
 	uploaded_at: z.date(),
 	file_id: z.uuid(),
+	deleted: z.boolean().default(false)
 })
 
 export const createMarketingSubmissionsFileVersionSchema = marketingSubmissionsFileVersionSchema.omit({

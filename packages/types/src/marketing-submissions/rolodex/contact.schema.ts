@@ -6,7 +6,8 @@ export const marketingSubmissionsContactSchema = z.object({
 	email: z.email(),
 	active: z.boolean().default(true),
 	lob: z.array(z.string()),
-	carrier_id: z.string()
+	carrier_id: z.string(),
+	submission_house_email: z.email().optional().nullable(),
 });
 
 export const createMarketingSubmissionsContactSchema =
