@@ -22,17 +22,21 @@ export const marketingSubmissionsEmailSchema = z.object({
 	thread_id: z.uuid(),
 	internet_message_id: z.string(),
 	sent_to: z.array(z.email()),
+	cc: z.array(z.email()).optional().nullable(),
+	bcc: z.array(z.email()).optional().nullable(),
 	sent_from: z.email(),
 	sent_at: z.coerce.date(),
 	received_at: z.coerce.date().nullable().optional(),
 	direction: z.enum(MarketingSubmissionsEmailDirection),
-	body: marketingSubmissionsEmailBodySchema,
-	uniqueBody: marketingSubmissionsEmailBodySchema
 });
+
+export const submissionInboxSchema = marketingSubmissionsEmailSchema.extend({ body: marketingSubmissionsEmailBodySchema, uniqueBody: marketingSubmissionsEmailBodySchema })
+
+export type SubmissionInboxResponse = z.infer<typeof submissionInboxSchema>
 
 export const createMarketingSubmissionsEmailSchema =
 	marketingSubmissionsEmailSchema.omit({
-		id: true
+		id: true,
 	});
 
 export const sendMarketingSubmissionEmailDto = z.object({
