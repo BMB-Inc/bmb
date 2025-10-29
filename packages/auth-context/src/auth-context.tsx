@@ -73,7 +73,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ authUrl, redirectUrl
       }
   
       if (!data) {
-        window.location.href = `${loginUrl}?` + new URLSearchParams({ customRedirectUrl: redirectUrl ?? ''});
+        window.location.href = `${loginUrl}?` + new URLSearchParams({ redirect_url: redirectUrl ?? ''});
         return;
       }
   
