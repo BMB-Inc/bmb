@@ -47,7 +47,7 @@ export const sendMarketingSubmissionEmailDto = z.object({
 export const sendMarketingSubmissionQueryDto = z.object({
 	submission_id: z.int(),
 	contact_ids: z.array(z.uuid()),
-	document_id: z.int()
+	file_id: z.uuid()
 })
 
 export type SendMarketingSubmissionQueryDto = z.infer<typeof sendMarketingSubmissionQueryDto>
