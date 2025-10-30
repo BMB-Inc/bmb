@@ -1,8 +1,9 @@
-import { Checkbox, Table } from '@mantine/core';
-import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
-import { IconFolder, IconFileText, IconBuilding } from '@tabler/icons-react';
+import { Table } from '@mantine/core';
+import { useMemo, useState } from 'react';
 import type { BrowserItem } from './types';
-import classes from '../../modules/file-tree.module.css';
+import { SortableHeader } from './SortableHeader';
+import { NameFilter } from './NameFilter';
+import { DetailsRow } from './DetailsRow';
 
 type DetailsTableProps = {
   items: BrowserItem[];
@@ -14,69 +15,88 @@ type DetailsTableProps = {
 };
 
 export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen, selectedDocumentId, onDocumentClear }: DetailsTableProps) {
-  const { isSelected: isDocumentSelected, toggleSelected: toggleDocumentSelected } = useSelectedDocuments();
+  type SortKey = 'name' | 'modified';
+  type SortDirection = 'asc' | 'desc';
+  const [sort, setSort] = useState<{ key: SortKey; direction: SortDirection } | null>(null);
+  const [folderNameQuery, setFolderNameQuery] = useState('');
+
+  const filteredItems = useMemo(() => {
+    const query = folderNameQuery.trim().toLocaleLowerCase();
+    if (!query) return items;
+    return items.filter(item => {
+      if (item.kind === 'folder' || item.kind === 'document') {
+        return item.name.toLocaleLowerCase().includes(query);
+      }
+      return true; // leave clients unaffected
+    });
+  }, [items, folderNameQuery]);
+
+  const sortedItems = useMemo(() => {
+    const base = filteredItems;
+    if (!sort) return base;
+    const itemsCopy = [...base];
+    const compare = (a: BrowserItem, b: BrowserItem) => {
+      if (sort.key === 'name') {
+        const an = a.name.toLocaleLowerCase();
+        const bn = b.name.toLocaleLowerCase();
+        const cmp = an.localeCompare(bn, undefined, { numeric: true, sensitivity: 'base' });
+        return sort.direction === 'asc' ? cmp : -cmp;
+      }
+      const ad = Date.parse(a.modified);
+      const bd = Date.parse(b.modified);
+      const aTime = Number.isNaN(ad) ? 0 : ad;
+      const bTime = Number.isNaN(bd) ? 0 : bd;
+      const cmp = aTime - bTime;
+      return sort.direction === 'asc' ? cmp : -cmp;
+    };
+    itemsCopy.sort(compare);
+    return itemsCopy;
+  }, [filteredItems, sort]);
+
+  const toggleSort = (key: SortKey) => {
+    setSort(prev => {
+      if (!prev || prev.key !== key) return { key, direction: 'asc' };
+      if (prev.direction === 'asc') return { key, direction: 'desc' };
+      return null;
+    });
+  };
   return (
     <Table withRowBorders={false} verticalSpacing="xs" highlightOnHover>
       <Table.Thead>
         <Table.Tr>
-          <Table.Th>Name</Table.Th>
+          <SortableHeader
+            title="Name"
+            active={sort?.key === 'name'}
+            direction={sort?.key === 'name' ? sort.direction : null}
+            onToggle={() => toggleSort('name')}
+          />
           <Table.Th>Type</Table.Th>
-          <Table.Th>Modified</Table.Th>
+          <SortableHeader
+            title="Modified"
+            active={sort?.key === 'modified'}
+            direction={sort?.key === 'modified' ? sort.direction : null}
+            onToggle={() => toggleSort('modified')}
+          />
+        </Table.Tr>
+        <Table.Tr>
+          <Table.Th>
+            <NameFilter value={folderNameQuery} onChange={setFolderNameQuery} delay={500} width={300} />
+          </Table.Th>
+          <Table.Th />
+          <Table.Th />
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
-        {items.map(item => (
-          <Table.Tr
+        {sortedItems.map(item => (
+          <DetailsRow
             key={`${item.kind}-${item.id}`}
-            onClick={() => {
-              if (item.kind === 'document') {
-                if (selectedDocumentId === item.id) {
-                  onDocumentClear?.();
-                } else {
-                  onDocumentOpen?.(item.id);
-                }
-                return;
-              }
-              if (item.kind === 'folder') onFolderOpen(item.id);
-              if (item.kind === 'client') onClientOpen?.(item.id);
-            }}
-            onDoubleClick={() => {
-              if (item.kind === 'document') {
-                const currentlySelected = isDocumentSelected(item.id);
-                toggleDocumentSelected(item.id, !currentlySelected);
-                onDocumentOpen?.(item.id);
-              }
-            }}
-            style={{
-              cursor: item.kind === 'folder' || item.kind === 'client' || item.kind === 'document' ? 'pointer' : 'default',
-              backgroundColor: item.kind === 'document' && selectedDocumentId === item.id ? 'var(--mantine-color-blue-0)' : undefined,
-              userSelect: item.kind === 'document' ? 'none' : undefined,
-            }}
-            className={item.kind === 'document' ? (selectedDocumentId === item.id ? classes.documentItemExpanded : classes.documentItem) : undefined}
-          >
-            <Table.Td>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                {item.kind === 'document' && (
-                  <Checkbox
-                    size="xs"
-                    checked={isDocumentSelected(item.id)}
-                    onChange={(e) => {
-                      e.stopPropagation();
-                      toggleDocumentSelected(item.id, e.currentTarget.checked);
-                    }}
-                    onClick={(e) => e.stopPropagation()}
-                    onDoubleClick={(e) => e.stopPropagation()}
-                  />
-                )}
-                {item.kind === 'folder' && <IconFolder size={16} color="var(--mantine-color-yellow-7)" />}
-                {item.kind === 'client' && <IconBuilding size={16} color="var(--mantine-color-blue-5)" />}
-                {item.kind === 'document' && <IconFileText size={16} color={selectedDocumentId === item.id ? 'var(--mantine-color-blue-9)' : 'var(--mantine-color-blue-7)'} />}
-                {item.name}
-              </div>
-            </Table.Td>
-            <Table.Td>{item.type}</Table.Td>
-            <Table.Td>{item.modified}</Table.Td>
-          </Table.Tr>
+            item={item}
+            selectedDocumentId={selectedDocumentId}
+            onFolderOpen={onFolderOpen}
+            onClientOpen={onClientOpen}
+            onDocumentOpen={onDocumentOpen}
+            onDocumentClear={onDocumentClear}
+          />
         ))}
       </Table.Tbody>
     </Table>
