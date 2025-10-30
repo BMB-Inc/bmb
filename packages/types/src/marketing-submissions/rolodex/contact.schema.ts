@@ -8,6 +8,8 @@ export const marketingSubmissionsContactSchema = z.object({
 	lob: z.array(z.string()),
 	carrier_id: z.string(),
 	submission_house_email: z.email().optional().nullable(),
+	cell_phone: z.e164().optional().nullable(),
+	work_phone: z.e164().optional().nullable()
 });
 
 export const createMarketingSubmissionsContactSchema =
