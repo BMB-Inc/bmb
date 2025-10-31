@@ -2,10 +2,10 @@ import z from "zod/v4";
 
 export const marketingSubmissionsContactSchema = z.object({
 	id: z.uuid(),
-	name: z.string(),
-	email: z.email(),
+	name: z.string().min(1),
+	email: z.email().min(1),
 	active: z.boolean().default(true),
-	lob: z.array(z.string()),
+	lob: z.array(z.string()).min(1),
 	carrier_id: z.string(),
 	submission_house_email: z.email().optional().nullable(),
 	cell_phone: z.e164().optional().nullable(),
