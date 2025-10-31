@@ -119,6 +119,16 @@ export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTyp
 
   const hasClients = Array.isArray(clients) && clients.length > 0;
 
+  // Auto-select the client when exactly one search result is found
+  useEffect(() => {
+    if (!clientsLoading && !expandedClientId && Array.isArray(clients) && clients.length === 1) {
+      const only = clients[0] as any;
+      if (only?.id != null) {
+        navigateToClient(String(only.id));
+      }
+    }
+  }, [clients, clientsLoading, expandedClientId, navigateToClient]);
+
   const [folderLabelMap, setFolderLabelMap] = useState<Record<string, string>>({});
   useEffect(() => {
     if (folders && folders.length) {
