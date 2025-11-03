@@ -68,3 +68,5 @@ export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadS
 }, "Declining a submission must include a declinationReason.")
 
 export type MarketingSubmissionsBindThreadSchema = z.infer<typeof marketingSubmissionsBindThreadSchema>
+
+export type MarketingSubmissionsBindThreadDto = z.infer<typeof marketingSubmissionsBindThreadDto>
