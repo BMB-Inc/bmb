@@ -28,6 +28,7 @@ export const marketingSubmissionsEmailSchema = z.object({
 	sent_at: z.coerce.date(),
 	received_at: z.coerce.date().nullable().optional(),
 	direction: z.enum(MarketingSubmissionsEmailDirection),
+	body: z.string().optional().nullable()
 });
 
 export const submissionInboxSchema = marketingSubmissionsEmailSchema.extend({ body: marketingSubmissionsEmailBodySchema, uniqueBody: marketingSubmissionsEmailBodySchema })
