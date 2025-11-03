@@ -1,0 +1,46 @@
+{
+  "name": "@bmb-inc/types",
+  "description": "Common TypeScript types and schema definitions for BMB Inc projects.",
+  "version": "0.0.178",
+  "author": "BMB Inc",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "exports": {
+    "require": "./dist/index.cjs",
+    "import": "./dist/index.js"
+  },
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "package.json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bmb-inc/bmb.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "@bmb-inc:registry": "https://npm.pkg.github.com"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "bmb",
+    "types",
+    "schemas",
+    "insurance",
+    "sagitta",
+    "typescript"
+  ],
+  "dependencies": {
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
