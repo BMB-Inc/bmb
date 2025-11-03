@@ -1,4 +1,4 @@
 import { MarketingSubmissionsBindThreadSchema } from "../communications";
 import { MarketingSubmissionsConversationSchema } from "./conversation.schema";
 
-export type MarketingSubmissionsConversationResponse = MarketingSubmissionsConversationSchema & { carrier_name: string, lob: string[], subject: string | null, bindingStatus: MarketingSubmissionsBindThreadSchema | null }
+export type MarketingSubmissionsConversationResponse = MarketingSubmissionsConversationSchema & { carrier_name: string, lob: string[], subject: string | null, binding_status: MarketingSubmissionsBindThreadSchema | null }
