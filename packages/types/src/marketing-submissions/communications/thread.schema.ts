@@ -37,19 +37,19 @@ export type UpdateMarketingSubmissionsThreadSchema = z.infer<
 
 export const marketingSubmissionsBindThreadSchema = z.object({
 	id: z.uuid(),
-	threadId: z.uuid(),
+	thread_id: z.uuid(),
 	status: threadStatusEnum,
 	premium: z.number().optional().nullable(),
-	declinationReason: z.string().optional().nullable(),
-	createdAt: z.date(),
-	updatedAt: z.date()
+	declination_reason: z.string().optional().nullable(),
+	created_at: z.date(),
+	updated_at: z.date()
 })
 
 export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadSchema.omit({
 	id: true,
-	threadId: true,
-	createdAt: true,
-	updatedAt: true
+	thread_id: true,
+	created_at: true,
+	updated_at: true
 }).refine(data => {
 	if (data.status === MarketingSubmissionsThreadStatus.BOUND) {
 		const isBoundWithPremium = data.status === MarketingSubmissionsThreadStatus.BOUND && data?.premium && data?.premium > 0
@@ -60,7 +60,7 @@ export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadS
 }, "Binding submission must include bound premium.").refine(data => {
 	if (data.status === MarketingSubmissionsThreadStatus.DECLINED) {
 
-		const isDeclinedWithReason = data?.declinationReason
+		const isDeclinedWithReason = data?.declination_reason
 		return isDeclinedWithReason ? true : false
 	} else {
 		return true
