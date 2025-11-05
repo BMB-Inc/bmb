@@ -10,6 +10,7 @@ export type MarketingSubmissionsEmailAttachment = {
 	contentId: string | null;
 	contentLocation: string | null;
 	contentBytes: string;
+	downloadUrl: string;
 };
 
 
