@@ -1,6 +1,6 @@
 {
   "name": "@bmb-inc/sagitta",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -65,5 +65,9 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",
     "@bmb-inc:registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bmb-inc/bmb.git"
   }
 }

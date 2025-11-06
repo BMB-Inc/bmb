@@ -1,6 +1,6 @@
 {
   "name": "@bmb-inc/imageright",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "type": "module",
   "files": [
     "dist"
@@ -60,5 +60,9 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com",
     "@bmb-inc:registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bmb-inc/bmb.git"
   }
 }
