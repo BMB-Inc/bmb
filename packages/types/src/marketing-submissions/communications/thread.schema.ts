@@ -58,7 +58,7 @@ export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadS
 	} else {
 		return true
 	}
-}, "Binding submission must include bound premium.").refine(data => {
+}, { message: "Binding submission must include bound premium.", path: ["premium"] }).refine(data => {
 	if (data.status === MarketingSubmissionsThreadStatus.DECLINED) {
 
 		const isDeclinedWithReason = data?.declination_reason
@@ -66,14 +66,14 @@ export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadS
 	} else {
 		return true
 	}
-}, "Declining a submission must include a declinationReason.").refine(data => {
+}, { message: "Declining a submission must include a declinationReason.", path: ["declination_reason"] }).refine(data => {
 	if (data.status === MarketingSubmissionsThreadStatus.QUOTED) {
 		const isQuotedWithPremium = data?.premium
 		return isQuotedWithPremium ? true : false
 	} else {
 		return true
 	}
-}, "Quoted submission must include quoted premium.")
+}, { message: "Quoted submission must include quoted premium.", path: ["premium"] },)
 
 export type MarketingSubmissionsBindThreadSchema = z.infer<typeof marketingSubmissionsBindThreadSchema>
 
