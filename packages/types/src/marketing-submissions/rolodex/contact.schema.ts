@@ -42,3 +42,29 @@ export const updateMarketingSubmissionsContactTagsSchema = createMarketingSubmis
 export type MarketingSubmissionsContactTagsSchema = z.infer<typeof marketingSubmissionsContactTagsSchema>;
 export type CreateMarketingSubmissionsContactTagsSchema = z.infer<typeof createMarketingSubmissionsContactTagsSchema>;
 export type UpdateMarketingSubmissionsContactTagsSchema = z.infer<typeof updateMarketingSubmissionsContactTagsSchema>;
+
+export const marketingSubmissionsContactCcSchema = z.object({
+	id: z.uuid(),
+	name: z.string().min(1),
+	email: z.email(),
+});
+
+export type MarketingSubmissionsContactCcSchema = z.infer<
+	typeof marketingSubmissionsContactCcSchema
+>;
+
+export const createMarketingSubmissionsContactCcSchema = marketingSubmissionsContactCcSchema.omit({
+	id: true,
+});
+
+export type CreateMarketingSubmissionsContactCcSchema = z.infer<
+	typeof createMarketingSubmissionsContactCcSchema
+>;
+
+export const updateMarketingSubmissionsContactCcSchema =
+	createMarketingSubmissionsContactCcSchema.partial();
+
+export type UpdateMarketingSubmissionsContactCcSchema = z.infer<
+	typeof updateMarketingSubmissionsContactCcSchema
+>;
+
