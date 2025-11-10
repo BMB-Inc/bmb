@@ -4,6 +4,7 @@ export enum MarketingSubmissionsThreadStatus {
 	ACTIVE = "ACTIVE",
 	BOUND = "BOUND",
 	CLOSED = "CLOSED",
+	QUOTED = "QUOTED",
 	DECLINED = "DECLINED"
 }
 
@@ -52,7 +53,7 @@ export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadS
 	updated_at: true
 }).refine(data => {
 	if (data.status === MarketingSubmissionsThreadStatus.BOUND) {
-		const isBoundWithPremium = data.status === MarketingSubmissionsThreadStatus.BOUND && data?.premium && data?.premium > 0
+		const isBoundWithPremium = data?.premium && data?.premium > 0
 		return isBoundWithPremium
 	} else {
 		return true
@@ -65,7 +66,12 @@ export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadS
 	} else {
 		return true
 	}
-}, "Declining a submission must include a declinationReason.")
+}, "Declining a submission must include a declinationReason.").refine(data => {
+	if (data.status === MarketingSubmissionsThreadStatus.QUOTED) {
+		const isQuotedWithPremium = data?.premium
+		return isQuotedWithPremium ? true : false
+	}
+}, "Quoted submission must include quoted premium.")
 
 export type MarketingSubmissionsBindThreadSchema = z.infer<typeof marketingSubmissionsBindThreadSchema>
 
