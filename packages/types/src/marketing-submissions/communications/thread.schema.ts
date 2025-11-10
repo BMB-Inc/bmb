@@ -70,6 +70,8 @@ export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadS
 	if (data.status === MarketingSubmissionsThreadStatus.QUOTED) {
 		const isQuotedWithPremium = data?.premium
 		return isQuotedWithPremium ? true : false
+	} else {
+		return true
 	}
 }, "Quoted submission must include quoted premium.")
 
