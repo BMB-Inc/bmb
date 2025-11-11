@@ -1,7 +1,7 @@
 {
   "name": "@bmb-inc/types",
   "description": "Common TypeScript types and schema definitions for BMB Inc projects.",
-  "version": "0.0.198",
+  "version": "0.0.199",
   "author": "BMB Inc",
   "license": "MIT",
   "type": "module",
@@ -38,7 +38,7 @@
     "typescript"
   ],
   "dependencies": {
-    "zod": "^4.0.17"
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "typescript": "^5.8.3"
