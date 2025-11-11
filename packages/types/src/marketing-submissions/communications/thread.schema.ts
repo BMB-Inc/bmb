@@ -67,13 +67,8 @@ export const marketingSubmissionsBindThreadSchema = z.object({
   id: z.uuid(),
   thread_id: z.uuid(),
   status: bindingStatusEnum,
-  premium: z.number().finite().nonnegative().nullable().optional(),
-  declination_reason: z
-    .string()
-    .trim()
-    .min(1, { message: 'Declination reason must include at least one character.' })
-    .nullable()
-    .optional(),
+  premium: z.number().int().nonnegative().nullable().optional(),
+  declination_reason: z.string().trim().nullable().optional(),
   created_at: z.coerce.date(),
   updated_at: z.coerce.date(),
 });

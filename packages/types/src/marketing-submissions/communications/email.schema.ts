@@ -21,10 +21,10 @@ export const marketingSubmissionsEmailSchema = z.object({
   contact_id: z.uuid().nullable().optional(),
   thread_id: z.uuid(),
   internet_message_id: z.string(),
-  sent_to: z.array(z.string().email()),
-  cc: z.array(z.string().email()).nullable().optional(),
-  bcc: z.array(z.string().email()).nullable().optional(),
-  sent_from: z.string().email().or(z.string()),
+  sent_to: z.array(z.email()),
+  cc: z.array(z.email()).nullable().optional(),
+  bcc: z.array(z.email()).nullable().optional(),
+  sent_from: z.email().or(z.string()),
   sent_at: z.coerce.date(),
   received_at: z.coerce.date().nullable().optional(),
   direction: z.enum(emailDirectionValues),
@@ -44,13 +44,14 @@ export const createMarketingSubmissionsEmailSchema = marketingSubmissionsEmailSc
 export const sendMarketingSubmissionEmailDto = z.object({
   subject: z.string().min(1, { message: 'Subject is required.' }),
   body: z.string().min(1, { message: 'Body is required.' }),
-  html: z.string().optional(),
 });
 
 export const sendMarketingSubmissionQueryDto = z.object({
   submission_id: z.number().int(),
   contact_ids: z.array(z.uuid()).min(1),
   file_ids: z.array(z.uuid()).min(1),
+  cc_contact_ids: z.array(z.uuid()).optional(),
+  submission_house_contact_ids: z.array(z.uuid()).optional(),
 });
 
 export type SendMarketingSubmissionQueryDto = z.infer<typeof sendMarketingSubmissionQueryDto>;

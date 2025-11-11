@@ -1,8 +1,9 @@
-import type { SubmissionInboxResponse } from "../communications";
-import type { MarketingSubmissionsEmailAttachment } from "./email-attachment.type";
+import type { SubmissionInboxResponse } from '../communications';
+import type { MarketingSubmissionsEmailAttachment } from './email-attachment.type';
 
 export type MarketingSubmissionsEmailResponse = SubmissionInboxResponse & {
-	messageId: string;
-	submissionId: number;
-	attachments: MarketingSubmissionsEmailAttachment[];
+  messageId: string;
+  submissionId: number;
+  attachments: MarketingSubmissionsEmailAttachment[];
 };
+

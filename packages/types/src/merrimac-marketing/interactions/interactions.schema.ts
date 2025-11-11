@@ -1,11 +1,11 @@
-import { z } from "zod";
+import z from 'zod/v4';
 
 export const interactionsZodObject = z.object({
   interaction_id: z.string(),
   submission_id: z.string(),
   interaction_detail: z.string(),
-  date_created: z.string().datetime(),
-  date_interacted: z.string().datetime(),
+  date_created: z.iso.datetime(),
+  date_interacted: z.iso.datetime(),
 });
 
 export type Interactions = z.infer<typeof interactionsZodObject>;

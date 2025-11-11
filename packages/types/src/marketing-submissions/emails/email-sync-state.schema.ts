@@ -17,7 +17,7 @@ const emailSyncStatusValues: [
 
 export const marketingSubmissionsEmailSyncStateSchema = z.object({
   id: z.uuid(),
-  mailbox_email: z.string().email(),
+  mailbox_email: z.email(),
   delta_token: z.string(),
   last_synced_at: z.coerce.date(),
   sync_status: z.enum(emailSyncStatusValues),
