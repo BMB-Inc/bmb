@@ -1,80 +1,116 @@
-import z from "zod/v4";
+import z from 'zod/v4';
 
 export enum MarketingSubmissionsThreadStatus {
-	ACTIVE = "ACTIVE",
-	BOUND = "BOUND",
-	CLOSED = "CLOSED",
-	QUOTED = "QUOTED",
-	DECLINED = "DECLINED"
+  ACTIVE = 'ACTIVE',
+  CLOSED = 'CLOSED',
+  ARCHIVED = 'ARCHIVED',
+  QUOTED = 'QUOTED',
 }
 
-const threadStatusEnum = z.enum(MarketingSubmissionsThreadStatus)
+export enum MarketingSubmissionsBindingStatus {
+  DECLINED = 'DECLINED',
+  BOUND = 'BOUND',
+  CLOSED = 'CLOSED',
+  QUOTED = 'QUOTED',
+}
+
+const threadStatusValues: [
+  MarketingSubmissionsThreadStatus,
+  ...MarketingSubmissionsThreadStatus[],
+] = [
+  MarketingSubmissionsThreadStatus.ACTIVE,
+  MarketingSubmissionsThreadStatus.CLOSED,
+  MarketingSubmissionsThreadStatus.ARCHIVED,
+  MarketingSubmissionsThreadStatus.QUOTED,
+];
+
+const bindingStatusValues: [
+  MarketingSubmissionsBindingStatus,
+  ...MarketingSubmissionsBindingStatus[],
+] = [
+  MarketingSubmissionsBindingStatus.DECLINED,
+  MarketingSubmissionsBindingStatus.BOUND,
+  MarketingSubmissionsBindingStatus.CLOSED,
+  MarketingSubmissionsBindingStatus.QUOTED,
+];
+
+const threadStatusEnum = z.enum(threadStatusValues);
+const bindingStatusEnum = z.enum(bindingStatusValues);
 
 export const marketingSubmissionsThreadSchema = z.object({
-	id: z.uuid(),
-	carrier_id: z.uuid(),
-	status: threadStatusEnum,
-	created_at: z.date().default(new Date()),
-	submission_id: z.int(),
-	conversation_id: z.string(),
-	updated_at: z.date().optional(),
+  id: z.uuid(),
+  carrier_id: z.uuid(),
+  status: threadStatusEnum,
+  created_at: z.coerce.date(),
+  submission_id: z.number().int(),
+  conversation_id: z.string(),
+  updated_at: z.coerce.date().nullable().optional(),
 });
 
-export const createMarketingSubmissionsThreadSchema =
-	marketingSubmissionsThreadSchema.omit({ id: true, created_at: true });
+export const createMarketingSubmissionsThreadSchema = marketingSubmissionsThreadSchema.omit({
+  id: true,
+  created_at: true,
+});
 
 export const updateMarketingSubmissionsThreadSchema =
-	createMarketingSubmissionsThreadSchema.partial();
+  createMarketingSubmissionsThreadSchema.partial();
 
-export type MarketingSubmissionsThreadSchema = z.infer<
-	typeof marketingSubmissionsThreadSchema
->;
+export type MarketingSubmissionsThreadSchema = z.infer<typeof marketingSubmissionsThreadSchema>;
 export type CreateMarketingSubmissionsThreadSchema = z.infer<
-	typeof createMarketingSubmissionsThreadSchema
+  typeof createMarketingSubmissionsThreadSchema
 >;
 export type UpdateMarketingSubmissionsThreadSchema = z.infer<
-	typeof updateMarketingSubmissionsThreadSchema
+  typeof updateMarketingSubmissionsThreadSchema
 >;
 
 export const marketingSubmissionsBindThreadSchema = z.object({
-	id: z.uuid(),
-	thread_id: z.uuid(),
-	status: threadStatusEnum,
-	premium: z.number().optional().nullable(),
-	declination_reason: z.string().optional().nullable(),
-	created_at: z.date(),
-	updated_at: z.date()
-})
+  id: z.uuid(),
+  thread_id: z.uuid(),
+  status: bindingStatusEnum,
+  premium: z.number().finite().nonnegative().nullable().optional(),
+  declination_reason: z
+    .string()
+    .trim()
+    .min(1, { message: 'Declination reason must include at least one character.' })
+    .nullable()
+    .optional(),
+  created_at: z.coerce.date(),
+  updated_at: z.coerce.date(),
+});
 
-export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadSchema.omit({
-	id: true,
-	thread_id: true,
-	created_at: true,
-	updated_at: true
-}).refine(data => {
-	if (data.status === MarketingSubmissionsThreadStatus.BOUND) {
-		const isBoundWithPremium = data?.premium && data?.premium > 0
-		return isBoundWithPremium
-	} else {
-		return true
-	}
-}, { message: "Binding submission must include bound premium.", path: ["premium"] }).refine(data => {
-	if (data.status === MarketingSubmissionsThreadStatus.DECLINED) {
+export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadSchema
+  .omit({
+    id: true,
+    thread_id: true,
+    created_at: true,
+    updated_at: true,
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.status === MarketingSubmissionsBindingStatus.BOUND ||
+      data.status === MarketingSubmissionsBindingStatus.QUOTED
+    ) {
+      if (typeof data.premium !== 'number') {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['premium'],
+          message: 'Premium is required when binding or quoting a submission.',
+        });
+      }
+    }
 
-		const isDeclinedWithReason = data?.declination_reason
-		return isDeclinedWithReason ? true : false
-	} else {
-		return true
-	}
-}, { message: "Declining a submission must include a declinationReason.", path: ["declination_reason"] }).refine(data => {
-	if (data.status === MarketingSubmissionsThreadStatus.QUOTED) {
-		const isQuotedWithPremium = data?.premium
-		return isQuotedWithPremium ? true : false
-	} else {
-		return true
-	}
-}, { message: "Quoted submission must include quoted premium.", path: ["premium"] },)
+    if (data.status === MarketingSubmissionsBindingStatus.DECLINED) {
+      if (typeof data.declination_reason !== 'string' || data.declination_reason.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['declination_reason'],
+          message: 'Declining a submission requires a declination reason.',
+        });
+      }
+    }
+  });
 
-export type MarketingSubmissionsBindThreadSchema = z.infer<typeof marketingSubmissionsBindThreadSchema>
-
-export type MarketingSubmissionsBindThreadDto = z.infer<typeof marketingSubmissionsBindThreadDto>
+export type MarketingSubmissionsBindThreadSchema = z.infer<
+  typeof marketingSubmissionsBindThreadSchema
+>;
+export type MarketingSubmissionsBindThreadDto = z.infer<typeof marketingSubmissionsBindThreadDto>;
