@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 // Load environment variables from .env if present
 dotenv.config();
 
-// Custom plugin to handle CSS modules - exports empty object since styles will be handled by consuming app
+// Custom plugin to stub CSS modules to empty objects so consumers are not required to import CSS
 const cssModulePlugin = () => ({
   name: 'css-module',
   resolveId(source) {

@@ -1,5 +1,5 @@
 import { useMemo, useEffect, useState } from 'react';
-import { Card, Stack, Skeleton, Center, Text } from '@mantine/core';
+import { Card, Stack, Skeleton, Center, Text, Divider, Title } from '@mantine/core';
 import { ClientSearch } from '../client-search/ClientSearch';
 import { type ImagerightClient } from '@bmb-inc/types';
 // ClientCard used inside ClientList
@@ -195,24 +195,13 @@ export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTyp
               ))
             )}
             {!currentLoading && (
-              expandedDocumentId ? (
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'minmax(360px, 1fr) minmax(280px, 0.6fr)',
-                    gap: 'var(--mantine-spacing-md)'
-                  }}
-                >
-                  <DetailsTable
-                    items={currentItems}
-                    onFolderOpen={(id) => navigateIntoFolder(id.toString())}
-                    onDocumentOpen={(id) => navigateToDocument(id.toString())}
-                    selectedDocumentId={expandedDocumentId ? Number(expandedDocumentId) : null}
-                    onDocumentClear={clearDocumentSelection}
-                  />
-                  <DocumentPages documentId={Number(expandedDocumentId)} />
-                </div>
-              ) : (
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'minmax(360px, 1fr) minmax(280px, 0.6fr)',
+                  gap: 'var(--mantine-spacing-md)'
+                }}
+              >
                 <DetailsTable
                   items={currentItems}
                   onFolderOpen={(id) => navigateIntoFolder(id.toString())}
@@ -220,7 +209,15 @@ export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTyp
                   selectedDocumentId={expandedDocumentId ? Number(expandedDocumentId) : null}
                   onDocumentClear={clearDocumentSelection}
                 />
-              )
+                {expandedDocumentId ? (
+                  <DocumentPages documentId={Number(expandedDocumentId)} />
+                ) : (
+                  <Stack gap={6} mt="sm">
+                    <Divider labelPosition="left" label={<Title order={6}>Pages</Title>} />
+                    <Text c="dimmed" size="sm">Select a document to view pages</Text>
+                  </Stack>
+                )}
+              </div>
             )}
           </Stack>
         )}
