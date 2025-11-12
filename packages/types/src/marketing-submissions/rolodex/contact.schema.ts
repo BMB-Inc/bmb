@@ -1,21 +1,15 @@
 import z from 'zod/v4';
 
-const E164_PHONE_REGEX = /^\+?[1-9]\d{1,14}$/;
-
-const phoneSchema = z
-  .string()
-  .regex(E164_PHONE_REGEX, { message: 'Phone numbers must be E.164 formatted.' });
-
 export const marketingSubmissionsContactSchema = z.object({
   id: z.uuid(),
   name: z.string().min(1, { message: 'Name is required' }),
-  email: z.string().email({ message: 'Email is required' }),
+  email: z.email({ message: 'Email is required' }),
   active: z.boolean().default(true),
   lob: z.array(z.string()).min(1, { message: 'LOB is required' }),
   carrier_id: z.uuid(),
-  submission_house_email: z.string().email().nullable().optional(),
-  cell_phone: phoneSchema.nullable().optional(),
-  work_phone: phoneSchema.nullable().optional(),
+  submission_house_email: z.email().nullable().optional(),
+  cell_phone: z.e164().nullable().optional(),
+  work_phone: z.e164().nullable().optional(),
 });
 
 export const createMarketingSubmissionsContactSchema = marketingSubmissionsContactSchema.omit({
@@ -70,7 +64,7 @@ export type UpdateMarketingSubmissionsContactTagsSchema = z.infer<
 export const marketingSubmissionsContactCcSchema = z.object({
   id: z.uuid(),
   name: z.string().min(1),
-  email: z.string().email(),
+  email: z.email(),
 });
 
 export type MarketingSubmissionsContactCcSchema = z.infer<

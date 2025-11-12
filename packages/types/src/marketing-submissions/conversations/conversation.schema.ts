@@ -5,7 +5,7 @@ import { MarketingSubmissionsThreadStatus } from '../communications';
 const marketingSubmissionsConversationRecipientSchema = z.object({
   emailAddress: z.object({
     name: z.string(),
-    address: z.string().email(),
+    address: z.email(),
   }),
 });
 
