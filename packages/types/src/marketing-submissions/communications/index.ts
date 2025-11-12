@@ -1,3 +1,4 @@
 export * from "./email.schema";
 export * from "./thread.schema";
-export * from "./email-attachments.schema"
+export * from "./email-attachments.schema";
+export * from "./subjectivity.schema";
