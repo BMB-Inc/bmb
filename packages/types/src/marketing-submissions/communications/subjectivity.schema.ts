@@ -14,12 +14,21 @@ export const marketingSubmissionsSubjectivitySchema = z.object({
 export const createMarketingSubmissionsSubjectivitySchema =
   marketingSubmissionsSubjectivitySchema.omit({
     id: true,
+    submission_id: true,
+    thread_id: true,
     created_at: true,
     updated_at: true,
   });
 
-export const updateMarketingSubmissionsSubjectivitySchema =
-  createMarketingSubmissionsSubjectivitySchema.partial();
+export const updateMarketingSubmissionsSubjectivitySchema = marketingSubmissionsSubjectivitySchema
+  .omit({
+    id: true,
+    submission_id: true,
+    thread_id: true,
+    created_at: true,
+    updated_at: true,
+  })
+  .partial();
 
 export type MarketingSubmissionsSubjectivitySchema = z.infer<
   typeof marketingSubmissionsSubjectivitySchema
