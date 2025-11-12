@@ -1,9 +1,9 @@
 import { Stack, Divider, Title, Skeleton } from '@mantine/core';
-import { useBrowserNavigation } from '../../hooks/useBrowserNavigation';
 import { usePages } from '@hooks/usePages';
 import PageRow from './PageRow';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelectedPages } from '@hooks/index';
+import { getPreview } from '@api/preview/route';
 
 type DocumentPagesProps = {
   documentId: number;
@@ -11,8 +11,9 @@ type DocumentPagesProps = {
 
 export function DocumentPages({ documentId }: DocumentPagesProps) {
   const { data: pages = [], isLoading } = usePages({ documentId });
-  const { navigateToPage } = useBrowserNavigation();
   const { isSelected, toggleSelected, clearSelected } = useSelectedPages();
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const previousUrlRef = useRef<string | null>(null);
 
   const isChecked = useCallback((id: number) => isSelected(id), [isSelected]);
   const toggleChecked = useCallback((id: number, value?: boolean) => {
@@ -21,8 +22,23 @@ export function DocumentPages({ documentId }: DocumentPagesProps) {
   useEffect(() => {
     // Clear selected pages when the document changes
     clearSelected();
+    // Revoke any existing preview URL on document change
+    if (previousUrlRef.current) {
+      URL.revokeObjectURL(previousUrlRef.current);
+      previousUrlRef.current = null;
+      setPreviewUrl(null);
+    }
   }, [documentId, clearSelected]);
 
+  useEffect(() => {
+    return () => {
+      // Cleanup on unmount
+      if (previousUrlRef.current) {
+        URL.revokeObjectURL(previousUrlRef.current);
+        previousUrlRef.current = null;
+      }
+    };
+  }, []);
 
   
 
@@ -56,7 +72,24 @@ export function DocumentPages({ documentId }: DocumentPagesProps) {
             label={label}
             checked={isChecked(p.id)}
             onCheckedChange={(v) => toggleChecked(p.id, v)}
-            onSelect={() => navigateToPage(String(p.id))}
+            onSelect={async () => {
+              try {
+                const response = await getPreview({ documentId, pageIds: p.id });
+                const buffer = await response.arrayBuffer();
+                console.log('Preview bytes length:', buffer.byteLength);
+                console.log('First 32 bytes:', new Uint8Array(buffer.slice(0, 32)));
+                const blob = new Blob([buffer], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                // Revoke previous URL to avoid memory leaks
+                if (previousUrlRef.current) {
+                  URL.revokeObjectURL(previousUrlRef.current);
+                }
+                previousUrlRef.current = url;
+                setPreviewUrl(url);
+              } catch (err) {
+                console.error('Failed to fetch preview:', err);
+              }
+            }}
             onDoubleClick={async () => {
               const currentlySelected = isChecked(p.id);
               toggleChecked(p.id, !currentlySelected);
@@ -64,6 +97,17 @@ export function DocumentPages({ documentId }: DocumentPagesProps) {
           />
         );
       })}
+      {previewUrl ? (
+        <>
+          <Divider labelPosition="left" label={<Title order={6}>Preview</Title>} />
+          <object
+            data={previewUrl}
+            type="application/pdf"
+            width="100%"
+            height="480"
+          />
+        </>
+      ) : null}
     </Stack>
   );
 }
