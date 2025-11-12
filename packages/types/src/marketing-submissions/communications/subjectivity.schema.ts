@@ -3,7 +3,7 @@ import z from 'zod/v4';
 export const marketingSubmissionsSubjectivitySchema = z.object({
   id: z.uuid(),
   submission_id: z.number().int(),
-  thread_id: z.uuid(),
+  thread_id: z.uuid().nullable().optional(),
   term: z.string(),
   completed: z.boolean(),
   notes: z.string().nullable().optional(),
