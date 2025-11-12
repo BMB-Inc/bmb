@@ -1,4 +1,4 @@
-import { Stack, Divider, Title, Skeleton } from '@mantine/core';
+import { Stack, Divider, Title, Skeleton, Text } from '@mantine/core';
 import { usePages } from '@hooks/usePages';
 import PageRow from './PageRow';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -14,6 +14,7 @@ export function DocumentPages({ documentId }: DocumentPagesProps) {
   const { isSelected, toggleSelected, clearSelected } = useSelectedPages();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const previousUrlRef = useRef<string | null>(null);
+  const [previewUnavailable, setPreviewUnavailable] = useState<boolean>(false);
 
   const isChecked = useCallback((id: number) => isSelected(id), [isSelected]);
   const toggleChecked = useCallback((id: number, value?: boolean) => {
@@ -28,6 +29,7 @@ export function DocumentPages({ documentId }: DocumentPagesProps) {
       previousUrlRef.current = null;
       setPreviewUrl(null);
     }
+    setPreviewUnavailable(false);
   }, [documentId, clearSelected]);
 
   useEffect(() => {
@@ -73,7 +75,18 @@ export function DocumentPages({ documentId }: DocumentPagesProps) {
             checked={isChecked(p.id)}
             onCheckedChange={(v) => toggleChecked(p.id, v)}
             onSelect={async () => {
+              const isPdf = String(ext ?? '').toLowerCase() === 'pdf';
+              if (!isPdf) {
+                if (previousUrlRef.current) {
+                  URL.revokeObjectURL(previousUrlRef.current);
+                  previousUrlRef.current = null;
+                }
+                setPreviewUrl(null);
+                setPreviewUnavailable(true);
+                return;
+              }
               try {
+                setPreviewUnavailable(false);
                 const response = await getPreview({ documentId, pageIds: p.id });
                 const buffer = await response.arrayBuffer();
                 console.log('Preview bytes length:', buffer.byteLength);
@@ -97,15 +110,19 @@ export function DocumentPages({ documentId }: DocumentPagesProps) {
           />
         );
       })}
-      {previewUrl ? (
+      {previewUrl || previewUnavailable ? (
         <>
           <Divider labelPosition="left" label={<Title order={6}>Preview</Title>} />
-          <object
-            data={previewUrl}
-            type="application/pdf"
-            width="100%"
-            height="480"
-          />
+          {previewUrl ? (
+            <object
+              data={previewUrl}
+              type="application/pdf"
+              width="100%"
+              height="480"
+            />
+          ) : (
+            <Text c="dimmed">Preview not available for this file type.</Text>
+          )}
         </>
       ) : null}
     </Stack>
