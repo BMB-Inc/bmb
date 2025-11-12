@@ -1,4 +1,4 @@
-import { Stack, Divider, Title, Skeleton, Text } from '@mantine/core';
+import { Stack, Divider, Title, Skeleton } from '@mantine/core';
 import { usePages } from '@hooks/usePages';
 import PageRow from './PageRow';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -7,9 +7,11 @@ import { getPreview } from '@api/preview/route';
 
 type DocumentPagesProps = {
   documentId: number;
+  onPreviewUrlChange?: (url: string | null) => void;
+  onPreviewUnavailableChange?: (unavailable: boolean) => void;
 };
 
-export function DocumentPages({ documentId }: DocumentPagesProps) {
+export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavailableChange }: DocumentPagesProps) {
   const { data: pages = [], isLoading } = usePages({ documentId });
   const { isSelected, toggleSelected, clearSelected } = useSelectedPages();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -30,6 +32,8 @@ export function DocumentPages({ documentId }: DocumentPagesProps) {
       setPreviewUrl(null);
     }
     setPreviewUnavailable(false);
+    onPreviewUrlChange?.(null);
+    onPreviewUnavailableChange?.(false);
   }, [documentId, clearSelected]);
 
   useEffect(() => {
@@ -56,7 +60,11 @@ export function DocumentPages({ documentId }: DocumentPagesProps) {
   }
 
   if (!Array.isArray(pages) || pages.length === 0) {
-    return null;
+    return (
+      <Stack gap={6} mt="sm">
+        <Divider labelPosition="left" label={<Title order={6}>Pages</Title>} />
+      </Stack>
+    );
   }
 
   console.log(pages);
@@ -83,6 +91,8 @@ export function DocumentPages({ documentId }: DocumentPagesProps) {
                 }
                 setPreviewUrl(null);
                 setPreviewUnavailable(true);
+                onPreviewUrlChange?.(null);
+                onPreviewUnavailableChange?.(true);
                 return;
               }
               try {
@@ -99,6 +109,8 @@ export function DocumentPages({ documentId }: DocumentPagesProps) {
                 }
                 previousUrlRef.current = url;
                 setPreviewUrl(url);
+                onPreviewUrlChange?.(url);
+                onPreviewUnavailableChange?.(false);
               } catch (err) {
                 console.error('Failed to fetch preview:', err);
               }
@@ -110,21 +122,6 @@ export function DocumentPages({ documentId }: DocumentPagesProps) {
           />
         );
       })}
-      {previewUrl || previewUnavailable ? (
-        <>
-          <Divider labelPosition="left" label={<Title order={6}>Preview</Title>} />
-          {previewUrl ? (
-            <object
-              data={previewUrl}
-              type="application/pdf"
-              width="100%"
-              height="480"
-            />
-          ) : (
-            <Text c="dimmed">Preview not available for this file type.</Text>
-          )}
-        </>
-      ) : null}
     </Stack>
   );
 }

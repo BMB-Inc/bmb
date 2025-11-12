@@ -31,7 +31,11 @@ export function PageRow({ label, selected, checked, onCheckedChange, onSelect, o
         userSelect: 'none',
         backgroundColor,
         transition: 'background-color 120ms ease',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        flexWrap: 'nowrap'
       }}
+      wrap="nowrap"
       onClick={onSelect}
       onDoubleClick={onDoubleClick}
       onMouseEnter={() => setHovered(true)}
@@ -39,7 +43,9 @@ export function PageRow({ label, selected, checked, onCheckedChange, onSelect, o
     >
       <Checkbox size="xs" checked={!!checked} onChange={(e) => onCheckedChange?.(e.currentTarget.checked)} />
       <IconFile size={14} color="var(--mantine-color-gray-7)" />
-      <Text>{label}</Text>
+      <Text style={{ flex: 1, minWidth: 0 }} truncate>
+        {label}
+      </Text>
     </Group>
   );
 }

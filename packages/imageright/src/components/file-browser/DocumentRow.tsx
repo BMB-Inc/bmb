@@ -15,6 +15,7 @@ export function DocumentRow({ label, expanded, hasChildren, onToggle, onSelect }
   return (
     <Group
       gap='xs'
+      miw={0}
       className={expanded ? classes.documentItemExpanded : classes.documentItem}
       onClick={() => {
         onSelect?.();

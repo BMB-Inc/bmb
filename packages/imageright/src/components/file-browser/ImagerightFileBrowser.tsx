@@ -64,6 +64,10 @@ export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTyp
     return undefined;
   }, [documents]);
 
+  // Preview state (controlled by DocumentPages via callbacks)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewUnavailable, setPreviewUnavailable] = useState<boolean>(false);
+
 
   // Build current level items (clients, folders, documents) for details view
   const currentItems = useMemo(() => {
@@ -199,24 +203,69 @@ export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTyp
                 style={{
                   display: 'grid',
                   gridTemplateColumns: 'minmax(360px, 1fr) minmax(280px, 0.6fr)',
-                  gap: 'var(--mantine-spacing-md)'
+                  gap: 'var(--mantine-spacing-md)',
+                  alignItems: 'start',
+                  height: '70vh',
+                  minHeight: 0
                 }}
               >
-                <DetailsTable
-                  items={currentItems}
-                  onFolderOpen={(id) => navigateIntoFolder(id.toString())}
-                  onDocumentOpen={(id) => navigateToDocument(id.toString())}
-                  selectedDocumentId={expandedDocumentId ? Number(expandedDocumentId) : null}
-                  onDocumentClear={clearDocumentSelection}
-                />
-                {expandedDocumentId ? (
-                  <DocumentPages documentId={Number(expandedDocumentId)} />
-                ) : (
-                  <Stack gap={6} mt="sm">
-                    <Divider labelPosition="left" label={<Title order={6}>Pages</Title>} />
-                    <Text c="dimmed" size="sm">Select a document to view pages</Text>
-                  </Stack>
-                )}
+                <div style={{ overflow: 'auto', minHeight: 0, height: '100%' }}>
+                  <DetailsTable
+                    items={currentItems}
+                    onFolderOpen={(id) => navigateIntoFolder(id.toString())}
+                    onDocumentOpen={(id) => navigateToDocument(id.toString())}
+                    selectedDocumentId={expandedDocumentId ? Number(expandedDocumentId) : null}
+                    onDocumentClear={clearDocumentSelection}
+                  />
+                </div>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateRows: '1fr 1fr',
+                    gap: 'var(--mantine-spacing-md)',
+                    height: '100%',
+                    minHeight: 0
+                  }}
+                >
+                  <div style={{ overflow: 'auto', minHeight: 0 }}>
+                    {expandedDocumentId ? (
+                      <DocumentPages
+                        documentId={Number(expandedDocumentId)}
+                        onPreviewUrlChange={(url) => setPreviewUrl(url)}
+                        onPreviewUnavailableChange={(u) => setPreviewUnavailable(u)}
+                      />
+                    ) : (
+                      <Stack gap={6} mt="sm">
+                        <Divider labelPosition="left" label={<Title order={6}>Pages</Title>} />
+                        <Text c="dimmed" size="sm">Select a document to view pages</Text>
+                      </Stack>
+                    )}
+                  </div>
+                  <div style={{ minHeight: 0, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <Stack gap={6} style={{ flex: 1, minHeight: 0 }}>
+                      <Divider labelPosition="left" label={<Title order={6}>Preview</Title>} />
+                      <div style={{ flex: 1, minHeight: 0 }}>
+                        {previewUrl ? (
+                          <object
+                            data={previewUrl}
+                            type="application/pdf"
+                            width="100%"
+                            height="100%"
+                            style={{ height: '100%' }}
+                          />
+                        ) : (
+                          <div style={{ height: '100%', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+                            <Text c="dimmed" size="sm" ta="left">
+                              {previewUnavailable
+                                ? 'Preview not available for this file type.'
+                                : 'Select a page to preview'}
+                            </Text>
+                          </div>
+                        )}
+                      </div>
+                    </Stack>
+                  </div>
+                </div>
               </div>
             )}
           </Stack>
