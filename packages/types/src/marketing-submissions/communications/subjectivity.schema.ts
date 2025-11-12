@@ -1,12 +1,24 @@
 import z from 'zod/v4';
 
+export const subjectivityFlagsSchema = z.object({
+  redline_applications: z.boolean(),
+  coverage_confirmation: z.boolean(),
+  redline_cois: z.boolean(),
+  baf: z.boolean(),
+  blue_folder_items_received: z.boolean(),
+  redlines_completed_before_renewal: z.boolean(),
+  cois_issued: z.boolean().nullable().optional(),
+  auto_ids_issued: z.boolean().nullable().optional(),
+  notify_loss_control: z.boolean(),
+});
+
 export const marketingSubmissionsSubjectivitySchema = z.object({
   id: z.uuid(),
   submission_id: z.number().int(),
   thread_id: z.uuid().nullable().optional(),
-  term: z.string(),
-  completed: z.boolean(),
-  notes: z.string().nullable().optional(),
+  subjectivities: subjectivityFlagsSchema,
+  completed_comments: z.string().nullable().optional(),
+  uncompleted_comments: z.string().nullable().optional(),
   created_at: z.coerce.date(),
   updated_at: z.coerce.date(),
 });
@@ -30,6 +42,7 @@ export const updateMarketingSubmissionsSubjectivitySchema = marketingSubmissions
   })
   .partial();
 
+export type SubjectivityFlags = z.infer<typeof subjectivityFlagsSchema>;
 export type MarketingSubmissionsSubjectivitySchema = z.infer<
   typeof marketingSubmissionsSubjectivitySchema
 >;
