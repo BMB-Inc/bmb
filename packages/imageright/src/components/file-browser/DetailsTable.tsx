@@ -1,9 +1,11 @@
-import { Table } from '@mantine/core';
+import { Button, Table } from '@mantine/core';
 import { useMemo, useState } from 'react';
 import type { BrowserItem } from './types';
 import { SortableHeader } from './SortableHeader';
 import { NameFilter } from './NameFilter';
 import { DetailsRow } from './DetailsRow';
+import { IconChecks } from '@tabler/icons-react';
+import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
 
 type DetailsTableProps = {
   items: BrowserItem[];
@@ -19,6 +21,7 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
   type SortDirection = 'asc' | 'desc';
   const [sort, setSort] = useState<{ key: SortKey; direction: SortDirection } | null>(null);
   const [folderNameQuery, setFolderNameQuery] = useState('');
+  const { selectMany } = useSelectedDocuments();
 
   const filteredItems = useMemo(() => {
     const query = folderNameQuery.trim().toLocaleLowerCase();
@@ -53,6 +56,12 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
     return itemsCopy;
   }, [filteredItems, sort]);
 
+  const visibleDocumentIds = useMemo(() => {
+    return sortedItems
+      .filter((item) => item.kind === 'document')
+      .map((item) => item.id as number);
+  }, [sortedItems]);
+
   const toggleSort = (key: SortKey) => {
     setSort(prev => {
       if (!prev || prev.key !== key) return { key, direction: 'asc' };
@@ -80,7 +89,18 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
         </Table.Tr>
         <Table.Tr>
           <Table.Th>
-            <NameFilter value={folderNameQuery} onChange={setFolderNameQuery} delay={500} width={300} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <NameFilter value={folderNameQuery} onChange={setFolderNameQuery} delay={500} width={300} />
+              <Button
+                size="xs"
+                variant="light"
+                leftSection={<IconChecks size={16} />}
+                onClick={() => selectMany(visibleDocumentIds)}
+                disabled={visibleDocumentIds.length === 0}
+              >
+                Select All
+              </Button>
+            </div>
           </Table.Th>
           <Table.Th />
           <Table.Th />
