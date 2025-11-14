@@ -23,6 +23,25 @@ export const boardSubmissionsQuerySchema = z.object({
 		.min(1)
 		.optional()
 		.describe("Case-insensitive client name search."),
+	coordinator: z
+		.string()
+		.min(1)
+		.optional()
+		.describe("Case-insensitive coordinator name search."),
+	start_date: z
+		.string()
+		.datetime()
+		.optional()
+		.describe(
+			"Lower bound (inclusive) for CreatedOn in ISO 8601 format.",
+		),
+	end_date: z
+		.string()
+		.datetime()
+		.optional()
+		.describe(
+			"Upper bound (inclusive) for CreatedOn in ISO 8601 format.",
+		),
 	limit: z
 		.number()
 		.int()
@@ -46,4 +65,3 @@ export const boardSubmissionsQuerySchema = z.object({
 export type BoardSubmissionsQuerySchema = z.infer<
 	typeof boardSubmissionsQuerySchema
 >;
-
