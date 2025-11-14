@@ -4,3 +4,4 @@ export * from "./rolodex/";
 export * from "./submissions/";
 export * from "./conversations/";
 export * from "./emails/";
+export * from "./board/";
