@@ -6,6 +6,7 @@ export interface MyDeskOverviewSummary {
 export interface AwaitingReplyOverviewItem {
   submissionId: number;
   clientName: string;
+  expDate: Date;
   carrierName: string;
   threadId: string;
   conversationId: string;
@@ -17,6 +18,7 @@ export interface AwaitingReplyOverviewItem {
 export interface BindingStatusOverviewItem {
   submissionId: number;
   clientName: string;
+  expDate: Date;
   carrierName: string;
   threadId: string;
   conversationId: string;
@@ -27,6 +29,7 @@ export interface BindingStatusOverviewItem {
 export interface IncompleteSubjectivitiesOverviewItem {
   submissionId: number;
   clientName: string;
+  expDate: Date;
   carrierName: string;
   threadId: string;
   conversationId: string;
@@ -39,6 +42,7 @@ export interface ReadyToSendOverviewItem {
   submissionId: number;
   clientName: string;
   accountType: string | null;
+  expDate: Date;
   createdAt: Date;
   daysSinceCreated: number;
 }
@@ -46,6 +50,7 @@ export interface ReadyToSendOverviewItem {
 export interface StaleThreadOverviewItem {
   submissionId: number;
   clientName: string;
+  expDate: Date;
   carrierName: string;
   threadId: string;
   conversationId: string;
