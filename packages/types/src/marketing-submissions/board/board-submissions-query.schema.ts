@@ -16,16 +16,13 @@ export const boardSubmissionsQuerySchema = z.object({
     .min(1)
     .optional()
     .describe('Case-insensitive search by Location (state or region).'),
-  start_date: z
+  window: z
     .string()
-    .datetime()
+    .min(1)
     .optional()
-    .describe('Lower bound (inclusive) for CreatedOn in ISO 8601 format.'),
-  end_date: z
-    .string()
-    .datetime()
-    .optional()
-    .describe('Upper bound (inclusive) for CreatedOn in ISO 8601 format.'),
+    .describe(
+      "Relative time window for CreatedOn such as '30d', '7d', or '1mo'. Defaults to '30d' for board and dashboard stats when omitted.",
+    ),
   limit: z.number().int().min(1).optional().describe('Page size for the board grid.'),
   page: z.number().int().min(0).optional().describe('Zero-based page index for pagination.'),
   completed: z

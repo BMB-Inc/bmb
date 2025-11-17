@@ -8,6 +8,7 @@ export interface AwaitingReplyOverviewItem {
   clientName: string;
   carrierName: string;
   threadId: string;
+  conversationId: string;
   lastInboundAt: Date;
   daysSince: number;
   subject: string;
@@ -18,6 +19,7 @@ export interface BindingStatusOverviewItem {
   clientName: string;
   carrierName: string;
   threadId: string;
+  conversationId: string;
   lastActivityAt: Date;
   daysSince: number;
 }
@@ -27,6 +29,7 @@ export interface IncompleteSubjectivitiesOverviewItem {
   clientName: string;
   carrierName: string;
   threadId: string;
+  conversationId: string;
   boundAt: Date;
   daysSinceBound: number;
   incompleteCount: number;
@@ -45,6 +48,7 @@ export interface StaleThreadOverviewItem {
   clientName: string;
   carrierName: string;
   threadId: string;
+  conversationId: string;
   lastActivityAt: Date;
   daysSince: number;
   subject: string;
@@ -58,4 +62,3 @@ export interface MyDeskOverview {
   readyToSend: ReadyToSendOverviewItem[];
   staleThreads: StaleThreadOverviewItem[];
 }
-
