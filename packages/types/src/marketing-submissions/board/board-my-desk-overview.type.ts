@@ -16,6 +16,19 @@ export interface AwaitingReplyOverviewItem {
   subject: string;
 }
 
+export interface WaitingOnCarrierOverviewItem {
+  submissionId: number;
+  clientName: string;
+  expDate: Date;
+  daysUntilExpiration: number;
+  carrierName: string;
+  threadId: string;
+  conversationId: string;
+  lastOutboundAt: Date;
+  daysSince: number;
+  subject: string;
+}
+
 export interface BindingStatusOverviewItem {
   submissionId: number;
   clientName: string;
@@ -67,6 +80,7 @@ export interface StaleThreadOverviewItem {
 export interface MyDeskOverview {
   summary: MyDeskOverviewSummary;
   awaitingReply: AwaitingReplyOverviewItem[];
+  waitingOnCarrier: WaitingOnCarrierOverviewItem[];
   needsBindingStatus: BindingStatusOverviewItem[];
   incompleteSubjectivities: IncompleteSubjectivitiesOverviewItem[];
   readyToSend: ReadyToSendOverviewItem[];
