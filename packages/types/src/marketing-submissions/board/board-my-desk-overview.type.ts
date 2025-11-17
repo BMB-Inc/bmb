@@ -7,6 +7,7 @@ export interface AwaitingReplyOverviewItem {
   submissionId: number;
   clientName: string;
   expDate: Date;
+  daysUntilExpiration: number;
   carrierName: string;
   threadId: string;
   conversationId: string;
@@ -19,6 +20,7 @@ export interface BindingStatusOverviewItem {
   submissionId: number;
   clientName: string;
   expDate: Date;
+  daysUntilExpiration: number;
   carrierName: string;
   threadId: string;
   conversationId: string;
@@ -30,6 +32,7 @@ export interface IncompleteSubjectivitiesOverviewItem {
   submissionId: number;
   clientName: string;
   expDate: Date;
+  daysUntilExpiration: number;
   carrierName: string;
   threadId: string;
   conversationId: string;
@@ -43,6 +46,7 @@ export interface ReadyToSendOverviewItem {
   clientName: string;
   accountType: string | null;
   expDate: Date;
+  daysUntilExpiration: number;
   createdAt: Date;
   daysSinceCreated: number;
 }
@@ -51,6 +55,7 @@ export interface StaleThreadOverviewItem {
   submissionId: number;
   clientName: string;
   expDate: Date;
+  daysUntilExpiration: number;
   carrierName: string;
   threadId: string;
   conversationId: string;
