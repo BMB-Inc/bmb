@@ -21,7 +21,7 @@ export const boardSubmissionsQuerySchema = z.object({
     .min(1)
     .optional()
     .describe(
-      "Relative time window for ExpDate (expiration date) such as '30d', '7d', or '1mo'. Defaults to '30d' for board and dashboard stats when omitted.",
+      "Forward-looking time window for ExpDate (expiration date) such as '30d', '7d', or '1mo'; scopes to submissions expiring within the next N days. Defaults to '30d' when omitted.",
     ),
   limit: z.number().int().min(1).optional().describe('Page size for the board grid.'),
   page: z.number().int().min(0).optional().describe('Zero-based page index for pagination.'),
