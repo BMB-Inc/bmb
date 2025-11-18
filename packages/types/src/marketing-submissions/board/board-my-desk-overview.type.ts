@@ -85,4 +85,5 @@ export interface MyDeskOverview {
   incompleteSubjectivities: IncompleteSubjectivitiesOverviewItem[];
   readyToSend: ReadyToSendOverviewItem[];
   staleThreads: StaleThreadOverviewItem[];
+  hasIncompleteEmailHistory?: boolean;
 }

@@ -12,5 +12,5 @@ export interface BoardSubmissionsStats {
 export interface BoardSubmissionsResponse {
 	submissions: Partial<MarketingSubmissionSchema>[];
 	stats: BoardSubmissionsStats;
+	hasIncompleteEmailHistory?: boolean;
 }
-

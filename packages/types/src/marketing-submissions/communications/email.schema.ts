@@ -33,6 +33,7 @@ export const marketingSubmissionsEmailSchema = z.object({
 
 export const submissionInboxSchema = marketingSubmissionsEmailSchema.extend({
   uniqueBody: marketingSubmissionsEmailBodySchema,
+  hasIncompleteEmailHistory: z.boolean().optional(),
 });
 
 export type SubmissionInboxResponse = z.infer<typeof submissionInboxSchema>;

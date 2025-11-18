@@ -22,6 +22,9 @@ export const marketingSubmissionsEmailSyncStateSchema = z.object({
   last_synced_at: z.coerce.date(),
   sync_status: z.enum(emailSyncStatusValues),
   error_message: z.string().nullable().optional(),
+  last_error_at: z.coerce.date().nullable().optional(),
+  gap_suspected: z.boolean().default(false),
+  gap_reason: z.string().nullable().optional(),
   created_at: z.coerce.date(),
   updated_at: z.coerce.date().nullable().optional(),
 });
