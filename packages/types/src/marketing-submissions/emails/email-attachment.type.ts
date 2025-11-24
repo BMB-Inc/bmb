@@ -11,6 +11,9 @@ export type MarketingSubmissionsEmailAttachment = {
 	contentLocation: string | null;
 	contentBytes: string;
 	downloadUrl: string;
+	quoteImported?: boolean;
+	quoteId?: string | null;
+	quoteFileId?: string | null;
+	quoteFileVersion?: number | null;
 };
-
 

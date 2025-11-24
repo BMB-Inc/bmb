@@ -16,6 +16,10 @@ export interface MarketingSubmissionsThreadAttachmentResponse {
   threadId: string;
   fileId: string;
   sentFileVersion: number;
+  quoteImported: boolean;
+  quoteId: string | null;
+  quoteFileId: string | null;
+  quoteFileVersion: number | null;
   fileName: string;
   fileType: string;
   fileSize: number;

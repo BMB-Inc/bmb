@@ -9,5 +9,8 @@ export interface MarketingSubmissionsGraphAttachment {
   contentLocation?: string | null;
   contentBytes?: string | null;
   downloadUrl: string;
+  quoteImported?: boolean;
+  quoteId?: string | null;
+  quoteFileId?: string | null;
+  quoteFileVersion?: number | null;
 }
-

@@ -14,6 +14,9 @@ export interface MarketingSubmissionsThreadAttachmentRow {
   file_type: string;
   file_size: number;
   file_deleted: boolean | null;
+  quote_id?: string | null;
+  quote_file_id?: string | null;
+  quote_file_version?: number | null;
   file_version_id: string | null;
   file_version: number | null;
   file_version_uploaded_at: Date | null;
@@ -22,4 +25,3 @@ export interface MarketingSubmissionsThreadAttachmentRow {
   file_version_minio_id: string | null;
   file_version_deleted: boolean | null;
 }
-

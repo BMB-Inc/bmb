@@ -5,3 +5,4 @@ export * from "./submissions/";
 export * from "./conversations/";
 export * from "./emails/";
 export * from "./board/";
+export * from "./quotes/";
