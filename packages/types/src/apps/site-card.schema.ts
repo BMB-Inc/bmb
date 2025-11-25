@@ -13,9 +13,9 @@ export const bmbAppSchema = z.object({
   icon: z.string(),
   image: z.string(),
   description: z.string(),
-  docsPage: z.string().optional(),
-  updatedAt: z.coerce.date(),
-  createdAt: z.coerce.date(),
+  docs_page: z.string().optional(),
+  updated_at: z.coerce.date(),
+  created_at: z.coerce.date(),
 });
 
 export const createBMBAppSchema = bmbAppSchema.omit({
