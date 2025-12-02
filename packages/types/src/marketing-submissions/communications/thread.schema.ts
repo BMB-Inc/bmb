@@ -68,6 +68,7 @@ export const marketingSubmissionsBindThreadSchema = z.object({
   thread_id: z.uuid(),
   status: bindingStatusEnum,
   premium: z.number().int().nonnegative().nullable().optional(),
+  bound_submission_quote_id: z.string().uuid().nullable().optional(),
   declination_reason: z.string().trim().nullable().optional(),
   created_at: z.coerce.date(),
   updated_at: z.coerce.date(),
@@ -90,6 +91,16 @@ export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadS
           code: z.ZodIssueCode.custom,
           path: ['premium'],
           message: 'Premium is required when binding or quoting a submission.',
+        });
+      }
+    }
+
+    if (data.status === MarketingSubmissionsBindingStatus.BOUND) {
+      if (typeof data.bound_submission_quote_id !== 'string') {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['bound_submission_quote_id'],
+          message: 'Bound status requires a submission quote id.',
         });
       }
     }
