@@ -62,9 +62,9 @@ export type SendMarketingSubmissionQueryDto = z.infer<typeof sendMarketingSubmis
 export type SendMarketingSubmissionEmailDto = z.infer<typeof sendMarketingSubmissionEmailDto>;
 
 export const marketingSubmissionsDraftResponseSchema = z.object({
-  contactId: z.string().uuid().optional(),
-  submissionId: z.number().int(),
-  messageId: z.string(),
+  contact_id: z.string().uuid().optional(),
+  submission_id: z.number().int(),
+  message_id: z.string(),
   subject: z.string(),
   to: z.string().email(),
   cc: z.array(z.string().email()).optional(),
