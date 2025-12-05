@@ -1,5 +1,5 @@
-import { useMemo, useEffect, useState } from 'react';
-import { Card, Stack, Skeleton, Center, Text, Divider, Title } from '@mantine/core';
+
+import { Card, Stack, Center, Text } from '@mantine/core';
 import { ClientSearch } from '../client-search/ClientSearch';
 import { type ImagerightClient } from '@bmb-inc/types';
 // ClientCard used inside ClientList
@@ -11,10 +11,14 @@ import { useClients } from '@hooks/index';
 import { usePolicyFolders } from '@hooks/useFolders';
 import { useFolders } from '../../hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
-import DocumentPages from './DocumentPages';
 import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
+import LoadingSkeletons from './LoadingSkeletons';
+import ClientContentArea from './ClientContentArea';
+import { useAutoSelectSingleClient } from './hooks/useAutoSelectSingleClient';
+import { useCurrentItems } from './hooks/useCurrentItems';
+import { useFolderLabelFromDocs, useFolderLabelMap } from './hooks/useFolderLabels';
  
-export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTypes?: FolderTypes[], documentType?: DocumentTypes }) => {
+export const ImageRightFileBrowser = ({ folderTypes, documentTypes }: { folderTypes?: FolderTypes[], documentTypes?: DocumentTypes[] }) => {
   // Real data hooks
   const { data: clients = [], isLoading: clientsLoading } = useClients();
   const {
@@ -29,123 +33,63 @@ export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTyp
     navigateToDocument,
     clearDocumentSelection,
   } = useBrowserNavigation();
-  // No local label state; derive labels from data for simplicity
 
   // Current-level folders and documents
-  // Policy-level folders at client root
+  const atRoot = !!(expandedClientId && !currentFolderId);
+  const showPolicyAtRoot = Array.isArray(folderTypes) && folderTypes.includes(FolderTypes.policies);
+  const shouldUseRootFolders = atRoot && !showPolicyAtRoot && Array.isArray(folderTypes) && folderTypes.length > 0;
+  // Policy-level folders at client root ONLY when explicitly requested
   const { data: policyFolders = [], isLoading: policyFoldersLoading } = usePolicyFolders(
-    expandedClientId && !currentFolderId
+    atRoot && showPolicyAtRoot
       ? { clientId: Number(expandedClientId) }
       : undefined,
   );
-  // Regular folders when inside a selected policy folder
+  // Root-level non-policy folders if configured; and child folders when inside a selected folder
   const { data: regularFolders = [], isLoading: regularFoldersLoading } = useFolders(
-    expandedClientId && currentFolderId
-      ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId), folderTypes }
+    expandedClientId
+      ? (currentFolderId
+          ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId), folderTypes }
+          : (shouldUseRootFolders ? { clientId: Number(expandedClientId), folderTypes } : undefined)
+        )
       : undefined,
   );
-  const folders = currentFolderId ? regularFolders : policyFolders;
-  const foldersLoading = currentFolderId ? regularFoldersLoading : policyFoldersLoading;
+  const folders = currentFolderId
+    ? regularFolders
+    : (showPolicyAtRoot ? policyFolders : (shouldUseRootFolders ? regularFolders : []));
+  const foldersLoading = currentFolderId
+    ? regularFoldersLoading
+    : (showPolicyAtRoot ? policyFoldersLoading : (shouldUseRootFolders ? regularFoldersLoading : false));
   const { data: documents = [], isLoading: documentsLoading } = useDocuments(
     expandedClientId && currentFolderId
       ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId) }
       : undefined,
-    documentType
+    documentTypes
   );
   const currentLoading = foldersLoading || documentsLoading;
 
   // Prefer folder name from the first document's folder info when available
-  const folderLabelFromDocs = useMemo(() => {
-    if (Array.isArray(documents) && documents.length > 0) {
-      const firstDoc: any = documents[0];
-      const firstFolder = firstDoc?.folder;
-      if (firstFolder?.description) return String(firstFolder.description);
-    }
-    return undefined;
-  }, [documents]);
-
-  // Preview state (controlled by DocumentPages via callbacks)
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [previewUnavailable, setPreviewUnavailable] = useState<boolean>(false);
-
+  const folderLabelFromDocs = useFolderLabelFromDocs(documents);
 
   // Build current level items (clients, folders, documents) for details view
-  const currentItems = useMemo(() => {
-    const toDateStr = (iso?: string | null) => {
-      if (!iso) return '';
-      const dt = new Date(iso);
-      return isNaN(dt.getTime()) ? '' : dt.toLocaleDateString();
-    };
-    const toTs = (iso?: string | null) => {
-      if (!iso) return 0;
-      const dt = new Date(iso);
-      return isNaN(dt.getTime()) ? 0 : dt.getTime();
-    };
-
-    if (!expandedClientId) {
-      return (clients || []).map((c: any) => ({
-        kind: 'client' as const,
-        id: c.id,
-        name: `${c.description} - ${c.fileNumberPart1} ${c.drawerName ? `(${c.drawerName})` : ''}`,
-        type: c.fileTypeName || 'Client',
-        modified: c.lastModified ? toDateStr(c.lastModified) : '',
-      })) as import('./types').BrowserItem[];
-    }
-
-    // Sort folders by lastModified desc before mapping
-    const folderItems = (folders || [])
-      .slice()
-      .sort((a: any, b: any) => toTs(b?.lastModified) - toTs(a?.lastModified))
-      .map((f: any) => ({
-      kind: 'folder' as const,
-      id: f.id,
-      name: f.description || `Folder ${f.id}`,
-      type: f.folderTypeName || f.folderTypeDescription || 'Folder',
-      modified: toDateStr((f as any).lastModified),
-    }));
-    if (!currentFolderId) {
-      return folderItems as import('./types').BrowserItem[];
-    }
-
-    // Sort documents by dateLastModified/dateCreated desc before mapping
-    const documentItems = (documents || [])
-      .slice()
-      .sort((a: any, b: any) => toTs(b?.dateLastModified || b?.dateCreated) - toTs(a?.dateLastModified || a?.dateCreated))
-      .map((d: any) => ({
-      kind: 'document' as const,
-      id: d.id,
-      name: d.description || `Document ${d.id}`,
-      type: d.documentTypeDescription || 'Document',
-      modified: toDateStr(d.dateLastModified || d.dateCreated),
-    }));
-    return [...folderItems, ...documentItems] as import('./types').BrowserItem[];
-  }, [clients, expandedClientId, folders, documents, currentFolderId]);
+  const currentItems = useCurrentItems({
+    clients,
+    expandedClientId,
+    folders,
+    documents,
+    currentFolderId,
+  });
 
   const hasClients = Array.isArray(clients) && clients.length > 0;
 
   // Auto-select the client when exactly one search result is found
-  useEffect(() => {
-    if (!clientsLoading && !expandedClientId && Array.isArray(clients) && clients.length === 1) {
-      const only = clients[0] as any;
-      if (only?.id != null) {
-        navigateToClient(String(only.id));
-      }
-    }
-  }, [clients, clientsLoading, expandedClientId, navigateToClient]);
+  useAutoSelectSingleClient({
+    clients,
+    clientsLoading,
+    expandedClientId,
+    navigateToClient,
+  });
 
-  const [folderLabelMap, setFolderLabelMap] = useState<Record<string, string>>({});
-  useEffect(() => {
-    if (folders && folders.length) {
-      setFolderLabelMap(prev => {
-        const next = { ...prev };
-        for (const f of folders as any[]) {
-          const label = f.description || `Folder ${f.id}`;
-          next[String(f.id)] = label;
-        }
-        return next;
-      });
-    }
-  }, [folders]);
+  const folderLabelMap = useFolderLabelMap(folders);
 
   const breadcrumbItems = (
     <BreadcrumbNav
@@ -193,80 +137,15 @@ export const ImageRightFileBrowser = ({ folderTypes, documentType }: { folderTyp
 
         {expandedClientId && (
           <Stack>
-            {currentLoading && (
-              Array.from({ length: 6 }).map((_, i) => (
-                <Skeleton key={`skeleton-${i}`} height={12} width={i % 2 === 0 ? '60%' : '40%'} radius="sm" />
-              ))
-            )}
+            {currentLoading && <LoadingSkeletons />}
             {!currentLoading && (
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'minmax(360px, 1fr) minmax(280px, 0.6fr)',
-                  gap: 'var(--mantine-spacing-md)',
-                  alignItems: 'start',
-                  height: '70vh',
-                  minHeight: 0
-                }}
-              >
-                <div style={{ overflow: 'auto', minHeight: 0, height: '100%' }}>
-                  <DetailsTable
-                    items={currentItems}
-                    onFolderOpen={(id) => navigateIntoFolder(id.toString())}
-                    onDocumentOpen={(id) => navigateToDocument(id.toString())}
-                    selectedDocumentId={expandedDocumentId ? Number(expandedDocumentId) : null}
-                    onDocumentClear={clearDocumentSelection}
-                  />
-                </div>
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateRows: '1fr 1fr',
-                    gap: 'var(--mantine-spacing-md)',
-                    height: '100%',
-                    minHeight: 0
-                  }}
-                >
-                  <div style={{ overflow: 'auto', minHeight: 0 }}>
-                    {expandedDocumentId ? (
-                      <DocumentPages
-                        documentId={Number(expandedDocumentId)}
-                        onPreviewUrlChange={(url) => setPreviewUrl(url)}
-                        onPreviewUnavailableChange={(u) => setPreviewUnavailable(u)}
-                      />
-                    ) : (
-                      <Stack gap={6} mt="sm">
-                        <Divider labelPosition="left" label={<Title order={6}>Pages</Title>} />
-                        <Text c="dimmed" size="sm">Select a document to view pages</Text>
-                      </Stack>
-                    )}
-                  </div>
-                  <div style={{ minHeight: 0, height: '100%', display: 'flex', flexDirection: 'column' }}>
-                    <Stack gap={6} style={{ flex: 1, minHeight: 0 }}>
-                      <Divider labelPosition="left" label={<Title order={6}>Preview</Title>} />
-                      <div style={{ flex: 1, minHeight: 0 }}>
-                        {previewUrl ? (
-                          <object
-                            data={previewUrl}
-                            type="application/pdf"
-                            width="100%"
-                            height="100%"
-                            style={{ height: '100%' }}
-                          />
-                        ) : (
-                          <div style={{ height: '100%', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
-                            <Text c="dimmed" size="sm" ta="left">
-                              {previewUnavailable
-                                ? 'Preview not available for this file type.'
-                                : 'Select a page to preview'}
-                            </Text>
-                          </div>
-                        )}
-                      </div>
-                    </Stack>
-                  </div>
-                </div>
-              </div>
+              <ClientContentArea
+                currentItems={currentItems}
+                expandedDocumentId={expandedDocumentId}
+                navigateIntoFolder={(id) => navigateIntoFolder(id.toString())}
+                navigateToDocument={(id) => navigateToDocument(id.toString())}
+                clearDocumentSelection={clearDocumentSelection}
+              />
             )}
           </Stack>
         )}

@@ -9,14 +9,15 @@ type DocumentPagesProps = {
   documentId: number;
   onPreviewUrlChange?: (url: string | null) => void;
   onPreviewUnavailableChange?: (unavailable: boolean) => void;
+  hideHeader?: boolean;
+  onPageCountChange?: (count: number) => void;
 };
 
-export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavailableChange }: DocumentPagesProps) {
+export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavailableChange, hideHeader, onPageCountChange }: DocumentPagesProps) {
   const { data: pages = [], isLoading } = usePages({ documentId });
   const { isSelected, toggleSelected, clearSelected } = useSelectedPages();
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const previousUrlRef = useRef<string | null>(null);
-  const [previewUnavailable, setPreviewUnavailable] = useState<boolean>(false);
+  const [activePageId, setActivePageId] = useState<number | null>(null);
 
   const isChecked = useCallback((id: number) => isSelected(id), [isSelected]);
   const toggleChecked = useCallback((id: number, value?: boolean) => {
@@ -29,11 +30,10 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
     if (previousUrlRef.current) {
       URL.revokeObjectURL(previousUrlRef.current);
       previousUrlRef.current = null;
-      setPreviewUrl(null);
     }
-    setPreviewUnavailable(false);
     onPreviewUrlChange?.(null);
     onPreviewUnavailableChange?.(false);
+    setActivePageId(null);
   }, [documentId, clearSelected]);
 
   useEffect(() => {
@@ -46,12 +46,18 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
     };
   }, []);
 
+  useEffect(() => {
+    if (onPageCountChange) {
+      onPageCountChange(Array.isArray(pages) ? pages.length : 0);
+    }
+  }, [pages, onPageCountChange]);
+
   
 
   if (isLoading) {
     return (
       <Stack gap={6} mt="sm">
-        <Divider labelPosition="left" label={<Title order={6}>Pages</Title>} />
+        {!hideHeader && <Divider labelPosition="left" label={<Title order={6}>Pages</Title>} />}
         {Array.from({ length: 3 }).map((_, i) => (
           <Skeleton key={`page-skel-${i}`} height={12} width={i % 2 === 0 ? '50%' : '35%'} radius="sm" />
         ))}
@@ -62,16 +68,14 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
   if (!Array.isArray(pages) || pages.length === 0) {
     return (
       <Stack gap={6} mt="sm">
-        <Divider labelPosition="left" label={<Title order={6}>Pages</Title>} />
+        {!hideHeader && <Divider labelPosition="left" label={<Title order={6}>Pages</Title>} />}
       </Stack>
     );
   }
 
-  console.log(pages);
-
   return (
     <Stack gap={6} mt="sm">
-      <Divider labelPosition="left" label={<Title order={6}>Pages ({pages.length})</Title>} />
+      {!hideHeader && <Divider labelPosition="left" label={<Title order={6}>Pages ({pages.length})</Title>} />}
       {pages.map((p: any) => {
         const baseLabel = p.description || `Page ${p.pagenumber ?? ''}`;
         const ext = p?.latestImages?.imageMetadata?.[0]?.extension;
@@ -80,27 +84,24 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
           <PageRow
             key={p.id}
             label={label}
+            selected={activePageId === p.id || isChecked(p.id)}
             checked={isChecked(p.id)}
             onCheckedChange={(v) => toggleChecked(p.id, v)}
             onSelect={async () => {
+              setActivePageId(p.id);
               const isPdf = String(ext ?? '').toLowerCase() === 'pdf';
               if (!isPdf) {
                 if (previousUrlRef.current) {
                   URL.revokeObjectURL(previousUrlRef.current);
                   previousUrlRef.current = null;
                 }
-                setPreviewUrl(null);
-                setPreviewUnavailable(true);
                 onPreviewUrlChange?.(null);
                 onPreviewUnavailableChange?.(true);
                 return;
               }
               try {
-                setPreviewUnavailable(false);
                 const response = await getPreview({ documentId, pageIds: p.id });
                 const buffer = await response.arrayBuffer();
-                console.log('Preview bytes length:', buffer.byteLength);
-                console.log('First 32 bytes:', new Uint8Array(buffer.slice(0, 32)));
                 const blob = new Blob([buffer], { type: 'application/pdf' });
                 const url = URL.createObjectURL(blob);
                 // Revoke previous URL to avoid memory leaks
@@ -108,7 +109,6 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
                   URL.revokeObjectURL(previousUrlRef.current);
                 }
                 previousUrlRef.current = url;
-                setPreviewUrl(url);
                 onPreviewUrlChange?.(url);
                 onPreviewUnavailableChange?.(false);
               } catch (err) {

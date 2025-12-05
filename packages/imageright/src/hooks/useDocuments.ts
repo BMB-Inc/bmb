@@ -3,7 +3,7 @@ import { getDocumentById, getDocuments } from "@api/index";
 import { type ImagerightDocumentParams } from "@bmb-inc/types";
 import { DocumentTypes } from "@bmb-inc/types";
 
-export const useDocuments = (params?: ImagerightDocumentParams, documentType?: DocumentTypes) => {
+export const useDocuments = (params?: ImagerightDocumentParams, documentTypes?: DocumentTypes[]) => {
   const [data, setData] = useState<Awaited<ReturnType<typeof getDocuments>> | undefined>(undefined);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -20,7 +20,7 @@ export const useDocuments = (params?: ImagerightDocumentParams, documentType?: D
     }
     setLoading(true);
     setError(null);
-    getDocuments(params, documentType)
+    getDocuments(params, documentTypes)
       .then((res) => {
         if (!cancelled) setData(res);
       })
@@ -33,7 +33,7 @@ export const useDocuments = (params?: ImagerightDocumentParams, documentType?: D
     return () => {
       cancelled = true;
     };
-  }, [params?.clientId, params?.folderId, documentType]);
+  }, [params?.clientId, params?.folderId, JSON.stringify(documentTypes ?? null)]);
 
   return { data, isLoading, error } as const;
 }

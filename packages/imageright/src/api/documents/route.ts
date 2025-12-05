@@ -1,7 +1,7 @@
 import { fetcher } from "@api/fetcher";
 import { DocumentTypes, type ImagerightDocumentParams } from "@bmb-inc/types";
 
-export const getDocuments = async (params?: ImagerightDocumentParams, documentType?: DocumentTypes) => {
+export const getDocuments = async (params?: ImagerightDocumentParams, documentTypes?: DocumentTypes[]) => {
   if (!params) {
     return [];
   }
@@ -13,8 +13,10 @@ export const getDocuments = async (params?: ImagerightDocumentParams, documentTy
   if (params.folderId) {
     searchParams.append('folderId', params.folderId.toString());
   }
-  if (documentType) {
-    searchParams.append('documentType', documentType);
+  if (documentTypes) {
+  for (const documentType of documentTypes || []) {
+      searchParams.append('documentType', documentType);
+    }
   }
   const queryString = searchParams.toString();
   const url = queryString ? `/documents?${queryString}` : '/documents';

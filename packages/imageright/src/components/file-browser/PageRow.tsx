@@ -16,7 +16,8 @@ export function PageRow({ label, selected, checked, onCheckedChange, onSelect, o
   const colorScheme = useComputedColorScheme('light');
   const isDark = colorScheme === 'dark';
 
-  const baseBg = isDark ? 'var(--mantine-color-dark-6)' : 'var(--mantine-color-gray-0)';
+  // Default background should be transparent; gray only on hover; blue when selected
+  const baseBg = 'transparent';
   const hoverBg = isDark ? 'var(--mantine-color-dark-5)' : 'var(--mantine-color-gray-1)';
   const selectedBg = isDark ? 'var(--mantine-color-blue-8)' : 'var(--mantine-color-blue-0)';
   const backgroundColor = selected ? selectedBg : hovered ? hoverBg : baseBg;
