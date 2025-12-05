@@ -24,7 +24,7 @@ export default function ClientContentArea({
         gridTemplateColumns: 'minmax(360px, 1fr) minmax(280px, 0.6fr)',
         gap: 'var(--mantine-spacing-md)',
         alignItems: 'start',
-        height: '70vh',
+        height: '67vh',
         minHeight: 0
       }}
     >
