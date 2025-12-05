@@ -6,7 +6,7 @@ export enum BMBAppTypes {
 }
 
 export const bmbAppSchema = z.object({
-  id: z.number(),
+  id: z.uuid(),
   title: z.string(),
   type: z.enum(BMBAppTypes),
   url: z.string(),
@@ -19,12 +19,15 @@ export const bmbAppSchema = z.object({
 
 export const createBMBAppSchema = bmbAppSchema.omit({
   id: true,
-  updatedAt: true,
-  createdAt: true,
+  updated_at: true,
+  created_at: true,
 });
 
 export const updateBMBAppSchema = bmbAppSchema.partial();
 
 export type BMBAppSchema = z.infer<typeof bmbAppSchema>;
+
+export type CreateBMBAppSchema = z.infer<typeof createBMBAppSchema>;
+export type UpdateBMBAppSchema = z.infer<typeof updateBMBAppSchema>;
 
 
