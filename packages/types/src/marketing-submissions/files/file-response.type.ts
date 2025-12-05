@@ -3,7 +3,7 @@ import type { MarketingSubmissionsFileVersion } from './file-versions.schema';
 
 export type MarketingSubmissionsFileVersionResponse = Pick<
   MarketingSubmissionsFileVersion,
-  'version' | 'minio_version_id'
+  'version' | 'minio_version_id' | 'uploaded_at'
 >;
 
 export type MarketingSubmissionsFileResponse = Omit<
@@ -12,4 +12,4 @@ export type MarketingSubmissionsFileResponse = Omit<
 > & {
   version: number;
   versions: MarketingSubmissionsFileVersionResponse[];
-} & Pick<MarketingSubmissionsFileVersion, 'minio_version_id' | 'uploaded_by_user'>;
+} & Pick<MarketingSubmissionsFileVersion, 'minio_version_id' | 'uploaded_by_user' | 'uploaded_at'>;

@@ -36,7 +36,7 @@ const bindingStatusValues: [
 
 const threadStatusEnum = z.enum(threadStatusValues);
 const bindingStatusEnum = z.enum(bindingStatusValues);
-const lineOfBusinessArraySchema = z.array(z.string().trim().min(1)).nonempty();
+const lineOfBusinessSchema = z.string().trim().min(1);
 
 export const marketingSubmissionsThreadSchema = z.object({
   id: z.uuid(),
@@ -69,7 +69,7 @@ export const marketingSubmissionsBindThreadSchema = z.object({
   thread_id: z.uuid(),
   status: bindingStatusEnum,
   premium: z.number().int().nonnegative().nullable().optional(),
-  line_of_business: lineOfBusinessArraySchema.nullable(),
+  line_of_business: lineOfBusinessSchema.nullable(),
   bound_submission_quote_id: z.string().uuid().nullable().optional(),
   declination_reason: z.string().trim().nullable().optional(),
   created_at: z.coerce.date(),
@@ -84,7 +84,7 @@ export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadS
     updated_at: true,
   })
   .extend({
-    line_of_business: lineOfBusinessArraySchema.nullable().optional(),
+    line_of_business: lineOfBusinessSchema.nullable().optional(),
   })
   .superRefine((data, ctx) => {
     if (
