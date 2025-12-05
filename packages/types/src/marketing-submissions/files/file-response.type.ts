@@ -1,11 +1,15 @@
-import type { MarketingSubmissionsFileSchema } from "./file.schema";
-import type { MarketingSubmissionsFileVersion } from "./file-versions.schema";
+import type { MarketingSubmissionsFileSchema } from './file.schema';
+import type { MarketingSubmissionsFileVersion } from './file-versions.schema';
 
-export type MarketingSubmissionsFileResponse =
-	Omit<MarketingSubmissionsFileSchema, "latest_version"> & {
-		version: number;
-	} &
-	Pick<
-		MarketingSubmissionsFileVersion,
-		"minio_version_id" | "uploaded_by_user"
-	>;
+export type MarketingSubmissionsFileVersionResponse = Pick<
+  MarketingSubmissionsFileVersion,
+  'version' | 'minio_version_id'
+>;
+
+export type MarketingSubmissionsFileResponse = Omit<
+  MarketingSubmissionsFileSchema,
+  'latest_version'
+> & {
+  version: number;
+  versions: MarketingSubmissionsFileVersionResponse[];
+} & Pick<MarketingSubmissionsFileVersion, 'minio_version_id' | 'uploaded_by_user'>;
