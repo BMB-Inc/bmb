@@ -61,6 +61,31 @@ export type SendMarketingSubmissionQueryDto = z.infer<typeof sendMarketingSubmis
 
 export type SendMarketingSubmissionEmailDto = z.infer<typeof sendMarketingSubmissionEmailDto>;
 
+const marketingSubmissionsDraftAttachmentSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  size: z.number().int(),
+  contentType: z.string().optional(),
+  isInline: z.boolean().optional(),
+});
+
+export const marketingSubmissionsDraftResponseSchema = z.object({
+  contact_id: z.string().uuid().optional(),
+  submission_id: z.number().int(),
+  message_id: z.string(),
+  subject: z.string(),
+  to: z.string().email(),
+  cc: z.array(z.string().email()).optional(),
+  bcc: z.array(z.string().email()).optional(),
+  body: z.string().nullable().optional(),
+  contentType: z.string().optional(),
+  attachments: z.array(marketingSubmissionsDraftAttachmentSchema).optional(),
+});
+
+export type MarketingSubmissionsDraftResponse = z.infer<
+  typeof marketingSubmissionsDraftResponseSchema
+>;
+
 export const updateMarketingSubmissionsEmailSchema =
   createMarketingSubmissionsEmailSchema.partial();
 

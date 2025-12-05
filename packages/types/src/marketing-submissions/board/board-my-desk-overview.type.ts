@@ -1,6 +1,17 @@
+import { MarketingSubmissionsEmailDirection } from '../communications/email.schema';
+
 export interface MyDeskOverviewSummary {
   totalSubmissions: number;
   actionableItems: number;
+}
+
+export interface ThreadEmailMetadata {
+  to: string[];
+  cc: string[] | null;
+  bcc: string[] | null;
+  from: string | null;
+  direction: MarketingSubmissionsEmailDirection;
+  internetMessageId: string | null;
 }
 
 export interface AwaitingReplyOverviewItem {
@@ -14,6 +25,7 @@ export interface AwaitingReplyOverviewItem {
   lastInboundAt: Date;
   daysSince: number;
   subject: string;
+  lastMessageMetadata: ThreadEmailMetadata;
 }
 
 export interface WaitingOnCarrierOverviewItem {
@@ -27,6 +39,7 @@ export interface WaitingOnCarrierOverviewItem {
   lastOutboundAt: Date;
   daysSince: number;
   subject: string;
+  lastMessageMetadata: ThreadEmailMetadata;
 }
 
 export interface BindingStatusOverviewItem {
@@ -39,6 +52,7 @@ export interface BindingStatusOverviewItem {
   conversationId: string;
   lastActivityAt: Date;
   daysSince: number;
+  lastMessageMetadata: ThreadEmailMetadata;
 }
 
 export interface IncompleteSubjectivitiesOverviewItem {
@@ -52,6 +66,7 @@ export interface IncompleteSubjectivitiesOverviewItem {
   boundAt: Date;
   daysSinceBound: number;
   incompleteCount: number;
+  lastMessageMetadata: ThreadEmailMetadata;
 }
 
 export interface ReadyToSendOverviewItem {
@@ -75,6 +90,7 @@ export interface StaleThreadOverviewItem {
   lastActivityAt: Date;
   daysSince: number;
   subject: string;
+  lastMessageMetadata: ThreadEmailMetadata;
 }
 
 export interface MyDeskOverview {

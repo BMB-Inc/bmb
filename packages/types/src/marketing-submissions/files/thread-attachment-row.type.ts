@@ -1,4 +1,5 @@
 import type { MarketingSubmissionsEmailDirection } from '../communications';
+import type { MarketingSubmissionsFileType } from './file.schema';
 
 export interface MarketingSubmissionsThreadAttachmentRow {
   attachment_id: string;
@@ -11,7 +12,8 @@ export interface MarketingSubmissionsThreadAttachmentRow {
   email_sent_at: Date;
   email_received_at: Date | null;
   file_name: string;
-  file_type: string;
+  file_mime_type: string;
+  file_type: MarketingSubmissionsFileType;
   file_size: number;
   file_deleted: boolean | null;
   quote_id?: string | null;

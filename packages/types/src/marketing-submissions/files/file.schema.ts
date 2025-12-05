@@ -1,26 +1,42 @@
-import z from "zod/v4";
+import z from 'zod/v4';
+
+export const marketingSubmissionsFileTypeValues = [
+  'quote',
+  'submission',
+  'supporting',
+  'other',
+] as const;
+
+export const marketingSubmissionsFileTypeSchema = z.enum(
+  marketingSubmissionsFileTypeValues,
+);
+
+export type MarketingSubmissionsFileType = z.infer<
+  typeof marketingSubmissionsFileTypeSchema
+>;
 
 export const marketingSubmissionsFileSchema = z.object({
-	id: z.uuid(),
-	name: z.string(),
-	type: z.string(),
-	size: z.int(),
-	submission_id: z.int(),
-	latest_version: z.int(),
-	deleted: z.boolean().default(false)
+  id: z.uuid(),
+  name: z.string(),
+  type: z.string(),
+  size: z.int(),
+  submission_id: z.int(),
+  latest_version: z.int(),
+  deleted: z.boolean().default(false),
+  file_type: marketingSubmissionsFileTypeSchema.default('submission'),
 });
 
 export const createMarketingSubmissionsFileSchema =
-	marketingSubmissionsFileSchema.omit({ id: true });
+  marketingSubmissionsFileSchema.omit({ id: true });
 export const updateMarketingSubmissionsFileSchema =
-	createMarketingSubmissionsFileSchema.partial();
+  createMarketingSubmissionsFileSchema.partial();
 
 export type MarketingSubmissionsFileSchema = z.infer<
-	typeof marketingSubmissionsFileSchema
+  typeof marketingSubmissionsFileSchema
 >;
 export type CreateMarketingSubmissionsFileSchema = z.infer<
-	typeof createMarketingSubmissionsFileSchema
+  typeof createMarketingSubmissionsFileSchema
 >;
 export type UpdateMarketingSubmissionsFileSchema = z.infer<
-	typeof updateMarketingSubmissionsFileSchema
+  typeof updateMarketingSubmissionsFileSchema
 >;

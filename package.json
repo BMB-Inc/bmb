@@ -1,7 +1,7 @@
 {
   "name": "@bmb-inc/monorepo",
   "description": "BMB Inc monorepo containing shared packages and services.",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "private": true,
   "author": "BMB Inc",
   "license": "MIT",
