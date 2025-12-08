@@ -1,28 +1,11 @@
 import z from 'zod/v4';
 
-export enum MarketingSubmissionsThreadStatus {
-  ACTIVE = 'ACTIVE',
-  CLOSED = 'CLOSED',
-  ARCHIVED = 'ARCHIVED',
-  QUOTED = 'QUOTED',
-}
-
 export enum MarketingSubmissionsBindingStatus {
   DECLINED = 'DECLINED',
   BOUND = 'BOUND',
   CLOSED = 'CLOSED',
   QUOTED = 'QUOTED',
 }
-
-const threadStatusValues: [
-  MarketingSubmissionsThreadStatus,
-  ...MarketingSubmissionsThreadStatus[],
-] = [
-  MarketingSubmissionsThreadStatus.ACTIVE,
-  MarketingSubmissionsThreadStatus.CLOSED,
-  MarketingSubmissionsThreadStatus.ARCHIVED,
-  MarketingSubmissionsThreadStatus.QUOTED,
-];
 
 const bindingStatusValues: [
   MarketingSubmissionsBindingStatus,
@@ -34,14 +17,12 @@ const bindingStatusValues: [
   MarketingSubmissionsBindingStatus.QUOTED,
 ];
 
-const threadStatusEnum = z.enum(threadStatusValues);
 const bindingStatusEnum = z.enum(bindingStatusValues);
 const lineOfBusinessSchema = z.string().trim().min(1);
 
 export const marketingSubmissionsThreadSchema = z.object({
   id: z.uuid(),
   carrier_id: z.uuid(),
-  status: threadStatusEnum,
   created_at: z.coerce.date(),
   submission_id: z.number().int(),
   conversation_id: z.string(),
