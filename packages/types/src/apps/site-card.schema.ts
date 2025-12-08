@@ -17,17 +17,25 @@ export const bmbAppSchema = z.object({
   created_at: z.coerce.date(),
 });
 
-export const createBMBAppSchema = bmbAppSchema.omit({
-  id: true,
-  updated_at: true,
-  created_at: true,
+export const createAppSchema = z.object({
+  type: z
+    .enum(BMBAppTypes)
+    .optional()
+    .refine((value) => value !== undefined, {
+      message: "Type is required",
+    }),
+  title: z.string().min(1, "Title is required"),
+  url: z.string().min(1, "URL is required"),
+  image: z.string().optional(),
+  description: z.string().min(1, "Description is required"),
+  docs_page: z.string().min(1, "Docs page URL is required").optional().or(z.literal("")),
 });
 
-export const updateBMBAppSchema = bmbAppSchema.partial();
+export const updateAppSchema = createAppSchema.partial();
 
 export type BMBAppSchema = z.infer<typeof bmbAppSchema>;
 
-export type CreateBMBAppSchema = z.infer<typeof createBMBAppSchema>;
-export type UpdateBMBAppSchema = z.infer<typeof updateBMBAppSchema>;
+export type CreateAppSchema = z.infer<typeof createAppSchema>;
+export type UpdateAppSchema = z.infer<typeof updateAppSchema>;
 
 
