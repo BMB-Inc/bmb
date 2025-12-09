@@ -15,10 +15,12 @@ export const getFolders = async (params?: FoldersQueryParams) => {
     searchParams.append('folderId', params.folderId.toString());
   }
   if (params?.folderTypes) {
-    const value = Array.isArray(params.folderTypes)
-      ? params.folderTypes.join(',')
-      : params.folderTypes;
-    searchParams.append('folderTypes', value);
+    const values = Array.isArray(params.folderTypes)
+      ? params.folderTypes
+      : String(params.folderTypes).split(',').map((s) => s.trim()).filter(Boolean);
+    for (const v of values) {
+      searchParams.append('folderTypes', v);
+    }
   }
   
   const queryString = searchParams.toString();

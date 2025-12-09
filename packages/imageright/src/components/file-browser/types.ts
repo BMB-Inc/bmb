@@ -4,6 +4,8 @@ export type BrowserItem = {
   name: string;
   type: string;
   modified: string;
+  folderTypeId?: number;
+  documentTypeId?: number;
 };
 
 

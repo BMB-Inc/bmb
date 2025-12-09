@@ -46,6 +46,7 @@ export function useCurrentItems({
         name: f.description || `Folder ${f.id}`,
         type: f.folderTypeName || f.folderTypeDescription || 'Folder',
         modified: toDateStr((f as any).lastModified),
+        folderTypeId: (f as any).folderTypeId,
       }));
     if (!currentFolderId) {
       return folderItems as import('../types').BrowserItem[];
@@ -60,6 +61,7 @@ export function useCurrentItems({
         name: d.description || `Document ${d.id}`,
         type: d.documentTypeDescription || 'Document',
         modified: toDateStr(d.dateLastModified || d.dateCreated),
+        documentTypeId: (d as any).documentTypeId,
       }));
     return [...folderItems, ...documentItems] as import('../types').BrowserItem[];
   }, [clients, expandedClientId, folders, documents, currentFolderId]);

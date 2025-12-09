@@ -1,10 +1,10 @@
-import { Button, Table } from '@mantine/core';
-import { useMemo, useState } from 'react';
+import { ActionIcon, Button, Checkbox, Group, Menu, ScrollArea, Table, Text } from '@mantine/core';
+import { useEffect, useMemo, useState } from 'react';
 import type { BrowserItem } from './types';
 import { SortableHeader } from './SortableHeader';
 import { NameFilter } from './NameFilter';
 import { DetailsRow } from './DetailsRow';
-import { IconChecks } from '@tabler/icons-react';
+import { IconChecks, IconFilter } from '@tabler/icons-react';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
 
 type DetailsTableProps = {
@@ -22,17 +22,75 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
   const [sort, setSort] = useState<{ key: SortKey; direction: SortDirection } | null>(null);
   const [folderNameQuery, setFolderNameQuery] = useState('');
   const { selectMany } = useSelectedDocuments();
+  const availableTypeEntries = useMemo(() => {
+    // key: type name (used for filtering), label: displayed text (type only)
+    const labelMap = new Map<string, string>();
+    const idsMap = new Map<string, Set<number>>();
+    for (const it of items) {
+      if ((it.kind === 'folder' || it.kind === 'document') && it.type) {
+        const key = it.type;
+        if (!labelMap.has(key)) {
+          labelMap.set(key, key);
+        }
+        const idCandidate = typeof (it as any).folderTypeId === 'number'
+          ? (it as any).folderTypeId
+          : typeof (it as any).documentTypeId === 'number'
+            ? (it as any).documentTypeId
+            : undefined;
+        if (typeof idCandidate === 'number') {
+          if (!idsMap.has(key)) idsMap.set(key, new Set<number>());
+          idsMap.get(key)!.add(idCandidate);
+        }
+      }
+    }
+    const entries = Array.from(labelMap.entries())
+      .map(([key, label]) => ({ key, label }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+    return entries;
+  }, [items]);
+  const [visibleTypes, setVisibleTypes] = useState<Set<string>>(new Set());
+  // sync visible types with available; keep previous selections where possible; default to all visible
+  useEffect(() => {
+    const keys = availableTypeEntries.map(e => e.key);
+    setVisibleTypes(prev => {
+      // Build desired set
+      const desired =
+        prev.size === 0
+          ? new Set(keys)
+          : new Set<string>(keys.filter((k) => prev.has(k)));
+      // If same contents, don't trigger a state change
+      if (desired.size === prev.size) {
+        let identical = true;
+        for (const k of prev) {
+          if (!desired.has(k)) {
+            identical = false;
+            break;
+          }
+        }
+        if (identical) return prev;
+      }
+      // If after filtering nothing remains, default to all keys
+      return desired.size === 0 ? new Set(keys) : desired;
+    });
+  }, [availableTypeEntries]);
 
   const filteredItems = useMemo(() => {
     const query = folderNameQuery.trim().toLocaleLowerCase();
-    if (!query) return items;
+    const typesSet = visibleTypes;
     return items.filter(item => {
-      if (item.kind === 'folder' || item.kind === 'document') {
-        return item.name.toLocaleLowerCase().includes(query);
-      }
-      return true; // leave clients unaffected
+      // filter by name
+      const nameMatches = !query
+        ? true
+        : (item.kind === 'folder' || item.kind === 'document')
+          ? item.name.toLocaleLowerCase().includes(query)
+          : true;
+      // filter by type (only for folders/documents)
+      const typeMatches = (item.kind === 'folder' || item.kind === 'document')
+        ? (typesSet.size === 0 || typesSet.has(item.type))
+        : true;
+      return nameMatches && typeMatches;
     });
-  }, [items, folderNameQuery]);
+  }, [items, folderNameQuery, visibleTypes]);
 
   const sortedItems = useMemo(() => {
     const base = filteredItems;
@@ -79,7 +137,71 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
             direction={sort?.key === 'name' ? sort.direction : null}
             onToggle={() => toggleSort('name')}
           />
-          <Table.Th>Type</Table.Th>
+          <Table.Th>
+            <Group gap={6} wrap="nowrap">
+              <Text>Type</Text>
+              <Menu withinPortal position="bottom-start" shadow="md">
+                <Menu.Target>
+                  <ActionIcon
+                    aria-label="Filter types"
+                    variant="subtle"
+                    size="sm"
+                  >
+                    <IconFilter size={16} />
+                  </ActionIcon>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Group justify="space-between" gap={6} px="xs" py={4}>
+                    <Button
+                      size="xs"
+                      variant="subtle"
+                      onClick={() => setVisibleTypes(new Set(availableTypeEntries.map(e => e.key)))}
+                      disabled={availableTypeEntries.length === 0}
+                    >
+                      Select all
+                    </Button>
+                    <Button
+                      size="xs"
+                      variant="subtle"
+                      onClick={() => setVisibleTypes(new Set())}
+                      disabled={availableTypeEntries.length === 0}
+                    >
+                      Clear
+                    </Button>
+                  </Group>
+                  <ScrollArea.Autosize mah={220}>
+                    <div style={{ padding: '4px 8px' }}>
+                      {availableTypeEntries.map(({ key, label }) => {
+                        const checked = visibleTypes.has(key);
+                        return (
+                          <Checkbox
+                            key={key}
+                            label={label}
+                            checked={checked}
+                            onChange={(e) => {
+                              setVisibleTypes(prev => {
+                                const next = new Set(prev);
+                                if (e.currentTarget.checked) {
+                                  next.add(key);
+                                } else {
+                                  next.delete(key);
+                                }
+                                return next;
+                              });
+                            }}
+                            styles={{ root: { padding: '2px 0' } }}
+                          />
+                        );
+                      })}
+                      {availableTypeEntries.length === 0 && (
+                        <Text c="dimmed" size="sm">No types</Text>
+                      )}
+                    </div>
+                  </ScrollArea.Autosize>
+                </Menu.Dropdown>
+              </Menu>
+            </Group>
+          </Table.Th>
           <SortableHeader
             title="Modified"
             active={sort?.key === 'modified'}

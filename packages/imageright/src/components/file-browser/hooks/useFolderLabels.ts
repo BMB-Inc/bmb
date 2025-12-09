@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 export function useFolderLabelFromDocs(documents: any[] | undefined) {
   return useMemo(() => {
@@ -12,18 +12,16 @@ export function useFolderLabelFromDocs(documents: any[] | undefined) {
 }
 
 export function useFolderLabelMap(folders: any[] | undefined) {
-  const [folderLabelMap, setFolderLabelMap] = useState<Record<string, string>>({});
-  useEffect(() => {
-    if (folders && folders.length) {
-      setFolderLabelMap(prev => {
-        const next = { ...prev };
-        for (const f of folders as any[]) {
-          const label = f.description || `Folder ${f.id}`;
-          next[String(f.id)] = label;
+  return useMemo(() => {
+    const map: Record<string, string> = {};
+    if (Array.isArray(folders)) {
+      for (const f of folders as any[]) {
+        const label = f?.description || (f?.id != null ? `Folder ${f.id}` : 'Folder');
+        if (f?.id != null) {
+          map[String(f.id)] = label;
         }
-        return next;
-      });
+      }
     }
+    return map;
   }, [folders]);
-  return folderLabelMap;
 }

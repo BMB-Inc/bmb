@@ -8,15 +8,14 @@ import DetailsTable from './DetailsTable';
 import { IconSearch } from '@tabler/icons-react';
 import { useBrowserNavigation } from '../../hooks/useBrowserNavigation';
 import { useClients } from '@hooks/index';
-import { usePolicyFolders } from '@hooks/useFolders';
 import { useFolders } from '../../hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
-import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
 import LoadingSkeletons from './LoadingSkeletons';
 import ClientContentArea from './ClientContentArea';
 import { useAutoSelectSingleClient } from './hooks/useAutoSelectSingleClient';
 import { useCurrentItems } from './hooks/useCurrentItems';
 import { useFolderLabelFromDocs, useFolderLabelMap } from './hooks/useFolderLabels';
+import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
  
 export const ImageRightFileBrowser = ({ folderTypes, documentTypes }: { folderTypes?: FolderTypes[], documentTypes?: DocumentTypes[] }) => {
   // Real data hooks
@@ -35,35 +34,23 @@ export const ImageRightFileBrowser = ({ folderTypes, documentTypes }: { folderTy
   } = useBrowserNavigation();
 
   // Current-level folders and documents
-  const atRoot = !!(expandedClientId && !currentFolderId);
-  const showPolicyAtRoot = Array.isArray(folderTypes) && folderTypes.includes(FolderTypes.policies);
-  const shouldUseRootFolders = atRoot && !showPolicyAtRoot && Array.isArray(folderTypes) && folderTypes.length > 0;
-  // Policy-level folders at client root ONLY when explicitly requested
-  const { data: policyFolders = [], isLoading: policyFoldersLoading } = usePolicyFolders(
-    atRoot && showPolicyAtRoot
-      ? { clientId: Number(expandedClientId) }
-      : undefined,
-  );
-  // Root-level non-policy folders if configured; and child folders when inside a selected folder
-  const { data: regularFolders = [], isLoading: regularFoldersLoading } = useFolders(
+  const normalizedFolderTypes = Array.isArray(folderTypes) && folderTypes.length > 0 ? folderTypes : undefined;
+  const normalizedDocumentTypes = Array.isArray(documentTypes) && documentTypes.length > 0 ? documentTypes : undefined;
+  // Single source of folders: pass clientId, optional folderId, and optional folderTypes directly
+  const { data: folders = [], isLoading: foldersLoading } = useFolders(
     expandedClientId
-      ? (currentFolderId
-          ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId), folderTypes }
-          : (shouldUseRootFolders ? { clientId: Number(expandedClientId), folderTypes } : undefined)
-        )
+      ? {
+          clientId: Number(expandedClientId),
+          folderId: currentFolderId ? Number(currentFolderId) : null,
+          folderTypes: normalizedFolderTypes,
+        }
       : undefined,
   );
-  const folders = currentFolderId
-    ? regularFolders
-    : (showPolicyAtRoot ? policyFolders : (shouldUseRootFolders ? regularFolders : []));
-  const foldersLoading = currentFolderId
-    ? regularFoldersLoading
-    : (showPolicyAtRoot ? policyFoldersLoading : (shouldUseRootFolders ? regularFoldersLoading : false));
   const { data: documents = [], isLoading: documentsLoading } = useDocuments(
     expandedClientId && currentFolderId
       ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId) }
       : undefined,
-    documentTypes
+    normalizedDocumentTypes
   );
   const currentLoading = foldersLoading || documentsLoading;
 
