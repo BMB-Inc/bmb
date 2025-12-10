@@ -5,7 +5,7 @@ import { useFolders } from '@hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
 import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
-import classes from '../../modules/file-tree.module.css';
+import { treeStyles } from './styles';
 
 type FolderTreeNodeProps = {
   clientId: number;
@@ -86,11 +86,9 @@ export function FolderTreeNode({
         py={4}
         px={6}
         style={{
+          ...(isExpanded ? treeStyles.childItemExpanded : treeStyles.childItem),
           paddingLeft: depth * 20 + 6,
-          cursor: 'pointer',
-          borderRadius: 'var(--mantine-radius-sm)',
         }}
-        className={isExpanded ? classes.childItemExpanded : classes.childItem}
         onClick={onToggle}
       >
         {isExpanded ? (
@@ -110,7 +108,7 @@ export function FolderTreeNode({
 
       {/* Children (folders + documents) */}
       {isExpanded && (
-        <div className={classes.children} style={{ marginLeft: depth * 20 + 6 }}>
+        <div style={{ ...treeStyles.children, marginLeft: depth * 20 + 6 }}>
           {isLoading && (
             <Group gap="xs" py={4} px={6}>
               <Loader size="xs" />
@@ -123,12 +121,17 @@ export function FolderTreeNode({
           {!isLoading && (
             <>
               {/* Child folders - render recursively */}
-              {childFolders.map((folder: any) => (
+              {childFolders.map((folder: any) => {
+                const childFolderName = folder.description ?? folder.folderTypeName ?? 'Folder';
+                const childFolderDisplayName = folder.folderTypeDescription && folder.folderTypeDescription !== childFolderName
+                  ? `${childFolderName} (${folder.folderTypeDescription})`
+                  : childFolderName;
+                return (
                 <RecursiveFolderNode
                   key={folder.id}
                   clientId={clientId}
                   folderId={folder.id}
-                  folderName={folder.description ?? folder.folderTypeName ?? 'Folder'}
+                  folderName={childFolderDisplayName}
                   folderType={folder.folderTypeName || folder.folderTypeDescription || 'Folder'}
                   depth={0}
                   folderTypes={folderTypes}
@@ -136,25 +139,26 @@ export function FolderTreeNode({
                   selectedDocumentId={selectedDocumentId}
                   onDocumentSelect={onDocumentSelect}
                 />
-              ))}
+              )})}
 
               {/* Documents */}
-              {documents.map((doc: any) => (
+              {documents.map((doc: any) => {
+                const docName = doc.description || doc.documentTypeDescription || 'Document';
+                const docDisplayName = doc.documentTypeDescription && doc.documentTypeDescription !== docName
+                  ? `${docName} (${doc.documentTypeDescription})`
+                  : docName;
+                return (
                 <Group
                   key={doc.id}
                   gap="xs"
                   py={3}
                   px={6}
                   style={{
-                    cursor: 'pointer',
-                    borderRadius: 'var(--mantine-radius-xs)',
+                    ...(selectedDocumentId === doc.id
+                      ? treeStyles.documentItemSelected
+                      : treeStyles.documentItem),
                     userSelect: 'none',
                   }}
-                  className={
-                    selectedDocumentId === doc.id
-                      ? classes.documentItemExpanded
-                      : classes.documentItem
-                  }
                   onClick={(e) => {
                     // Handle shift/ctrl+click for multi-select
                     if (e.shiftKey || e.ctrlKey || e.metaKey) {
@@ -191,10 +195,10 @@ export function FolderTreeNode({
                     style={{ flexShrink: 0 }}
                   />
                   <Text truncate style={{ minWidth: 0, flex: 1 }}>
-                    {doc.description || doc.documentTypeDescription || 'Document'}
+                    {docDisplayName}
                   </Text>
                 </Group>
-              ))}
+              )})}
 
               {/* Empty state */}
               {childFolders.length === 0 && documents.length === 0 && (

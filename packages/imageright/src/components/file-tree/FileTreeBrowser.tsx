@@ -12,7 +12,7 @@ import { useDocuments } from '@hooks/useDocuments';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
 import { useTreeNavigation } from '@hooks/useTreeNavigation';
 import { FolderTypes, DocumentTypes, type ImagerightClient } from '@bmb-inc/types';
-import classes from '../../modules/file-tree.module.css';
+import { treeStyles } from './styles';
 
 type FileTreeBrowserProps = {
   folderTypes?: FolderTypes[];
@@ -126,11 +126,10 @@ export function FileTreeBrowser({ folderTypes, documentTypes }: FileTreeBrowserP
                     py={6}
                     px={8}
                     style={{
-                      cursor: 'pointer',
+                      ...treeStyles.root,
                       borderRadius: 'var(--mantine-radius-sm)',
                       border: '1px solid var(--mantine-color-gray-3)',
                     }}
-                    className={classes.root}
                     onClick={() => handleClientSelect(client.id)}
                   >
                     <IconFolder size={16} color="var(--mantine-color-blue-5)" />
@@ -176,6 +175,9 @@ export function FileTreeBrowser({ folderTypes, documentTypes }: FileTreeBrowserP
                     const isExpanded = expandedRootFolders.has(folder.id);
                     const folderName = folder.description ?? folder.folderTypeName ?? 'Folder';
                     const folderType = folder.folderTypeName || folder.folderTypeDescription || 'Folder';
+                    const folderDisplayName = folder.folderTypeDescription && folder.folderTypeDescription !== folderName
+                      ? `${folderName} (${folder.folderTypeDescription})`
+                      : folderName;
 
                     return (
                       <div key={folder.id}>
@@ -185,10 +187,9 @@ export function FileTreeBrowser({ folderTypes, documentTypes }: FileTreeBrowserP
                           py={6}
                           px={8}
                           style={{
-                            cursor: 'pointer',
+                            ...(isExpanded ? treeStyles.rootExpanded : treeStyles.root),
                             borderRadius: 'var(--mantine-radius-sm)',
                           }}
-                          className={isExpanded ? classes.rootExpanded : classes.root}
                           onClick={() => toggleRootFolder(folder.id)}
                         >
                           {isExpanded ? (
@@ -202,7 +203,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes }: FileTreeBrowserP
                             <IconFolder size={16} color="var(--mantine-color-yellow-7)" style={{ flexShrink: 0 }} />
                           )}
                           <Text truncate style={{ minWidth: 0, flex: 1 }}>
-                            {folderName}
+                            {folderDisplayName}
                           </Text>
                         </Group>
 
@@ -314,7 +315,7 @@ function RootFolderChildren({
   };
 
   return (
-    <div className={classes.children}>
+    <div style={treeStyles.children}>
       {isLoading && (
         <Group gap="xs" py={4} px={6}>
           <Loader size="xs" />
@@ -327,12 +328,17 @@ function RootFolderChildren({
       {!isLoading && (
         <>
           {/* Child folders */}
-          {childFolders.map((folder: any) => (
+          {childFolders.map((folder: any) => {
+            const childFolderName = folder.description ?? folder.folderTypeName ?? 'Folder';
+            const childFolderDisplayName = folder.folderTypeDescription && folder.folderTypeDescription !== childFolderName
+              ? `${childFolderName} (${folder.folderTypeDescription})`
+              : childFolderName;
+            return (
             <FolderTreeNode
               key={folder.id}
               clientId={clientId}
               folderId={folder.id}
-              folderName={folder.description ?? folder.folderTypeName ?? 'Folder'}
+              folderName={childFolderDisplayName}
               folderType={folder.folderTypeName || folder.folderTypeDescription || 'Folder'}
               depth={0}
               isExpanded={expandedFolders.has(folder.id)}
@@ -342,25 +348,26 @@ function RootFolderChildren({
               selectedDocumentId={selectedDocumentId}
               onDocumentSelect={onDocumentSelect}
             />
-          ))}
+          )})}
 
           {/* Documents */}
-          {documents.map((doc: any) => (
+          {documents.map((doc: any) => {
+            const docName = doc.description || doc.documentTypeDescription || 'Document';
+            const docDisplayName = doc.documentTypeDescription && doc.documentTypeDescription !== docName
+              ? `${docName} (${doc.documentTypeDescription})`
+              : docName;
+            return (
             <Group
               key={doc.id}
               gap="xs"
               py={3}
               px={6}
               style={{
-                cursor: 'pointer',
-                borderRadius: 'var(--mantine-radius-xs)',
+                ...(selectedDocumentId === doc.id
+                  ? treeStyles.documentItemSelected
+                  : treeStyles.documentItem),
                 userSelect: 'none',
               }}
-              className={
-                selectedDocumentId === doc.id
-                  ? classes.documentItemExpanded
-                  : classes.documentItem
-              }
               onClick={(e) => {
                 // Handle shift/ctrl+click for multi-select
                 if (e.shiftKey || e.ctrlKey || e.metaKey) {
@@ -397,10 +404,11 @@ function RootFolderChildren({
                 style={{ flexShrink: 0 }}
               />
               <Text truncate style={{ minWidth: 0, flex: 1 }}>
-                {doc.description || doc.documentTypeDescription || 'Document'}
+                {docDisplayName}
               </Text>
             </Group>
-          ))}
+          )})}
+          
 
           {childFolders.length === 0 && documents.length === 0 && (
             <Text size="sm" c="dimmed" py={4} px={6}>

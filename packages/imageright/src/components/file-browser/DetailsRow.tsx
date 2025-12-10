@@ -2,7 +2,6 @@ import { Checkbox, Table } from '@mantine/core';
 import { IconFolder, IconFileText, IconBuilding } from '@tabler/icons-react';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
 import type { BrowserItem } from './types';
-import classes from '../../modules/file-tree.module.css';
 
 type DetailsRowProps = {
   item: BrowserItem;
@@ -47,10 +46,9 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
       }}
       style={{
         cursor: item.kind === 'folder' || item.kind === 'client' || item.kind === 'document' ? 'pointer' : 'default',
-        backgroundColor: item.kind === 'document' && selectedDocumentId === item.id ? 'var(--mantine-color-blue-0)' : undefined,
+        backgroundColor: item.kind === 'document' && selectedDocumentId === item.id ? 'var(--mantine-color-blue-light)' : undefined,
         userSelect: item.kind === 'document' ? 'none' : undefined,
       }}
-      className={item.kind === 'document' ? (selectedDocumentId === item.id ? classes.documentItemExpanded : classes.documentItem) : undefined}
     >
       <Table.Td>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

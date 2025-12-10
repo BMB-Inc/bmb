@@ -1,6 +1,6 @@
 import { ImageRightBrowser } from "@components/ImageRightBrowser";
 import { Button, Group, Modal, Stack, Title } from "@mantine/core";
-import { FolderTypes } from "@bmb-inc/types";
+import { DocumentTypes, FolderTypes } from "@bmb-inc/types";
 import { useDisclosure } from "@mantine/hooks";
 
 const FOLDER_TYPES = [
@@ -28,7 +28,10 @@ function App() {
       <Button onClick={open}>Open Modal</Button>
       <Modal opened={opened} onClose={close} title="ImageRight" size="70%">
         <Stack>
-          <ImageRightBrowser folderTypes={FOLDER_TYPES} defaultViewMode="tree" />
+          <ImageRightBrowser 
+            documentTypes={[DocumentTypes.apps, DocumentTypes.applications]}
+            folderTypes={FOLDER_TYPES}
+            defaultViewMode="tree" />
 
           <Group justify="flex-end">
             <Button variant="default" onClick={close}>

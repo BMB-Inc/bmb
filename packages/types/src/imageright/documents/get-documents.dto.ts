@@ -15,7 +15,7 @@ export enum DocumentTypes {
 	marketTrans = "marketTrans",
 	submit = "submit",
 	apps = "apps",
-	applications = "applications", // Alias for apps (120)
+	applications = "applications", // Alias for apps
 	confirm = "confirm",
 	proposal = "proposal",
 	renWs = "renWs",
