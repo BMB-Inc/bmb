@@ -29,7 +29,6 @@ function App() {
       <Modal opened={opened} onClose={close} title="ImageRight" size="70%">
         <Stack>
           <ImageRightBrowser 
-            documentTypes={[DocumentTypes.apps, DocumentTypes.applications]}
             folderTypes={FOLDER_TYPES}
             defaultViewMode="tree" />
 

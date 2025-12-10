@@ -160,19 +160,23 @@ export function FolderTreeNode({
                     userSelect: 'none',
                   }}
                   onClick={(e) => {
-                    // Handle shift/ctrl+click for multi-select
+                    // Handle shift/ctrl+click for multi-select checkboxes
                     if (e.shiftKey || e.ctrlKey || e.metaKey) {
                       handleSelectWithModifiers(doc.id, visibleDocumentIds, {
                         shiftKey: e.shiftKey,
                         ctrlKey: e.ctrlKey,
                         metaKey: e.metaKey,
                       });
+                      setLastSelectedId(doc.id);
                     } else {
-                      // Regular click - toggle checkbox and set as anchor
-                      toggleDocumentSelected(doc.id, !isDocumentSelected(doc.id));
+                      // Single click - open preview and highlight
+                      onDocumentSelect?.(doc.id);
                       setLastSelectedId(doc.id);
                     }
-                    onDocumentSelect?.(doc.id);
+                  }}
+                  onDoubleClick={() => {
+                    // Double-click - toggle checkbox for multi-select
+                    toggleDocumentSelected(doc.id, !isDocumentSelected(doc.id));
                   }}
                 >
                   <Checkbox
