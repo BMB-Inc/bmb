@@ -248,6 +248,7 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
             onClientOpen={onClientOpen}
             onDocumentOpen={onDocumentOpen}
             onDocumentClear={onDocumentClear}
+            visibleDocumentIds={visibleDocumentIds}
           />
         ))}
       </Table.Tbody>

@@ -18,13 +18,12 @@ import { useCurrentItems } from './hooks/useCurrentItems';
 import { useFolderLabelFromDocs, useFolderLabelMap } from './hooks/useFolderLabels';
 import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
  
-export const ImageRightFileBrowser = ({ folderTypes, documentTypes }: { folderTypes?: FolderTypes[], documentTypes?: DocumentTypes[] }) => {
+export const FolderFileBrowser = ({ folderTypes, documentTypes }: { folderTypes?: FolderTypes[], documentTypes?: DocumentTypes[] }) => {  
   // Real data hooks
   const { data: clients = [], isLoading: clientsLoading } = useClients();
   const {
     clientId: expandedClientId,
     folderId: expandedFolderId,
-    folderName: expandedFolderName,
     documentId: expandedDocumentId,
     currentFolderId,
     navigateToClients: clearToClients,
@@ -107,7 +106,7 @@ export const ImageRightFileBrowser = ({ folderTypes, documentTypes }: { folderTy
             : undefined;
         })()}
       folderId={expandedFolderId}
-      folderLabel={expandedFolderId ? (folderLabelFromDocs ?? folderLabelMap[expandedFolderId] ?? expandedFolderName) : undefined}
+      folderLabel={expandedFolderId ? (folderLabelFromDocs ?? folderLabelMap[expandedFolderId]) : undefined}
       onClientsClick={clearToClients}
       onClientRootClick={goToClientRoot}
     />
@@ -159,3 +158,6 @@ export const ImageRightFileBrowser = ({ folderTypes, documentTypes }: { folderTy
     </Card>
   );
 };
+
+// Backwards compatibility alias
+export const ImageRightFileBrowser = FolderFileBrowser;

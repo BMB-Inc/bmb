@@ -11,32 +11,39 @@ type DetailsRowProps = {
   onClientOpen?: (id: number) => void;
   onDocumentOpen?: (id: number) => void;
   onDocumentClear?: () => void;
+  visibleDocumentIds?: number[];
 };
 
-export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpen, onDocumentOpen, onDocumentClear }: DetailsRowProps) {
-  const { isSelected: isDocumentSelected, toggleSelected: toggleDocumentSelected } = useSelectedDocuments();
+export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpen, onDocumentOpen, onDocumentClear, visibleDocumentIds = [] }: DetailsRowProps) {
+  const { 
+    isSelected: isDocumentSelected, 
+    toggleSelected: toggleDocumentSelected,
+    handleSelectWithModifiers,
+    setLastSelectedId,
+  } = useSelectedDocuments();
 
   return (
     <Table.Tr
       key={`${item.kind}-${item.id}`}
-      onClick={() => {
+      onClick={(e) => {
         if (item.kind === 'document') {
-          if (selectedDocumentId === item.id) {
-            onDocumentClear?.();
+          // Handle shift/ctrl+click for multi-select
+          if (e.shiftKey || e.ctrlKey || e.metaKey) {
+            handleSelectWithModifiers(item.id, visibleDocumentIds, {
+              shiftKey: e.shiftKey,
+              ctrlKey: e.ctrlKey,
+              metaKey: e.metaKey,
+            });
           } else {
-            onDocumentOpen?.(item.id);
+            // Regular click - toggle checkbox and set as anchor
+            toggleDocumentSelected(item.id, !isDocumentSelected(item.id));
+            setLastSelectedId(item.id);
           }
+          onDocumentOpen?.(item.id);
           return;
         }
         if (item.kind === 'folder') onFolderOpen(item.id, item.name);
         if (item.kind === 'client') onClientOpen?.(item.id);
-      }}
-      onDoubleClick={() => {
-        if (item.kind === 'document') {
-          const currentlySelected = isDocumentSelected(item.id);
-          toggleDocumentSelected(item.id, !currentlySelected);
-          onDocumentOpen?.(item.id);
-        }
       }}
       style={{
         cursor: item.kind === 'folder' || item.kind === 'client' || item.kind === 'document' ? 'pointer' : 'default',
@@ -54,9 +61,9 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
               onChange={(e) => {
                 e.stopPropagation();
                 toggleDocumentSelected(item.id, e.currentTarget.checked);
+                setLastSelectedId(item.id);
               }}
               onClick={(e) => e.stopPropagation()}
-              onDoubleClick={(e) => e.stopPropagation()}
             />
           )}
           {item.kind === 'folder' && <IconFolder size={16} color="var(--mantine-color-yellow-7)" />}

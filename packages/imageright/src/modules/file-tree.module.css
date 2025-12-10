@@ -1,30 +1,25 @@
 .root {
-  font-family: var(--mantine-font-family-monospace);
-  font-size: 13px;
-  transition: transform 0.2s ease-in-out;
   cursor: pointer;
 }
 
 .root:hover {
-  transform: translate(0, -2px);
-  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
-  border-color: var(--mantine-color-gray-5);
-  background-color: var(--mantine-color-gray-0);
+  @mixin where-light {
+    background-color: var(--mantine-color-gray-1);
+  }
+
+  @mixin where-dark {
+    background-color: var(--mantine-color-dark-5);
+  }
 }
 
 .rootExpanded {
-  font-family: var(--mantine-font-family-monospace);
-  font-size: 13px;
-  transition: transform 0.2s ease-in-out;
   cursor: pointer;
   @mixin light {
     background-color: var(--mantine-color-blue-0);
-    border-color: var(--mantine-color-blue-4);
   }
 
   @mixin dark {
     background-color: alpha(var(--mantine-color-blue-8), 0.35);
-    border-color: var(--mantine-color-blue-6);
   }
 }
 

@@ -56,14 +56,6 @@ export const useAllDocumentTypes = (clientId?: number) => {
             typeMap.set(id, desc);
           }
         }
-        
-        // Convert to array and sort by ID
-        const uniqueTypes = Array.from(typeMap.entries())
-          .map(([documentTypeId, documentTypeDescription]) => ({ documentTypeId, documentTypeDescription }))
-          .sort((a, b) => a.documentTypeId - b.documentTypeId);
-        
-        console.log(`[useAllDocumentTypes] Found ${res?.length ?? 0} documents with ${uniqueTypes.length} unique types for clientId=${clientId}:`);
-        console.table(uniqueTypes);
       })
       .catch((err) => {
         console.error('[useAllDocumentTypes] Error fetching documents:', err);
