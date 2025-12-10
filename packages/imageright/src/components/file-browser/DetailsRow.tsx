@@ -7,7 +7,7 @@ import classes from '../../modules/file-tree.module.css';
 type DetailsRowProps = {
   item: BrowserItem;
   selectedDocumentId?: number | null;
-  onFolderOpen: (id: number) => void;
+  onFolderOpen: (id: number, name: string) => void;
   onClientOpen?: (id: number) => void;
   onDocumentOpen?: (id: number) => void;
   onDocumentClear?: () => void;
@@ -28,7 +28,7 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
           }
           return;
         }
-        if (item.kind === 'folder') onFolderOpen(item.id);
+        if (item.kind === 'folder') onFolderOpen(item.id, item.name);
         if (item.kind === 'client') onClientOpen?.(item.id);
       }}
       onDoubleClick={() => {

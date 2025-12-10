@@ -8,8 +8,9 @@ import DetailsTable from './DetailsTable';
 import { IconSearch } from '@tabler/icons-react';
 import { useBrowserNavigation } from '../../hooks/useBrowserNavigation';
 import { useClients } from '@hooks/index';
+import { usePolicyFolders } from '@hooks/useFolders';
 import { useFolders } from '../../hooks/useFolders';
-import { useDocuments } from '@hooks/useDocuments';
+import { useDocuments, useAllDocumentTypes } from '@hooks/useDocuments';
 import LoadingSkeletons from './LoadingSkeletons';
 import ClientContentArea from './ClientContentArea';
 import { useAutoSelectSingleClient } from './hooks/useAutoSelectSingleClient';
@@ -23,6 +24,7 @@ export const ImageRightFileBrowser = ({ folderTypes, documentTypes }: { folderTy
   const {
     clientId: expandedClientId,
     folderId: expandedFolderId,
+    folderName: expandedFolderName,
     documentId: expandedDocumentId,
     currentFolderId,
     navigateToClients: clearToClients,
@@ -33,19 +35,36 @@ export const ImageRightFileBrowser = ({ folderTypes, documentTypes }: { folderTy
     clearDocumentSelection,
   } = useBrowserNavigation();
 
+  // Debug: Log all unique document types for the selected client
+  useAllDocumentTypes(expandedClientId ? Number(expandedClientId) : undefined);
+
   // Current-level folders and documents
   const normalizedFolderTypes = Array.isArray(folderTypes) && folderTypes.length > 0 ? folderTypes : undefined;
   const normalizedDocumentTypes = Array.isArray(documentTypes) && documentTypes.length > 0 ? documentTypes : undefined;
-  // Single source of folders: pass clientId, optional folderId, and optional folderTypes directly
-  const { data: folders = [], isLoading: foldersLoading } = useFolders(
-    expandedClientId
-      ? {
-          clientId: Number(expandedClientId),
-          folderId: currentFolderId ? Number(currentFolderId) : null,
-          folderTypes: normalizedFolderTypes,
-        }
-      : undefined,
+  // Prefer server's policy-root endpoint when only policies are requested at root
+  const atRoot = !!(expandedClientId && !currentFolderId);
+  const wantsOnlyPoliciesAtRoot =
+    atRoot &&
+    Array.isArray(normalizedFolderTypes) &&
+    normalizedFolderTypes.length === 1 &&
+    normalizedFolderTypes[0] === FolderTypes.policies;
+
+  const { data: policyFolders = [], isLoading: policyFoldersLoading } = usePolicyFolders(
+    wantsOnlyPoliciesAtRoot && expandedClientId ? { clientId: Number(expandedClientId) } : undefined,
   );
+  const { data: genericFolders = [], isLoading: genericFoldersLoading } = useFolders(
+    wantsOnlyPoliciesAtRoot
+      ? undefined
+      : expandedClientId
+        ? {
+            clientId: Number(expandedClientId),
+            folderId: currentFolderId ? Number(currentFolderId) : null,
+            folderTypes: normalizedFolderTypes,
+          }
+        : undefined,
+  );
+  const folders = wantsOnlyPoliciesAtRoot ? (policyFolders || []) : (genericFolders || []);
+  const foldersLoading = wantsOnlyPoliciesAtRoot ? policyFoldersLoading : genericFoldersLoading;
   const { data: documents = [], isLoading: documentsLoading } = useDocuments(
     expandedClientId && currentFolderId
       ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId) }
@@ -88,7 +107,7 @@ export const ImageRightFileBrowser = ({ folderTypes, documentTypes }: { folderTy
             : undefined;
         })()}
       folderId={expandedFolderId}
-      folderLabel={expandedFolderId ? (folderLabelFromDocs ?? folderLabelMap[expandedFolderId]) : undefined}
+      folderLabel={expandedFolderId ? (folderLabelFromDocs ?? folderLabelMap[expandedFolderId] ?? expandedFolderName) : undefined}
       onClientsClick={clearToClients}
       onClientRootClick={goToClientRoot}
     />
@@ -109,7 +128,7 @@ export const ImageRightFileBrowser = ({ folderTypes, documentTypes }: { folderTy
           hasClients ? (
             <DetailsTable
               items={currentItems}
-              onFolderOpen={() => {}}
+              onFolderOpen={() => { /* no-op at client list level */ }}
               onClientOpen={(id) => navigateToClient(id.toString())}
             />
           ) : (
@@ -129,7 +148,7 @@ export const ImageRightFileBrowser = ({ folderTypes, documentTypes }: { folderTy
               <ClientContentArea
                 currentItems={currentItems}
                 expandedDocumentId={expandedDocumentId}
-                navigateIntoFolder={(id) => navigateIntoFolder(id.toString())}
+                navigateIntoFolder={(id, name) => navigateIntoFolder(id.toString(), name)}
                 navigateToDocument={(id) => navigateToDocument(id.toString())}
                 clearDocumentSelection={clearDocumentSelection}
               />

@@ -5,7 +5,7 @@ import PreviewPane from './PreviewPane';
 type ClientContentAreaProps = {
   currentItems: import('./types').BrowserItem[];
   expandedDocumentId: string | null | undefined;
-  navigateIntoFolder: (id: string) => void;
+  navigateIntoFolder: (id: string, name?: string) => void;
   navigateToDocument: (id: string) => void;
   clearDocumentSelection: () => void;
 };
@@ -31,7 +31,7 @@ export default function ClientContentArea({
       <div style={{ overflow: 'auto', minHeight: 0, height: '100%' }}>
         <DetailsTable
           items={currentItems}
-          onFolderOpen={(id) => navigateIntoFolder(id.toString())}
+          onFolderOpen={(id, name) => navigateIntoFolder(id.toString(), name)}
           onDocumentOpen={(id) => navigateToDocument(id.toString())}
           selectedDocumentId={expandedDocumentId ? Number(expandedDocumentId) : null}
           onDocumentClear={clearDocumentSelection}

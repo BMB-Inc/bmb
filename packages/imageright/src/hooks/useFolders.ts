@@ -25,7 +25,16 @@ export const useFolders = (params?: FoldersQueryParams) => {
     setLoading(true);
     setError(null);
     getFolders(params)
-      .then((res) => { if (!cancelled) setData(res); })
+      .then((res) => {
+        if (!cancelled) {
+          // At root level (no folderId), only show root folders (parentFolderId is null)
+          // Inside a folder, show all folders (they're already scoped to that folder)
+          const filtered = params?.folderId
+            ? res
+            : res?.filter((folder: any) => folder.parentFolderId == null);
+          setData(filtered);
+        }
+      })
       .catch((err: unknown) => { if (!cancelled) setError(err as Error); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
@@ -53,7 +62,16 @@ export const usePolicyFolders = (params?: FoldersQueryParams) => {
     setLoading(true);
     setError(null);
     getFolders(effectiveParams)
-      .then((res) => { if (!cancelled) setData(res); })
+      .then((res) => {
+        if (!cancelled) {
+          // At root level (no folderId), only show root folders (parentFolderId is null)
+          // Inside a folder, show all folders (they're already scoped to that folder)
+          const filtered = params?.folderId
+            ? res
+            : res?.filter((folder: any) => folder.parentFolderId == null);
+          setData(filtered);
+        }
+      })
       .catch((err: unknown) => { if (!cancelled) setError(err as Error); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };

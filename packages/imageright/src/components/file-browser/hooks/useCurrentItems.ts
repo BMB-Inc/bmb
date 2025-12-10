@@ -43,7 +43,7 @@ export function useCurrentItems({
       .map((f: any) => ({
         kind: 'folder' as const,
         id: f.id,
-        name: f.description || `Folder ${f.id}`,
+        name: f.description ?? f.folderTypeName,
         type: f.folderTypeName || f.folderTypeDescription || 'Folder',
         modified: toDateStr((f as any).lastModified),
         folderTypeId: (f as any).folderTypeId,
@@ -58,7 +58,7 @@ export function useCurrentItems({
       .map((d: any) => ({
         kind: 'document' as const,
         id: d.id,
-        name: d.description || `Document ${d.id}`,
+        name: d.description || d.documentTypeDescription,
         type: d.documentTypeDescription || 'Document',
         modified: toDateStr(d.dateLastModified || d.dateCreated),
         documentTypeId: (d as any).documentTypeId,

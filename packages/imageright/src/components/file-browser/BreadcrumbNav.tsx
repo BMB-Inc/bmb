@@ -15,12 +15,12 @@ export function BreadcrumbNav({ expandedClientId, clientLabel, folderId, folderL
       <Anchor onClick={onClientsClick}>Clients</Anchor>
       {expandedClientId && (
         <Anchor onClick={onClientRootClick}>
-          {clientLabel || `Client ${expandedClientId}`}
+          {clientLabel}
         </Anchor>
       )}
       {folderId && (
         <Anchor>
-          {folderLabel || `Folder ${folderId}`}
+          {folderLabel}
         </Anchor>
       )}
     </Breadcrumbs>

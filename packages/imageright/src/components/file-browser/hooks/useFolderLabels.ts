@@ -5,7 +5,7 @@ export function useFolderLabelFromDocs(documents: any[] | undefined) {
     if (Array.isArray(documents) && documents.length > 0) {
       const firstDoc: any = documents[0];
       const firstFolder = firstDoc?.folder;
-      if (firstFolder?.description) return String(firstFolder.description);
+      if (firstFolder) return String(firstFolder.description || firstFolder.folderTypeName);
     }
     return undefined;
   }, [documents]);
@@ -16,10 +16,8 @@ export function useFolderLabelMap(folders: any[] | undefined) {
     const map: Record<string, string> = {};
     if (Array.isArray(folders)) {
       for (const f of folders as any[]) {
-        const label = f?.description || (f?.id != null ? `Folder ${f.id}` : 'Folder');
-        if (f?.id != null) {
-          map[String(f.id)] = label;
-        }
+        const label = f?.description || f?.folderTypeName;
+        map[String(f.id)] = label;
       }
     }
     return map;

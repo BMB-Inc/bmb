@@ -1,5 +1,5 @@
 import { ActionIcon, Button, Checkbox, Group, Menu, ScrollArea, Table, Text } from '@mantine/core';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import type { BrowserItem } from './types';
 import { SortableHeader } from './SortableHeader';
 import { NameFilter } from './NameFilter';
@@ -9,7 +9,7 @@ import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
 
 type DetailsTableProps = {
   items: BrowserItem[];
-  onFolderOpen: (id: number) => void;
+  onFolderOpen: (id: number, name: string) => void;
   onClientOpen?: (id: number) => void;
   onDocumentOpen?: (id: number) => void;
   selectedDocumentId?: number | null;
@@ -17,7 +17,7 @@ type DetailsTableProps = {
 };
 
 export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen, selectedDocumentId, onDocumentClear }: DetailsTableProps) {
-  type SortKey = 'name' | 'modified';
+  type SortKey = 'name' | 'type' | 'modified';
   type SortDirection = 'asc' | 'desc';
   const [sort, setSort] = useState<{ key: SortKey; direction: SortDirection } | null>(null);
   const [folderNameQuery, setFolderNameQuery] = useState('');
@@ -103,6 +103,12 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
         const cmp = an.localeCompare(bn, undefined, { numeric: true, sensitivity: 'base' });
         return sort.direction === 'asc' ? cmp : -cmp;
       }
+      if (sort.key === 'type') {
+        const at = (a as any).type ? String((a as any).type).toLocaleLowerCase() : '';
+        const bt = (b as any).type ? String((b as any).type).toLocaleLowerCase() : '';
+        const cmp = at.localeCompare(bt, undefined, { numeric: true, sensitivity: 'base' });
+        return sort.direction === 'asc' ? cmp : -cmp;
+      }
       const ad = Date.parse(a.modified);
       const bd = Date.parse(b.modified);
       const aTime = Number.isNaN(ad) ? 0 : ad;
@@ -137,9 +143,12 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
             direction={sort?.key === 'name' ? sort.direction : null}
             onToggle={() => toggleSort('name')}
           />
-          <Table.Th>
-            <Group gap={6} wrap="nowrap">
-              <Text>Type</Text>
+          <SortableHeader
+            title="Type"
+            active={sort?.key === 'type'}
+            direction={sort?.key === 'type' ? sort.direction : null}
+            onToggle={() => toggleSort('type')}
+            rightSection={
               <Menu withinPortal position="bottom-start" shadow="md">
                 <Menu.Target>
                   <ActionIcon
@@ -178,10 +187,11 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
                             key={key}
                             label={label}
                             checked={checked}
-                            onChange={(e) => {
-                              setVisibleTypes(prev => {
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                              const isChecked = e?.target?.checked ?? false;
+                              setVisibleTypes((prev) => {
                                 const next = new Set(prev);
-                                if (e.currentTarget.checked) {
+                                if (isChecked) {
                                   next.add(key);
                                 } else {
                                   next.delete(key);
@@ -200,8 +210,8 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
                   </ScrollArea.Autosize>
                 </Menu.Dropdown>
               </Menu>
-            </Group>
-          </Table.Th>
+            }
+          />
           <SortableHeader
             title="Modified"
             active={sort?.key === 'modified'}

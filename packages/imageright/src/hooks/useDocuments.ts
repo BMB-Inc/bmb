@@ -22,7 +22,9 @@ export const useDocuments = (params?: ImagerightDocumentParams, documentTypes?: 
     setError(null);
     getDocuments(params, documentTypes)
       .then((res) => {
-        if (!cancelled) setData(res);
+        if (!cancelled) {
+          setData(res);
+        }
       })
       .catch((err: unknown) => {
         if (!cancelled) setError(err as Error);
@@ -36,6 +38,37 @@ export const useDocuments = (params?: ImagerightDocumentParams, documentTypes?: 
   }, [params?.clientId, params?.folderId, JSON.stringify(documentTypes ?? null)]);
 
   return { data, isLoading, error } as const;
+}
+
+/** Debug hook: Fetch all documents for a client and log unique document types */
+export const useAllDocumentTypes = (clientId?: number) => {
+  useEffect(() => {
+    if (!clientId) return;
+    
+    getDocuments({ clientId })
+      .then((res) => {
+        // Extract unique document types
+        const typeMap = new Map<number, string>();
+        for (const doc of res || []) {
+          const id = (doc as any).documentTypeId;
+          const desc = (doc as any).documentTypeDescription;
+          if (id != null && !typeMap.has(id)) {
+            typeMap.set(id, desc);
+          }
+        }
+        
+        // Convert to array and sort by ID
+        const uniqueTypes = Array.from(typeMap.entries())
+          .map(([documentTypeId, documentTypeDescription]) => ({ documentTypeId, documentTypeDescription }))
+          .sort((a, b) => a.documentTypeId - b.documentTypeId);
+        
+        console.log(`[useAllDocumentTypes] Found ${res?.length ?? 0} documents with ${uniqueTypes.length} unique types for clientId=${clientId}:`);
+        console.table(uniqueTypes);
+      })
+      .catch((err) => {
+        console.error('[useAllDocumentTypes] Error fetching documents:', err);
+      });
+  }, [clientId]);
 }
 
 export const useDocumentById = (id: number) => {

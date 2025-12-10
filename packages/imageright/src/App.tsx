@@ -11,7 +11,7 @@ function App() {
       <Button onClick={open}>Open Modal</Button>
       <Modal opened={opened} onClose={close} title="ImageRight" size="70%">
       <Stack>
-        <ImageRightFileBrowser folderTypes={[FolderTypes.applications, FolderTypes.policies, FolderTypes.submissions, FolderTypes.blueFolder]} />
+        <ImageRightFileBrowser folderTypes={[FolderTypes.policyTerm, FolderTypes.policy, FolderTypes.binding, FolderTypes.blueFolder, FolderTypes.carrier, FolderTypes.submissions, FolderTypes.policyCheckingDocuments, FolderTypes.proposalShell, FolderTypes.applications, FolderTypes.proposals, FolderTypes.quotes]} />
 
         <Group justify="space-between" align="center">
           <Group justify="flex-end">
