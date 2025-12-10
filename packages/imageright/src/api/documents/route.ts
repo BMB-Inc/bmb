@@ -13,12 +13,11 @@ export const getDocuments = async (params?: ImagerightDocumentParams, documentTy
   if (params.folderId) {
     searchParams.append('folderId', params.folderId.toString());
   }
-  if (documentTypes && documentTypes.length > 0) {
+  if (documentTypes?.length) {
     for (const documentType of documentTypes) {
-      searchParams.append('documentType', documentType);
+      searchParams.append('documentTypes', documentType);
     }
   }
-  
   const queryString = searchParams.toString();
   const url = queryString ? `/documents?${queryString}` : '/documents';
   const response = await fetcher(url);

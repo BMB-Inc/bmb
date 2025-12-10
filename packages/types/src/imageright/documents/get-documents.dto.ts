@@ -40,7 +40,8 @@ export const getDocumentsDto = z.object({
 	clientId: z.coerce.number(),
 	documentId: z.coerce.number().optional().nullable(),
 	folderId: z.coerce.number().optional().nullable(),
-	documentType: z.enum(DocumentTypes).optional().nullable()
+	documentType: z.enum(DocumentTypes).optional().nullable(),
+	documentTypes: z.array(z.enum(DocumentTypes)).optional()
 })
 
 export type GetDocumentsDto = z.infer<typeof getDocumentsDto>
