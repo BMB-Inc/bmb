@@ -13,8 +13,9 @@ export const getDocuments = async (params?: ImagerightDocumentParams, documentTy
   if (params.folderId) {
     searchParams.append('folderId', params.folderId.toString());
   }
-  if (documentTypes && documentTypes.length > 0) {
+  if (documentTypes?.length) {
     for (const documentType of documentTypes) {
+      searchParams.append('documentTypes', documentType);
       searchParams.append('documentTypes', documentType);
     }
   }
