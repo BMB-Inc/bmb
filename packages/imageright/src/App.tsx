@@ -2,6 +2,8 @@ import { ImageRightBrowser } from "@components/ImageRightBrowser";
 import { Button, Group, Modal, Stack, Title } from "@mantine/core";
 import { DocumentTypes, FolderTypes } from "@bmb-inc/types";
 import { useDisclosure } from "@mantine/hooks";
+import { useSelectedDocuments } from "@hooks/useSelectedDocuments";
+import { useSelectedPages } from "@hooks/useSelectedPages";
 
 const FOLDER_TYPES = [
   FolderTypes.policyTerm,
@@ -25,6 +27,9 @@ const DOCUMENT_TYPES = [
 
 function App() {
   const [opened, { open, close }] = useDisclosure(false);
+  const { selectedPages } = useSelectedPages();
+
+  console.log(selectedPages);
 
   return (
     <Stack m="lg">

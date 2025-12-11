@@ -1,4 +1,4 @@
-import { Checkbox, Group, Text, useComputedColorScheme } from "@mantine/core";
+import { Checkbox, Group, Text, Tooltip, useComputedColorScheme } from "@mantine/core";
 import { IconFile } from '@tabler/icons-react';
 import { useState } from "react";
 
@@ -7,7 +7,7 @@ type PageRowProps = {
   selected?: boolean;
   checked?: boolean;
   onCheckedChange?: (value: boolean) => void;
-  onSelect?: () => void;
+  onSelect?: (event: React.MouseEvent) => void;
   onDoubleClick?: () => void;
 }
 
@@ -37,16 +37,18 @@ export function PageRow({ label, selected, checked, onCheckedChange, onSelect, o
         flexWrap: 'nowrap'
       }}
       wrap="nowrap"
-      onClick={onSelect}
+      onClick={(e) => onSelect?.(e)}
       onDoubleClick={onDoubleClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       <Checkbox size="xs" checked={!!checked} onChange={(e) => onCheckedChange?.(e.currentTarget.checked)} />
       <IconFile size={14} color="var(--mantine-color-gray-7)" />
-      <Text style={{ flex: 1, minWidth: 0 }} truncate>
-        {label}
-      </Text>
+      <Tooltip label={label} openDelay={400} position="top-start" multiline maw={400}>
+        <Text style={{ flex: 1, minWidth: 0 }} truncate>
+          {label}
+        </Text>
+      </Tooltip>
     </Group>
   );
 }
