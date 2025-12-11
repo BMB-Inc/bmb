@@ -42,16 +42,37 @@ type DocumentPagesProps = {
   onPageCountChange?: (count: number) => void;
 };
 
-export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavailableChange, onPreviewLoadingChange, hideHeader, onPageCountChange }: DocumentPagesProps) {
+export function DocumentPages({
+  documentId,
+  onPreviewUrlChange,
+  onPreviewUnavailableChange,
+  onPreviewLoadingChange,
+  hideHeader,
+  onPageCountChange,
+}: DocumentPagesProps) {
   const { data: pages = [], isLoading } = usePages({ documentId });
-  const { isSelected, toggleSelected, clearSelected, selectMany, handleSelectWithModifiers, setLastSelectedId } = useSelectedPages();
+  const {
+    isSelected,
+    toggleSelected,
+    clearSelected,
+    selectMany,
+    handleSelectWithModifiers,
+    setLastSelectedId,
+  } = useSelectedPages();
   const previousUrlRef = useRef<string | null>(null);
   const [activePageId, setActivePageId] = useState<number | null>(null);
 
   const isChecked = useCallback((id: number) => isSelected(id), [isSelected]);
-  const toggleChecked = useCallback((id: number, metadata: { contentType: number | null; extension: string | null }, value?: boolean) => {
-    toggleSelected(id, metadata, value);
-  }, [toggleSelected]);
+  const toggleChecked = useCallback(
+    (
+      id: number,
+      metadata: { contentType: number | null; extension: string | null },
+      value?: boolean,
+    ) => {
+      toggleSelected(id, metadata, value);
+    },
+    [toggleSelected],
+  );
   useEffect(() => {
     // Clear selected pages when the document changes
     clearSelected();
@@ -92,14 +113,14 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
         const ext = firstPage?.latestImages?.imageMetadata?.[0]?.extension;
         const imageId = firstPage?.latestImages?.imageMetadata?.[0]?.id;
         const isPdf = String(ext ?? '').toLowerCase() === 'pdf';
-        
+
         // Load the preview for the first page
         (async () => {
           try {
             onPreviewLoadingChange?.(true);
             let response: Response;
             let mimeType: string;
-            
+
             if (isPdf) {
               // Use combined-pdf endpoint for PDFs
               response = await getPreview({ documentId, pageIds: firstPage.id });
@@ -109,7 +130,7 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
               response = await getImages(firstPage.id, imageId);
               mimeType = getMimeType(ext);
             }
-            
+
             const buffer = await response.arrayBuffer();
             const blob = new Blob([buffer], { type: mimeType });
             const url = URL.createObjectURL(blob);
@@ -135,7 +156,12 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
       <Stack gap={6} mt="sm">
         {!hideHeader && <Divider labelPosition="left" label={<Title order={6}>Pages</Title>} />}
         {Array.from({ length: 3 }).map((_, i) => (
-          <Skeleton key={`page-skel-${i}`} height={12} width={i % 2 === 0 ? '50%' : '35%'} radius="sm" />
+          <Skeleton
+            key={`page-skel-${i}`}
+            height={12}
+            width={i % 2 === 0 ? '50%' : '35%'}
+            radius="sm"
+          />
         ))}
       </Stack>
     );
@@ -153,7 +179,7 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
   const allPagesWithMetadata = pages.map((p: any) => ({
     id: p.id,
     contentType: p?.latestImages?.imageMetadata?.[0]?.contentType ?? null,
-    extension: p?.latestImages?.imageMetadata?.[0]?.extension ?? null
+    extension: p?.latestImages?.imageMetadata?.[0]?.extension ?? null,
   }));
 
   return (
@@ -196,21 +222,25 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
               onSelect={async (event) => {
                 const { shiftKey, ctrlKey, metaKey } = event;
                 const hasModifier = shiftKey || ctrlKey || metaKey;
-                
+
                 if (hasModifier) {
                   // Handle multi-selection with modifiers
-                  handleSelectWithModifiers(p.id, metadata, allPagesWithMetadata, { shiftKey, ctrlKey, metaKey });
+                  handleSelectWithModifiers(p.id, metadata, allPagesWithMetadata, {
+                    shiftKey,
+                    ctrlKey,
+                    metaKey,
+                  });
                 } else {
                   // Regular click: set active page and load preview
                   setLastSelectedId(p.id);
                   setActivePageId(p.id);
                   const isPdf = String(ext ?? '').toLowerCase() === 'pdf';
-                  
+
                   try {
                     onPreviewLoadingChange?.(true);
                     let response: Response;
                     let mimeType: string;
-                    
+
                     if (isPdf) {
                       // Use combined-pdf endpoint for PDFs
                       response = await getPreview({ documentId, pageIds: p.id });
@@ -220,7 +250,7 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
                       response = await getImages(p.id, imageId);
                       mimeType = getMimeType(ext);
                     }
-                    
+
                     const buffer = await response.arrayBuffer();
                     const blob = new Blob([buffer], { type: mimeType });
                     const url = URL.createObjectURL(blob);
@@ -252,5 +282,3 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
 }
 
 export default DocumentPages;
-
-

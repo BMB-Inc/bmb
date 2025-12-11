@@ -4,3 +4,4 @@ export * from "./folders/route";
 export * from "./documents/route";
 export * from "./pages/route";
 export * from "./images/route";
+export * from "./emails/route";
