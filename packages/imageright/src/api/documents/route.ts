@@ -15,8 +15,11 @@ export const getDocuments = async (params?: ImagerightDocumentParams, documentTy
   }
   if (documentTypes && documentTypes.length > 0) {
     for (const documentType of documentTypes) {
-      searchParams.append('documentType', documentType);
+      searchParams.append('documentTypes', documentType);
     }
+  }
+  if (params.description) {
+    searchParams.append('description', params.description);
   }
   
   const queryString = searchParams.toString();

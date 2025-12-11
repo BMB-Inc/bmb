@@ -17,6 +17,12 @@ const FOLDER_TYPES = [
   FolderTypes.quotes,
 ];
 
+const DOCUMENT_TYPES = [
+  DocumentTypes.policy,
+  DocumentTypes.proposal,
+  DocumentTypes.quote,
+];
+
 function App() {
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -28,7 +34,8 @@ function App() {
       <Button onClick={open}>Open Modal</Button>
       <Modal opened={opened} onClose={close} title="ImageRight" size="70%">
         <Stack>
-          <ImageRightBrowser 
+          <ImageRightBrowser
+          documentTypes={DOCUMENT_TYPES}
             folderTypes={FOLDER_TYPES}
             defaultViewMode="tree" />
 
