@@ -7,3 +7,4 @@ export * from './useImages';
 export * from './useSelectedPages';
 export * from './useSelectedDocuments';
 export * from './useTreeNavigation';
+export * from './useFolderItemCount';

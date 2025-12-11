@@ -1,4 +1,4 @@
-import { Stack, Divider, Title, Text } from '@mantine/core';
+import { Stack, Divider, Title, Text, Loader, Center } from '@mantine/core';
 import { useState } from 'react';
 import DocumentPages from './DocumentPages';
 
@@ -9,6 +9,7 @@ type PreviewPaneProps = {
 export default function PreviewPane({ expandedDocumentId }: PreviewPaneProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewUnavailable, setPreviewUnavailable] = useState<boolean>(false);
+  const [previewLoading, setPreviewLoading] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState<number>(0);
   return (
     <div
@@ -28,6 +29,7 @@ export default function PreviewPane({ expandedDocumentId }: PreviewPaneProps) {
               documentId={Number(expandedDocumentId)}
               onPreviewUrlChange={(url) => setPreviewUrl(url)}
               onPreviewUnavailableChange={(u) => setPreviewUnavailable(u)}
+              onPreviewLoadingChange={(loading) => setPreviewLoading(loading)}
               hideHeader
               onPageCountChange={(n) => setPageCount(n)}
             />
@@ -40,7 +42,14 @@ export default function PreviewPane({ expandedDocumentId }: PreviewPaneProps) {
         <Stack gap={6} style={{ flex: 1, minHeight: 0 }}>
           <Divider labelPosition="left" label={<Title order={6}>Preview</Title>} />
           <div style={{ flex: 1, minHeight: 0 }}>
-            {previewUrl ? (
+            {previewLoading ? (
+              <Center style={{ height: '100%' }}>
+                <Stack align="center" gap="sm">
+                  <Loader size="md" />
+                  <Text c="dimmed" size="sm">Loading preview...</Text>
+                </Stack>
+              </Center>
+            ) : previewUrl ? (
               <object
                 data={previewUrl}
                 type="application/pdf"

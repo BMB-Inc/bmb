@@ -5,6 +5,7 @@ import { useFolders } from '@hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
 import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
+import { FolderItemCount } from './FolderItemCount';
 import { treeStyles } from './styles';
 
 type FolderTreeNodeProps = {
@@ -17,6 +18,7 @@ type FolderTreeNodeProps = {
   onToggle: () => void;
   folderTypes?: FolderTypes[];
   documentTypes?: DocumentTypes[];
+  documentSearch?: string;
   selectedDocumentId?: number | null;
   onDocumentSelect?: (documentId: number) => void;
 };
@@ -31,6 +33,7 @@ export function FolderTreeNode({
   onToggle,
   folderTypes,
   documentTypes,
+  documentSearch,
   selectedDocumentId,
   onDocumentSelect,
 }: FolderTreeNodeProps) {
@@ -42,7 +45,7 @@ export function FolderTreeNode({
   );
 
   const { data: rawDocuments = [], isLoading: documentsLoading } = useDocuments(
-    isExpanded ? { clientId, folderId } : undefined,
+    isExpanded ? { clientId, folderId, description: documentSearch || undefined } : undefined,
     documentTypes
   );
 
@@ -104,6 +107,12 @@ export function FolderTreeNode({
         <Text truncate style={{ minWidth: 0, flex: 1 }}>
           {folderName}
         </Text>
+        <FolderItemCount
+          clientId={clientId}
+          folderId={folderId}
+          folderTypes={folderTypes}
+          documentTypes={documentTypes}
+        />
       </Group>
 
       {/* Children (folders + documents) */}
@@ -136,6 +145,7 @@ export function FolderTreeNode({
                   depth={0}
                   folderTypes={folderTypes}
                   documentTypes={documentTypes}
+                  documentSearch={documentSearch}
                   selectedDocumentId={selectedDocumentId}
                   onDocumentSelect={onDocumentSelect}
                 />
@@ -227,6 +237,7 @@ function RecursiveFolderNode({
   depth,
   folderTypes,
   documentTypes,
+  documentSearch,
   selectedDocumentId,
   onDocumentSelect,
 }: Omit<FolderTreeNodeProps, 'isExpanded' | 'onToggle'>) {
@@ -243,6 +254,7 @@ function RecursiveFolderNode({
       onToggle={() => setIsExpanded((prev) => !prev)}
       folderTypes={folderTypes}
       documentTypes={documentTypes}
+      documentSearch={documentSearch}
       selectedDocumentId={selectedDocumentId}
       onDocumentSelect={onDocumentSelect}
     />

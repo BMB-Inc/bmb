@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { getDocumentById, getDocuments } from "@api/index";
-import { type ImagerightDocumentParams } from "@bmb-inc/types";
-import { DocumentTypes } from "@bmb-inc/types";
+import { type GetDocumentsDto, DocumentTypes } from "@bmb-inc/types";
 
-export const useDocuments = (params?: ImagerightDocumentParams, documentTypes?: DocumentTypes[]) => {
+export const useDocuments = (params?: GetDocumentsDto, documentTypes?: DocumentTypes[]) => {
   const [data, setData] = useState<Awaited<ReturnType<typeof getDocuments>> | undefined>(undefined);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -35,7 +34,7 @@ export const useDocuments = (params?: ImagerightDocumentParams, documentTypes?: 
     return () => {
       cancelled = true;
     };
-  }, [params?.clientId, params?.folderId, JSON.stringify(documentTypes ?? null)]);
+  }, [params?.clientId, params?.folderId, params?.description, JSON.stringify(documentTypes ?? null)]);
 
   return { data, isLoading, error } as const;
 }

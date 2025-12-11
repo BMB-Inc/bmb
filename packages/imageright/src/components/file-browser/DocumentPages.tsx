@@ -9,11 +9,12 @@ type DocumentPagesProps = {
   documentId: number;
   onPreviewUrlChange?: (url: string | null) => void;
   onPreviewUnavailableChange?: (unavailable: boolean) => void;
+  onPreviewLoadingChange?: (loading: boolean) => void;
   hideHeader?: boolean;
   onPageCountChange?: (count: number) => void;
 };
 
-export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavailableChange, hideHeader, onPageCountChange }: DocumentPagesProps) {
+export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavailableChange, onPreviewLoadingChange, hideHeader, onPageCountChange }: DocumentPagesProps) {
   const { data: pages = [], isLoading } = usePages({ documentId });
   const { isSelected, toggleSelected, clearSelected } = useSelectedPages();
   const previousUrlRef = useRef<string | null>(null);
@@ -52,7 +53,45 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
     }
   }, [pages, onPageCountChange]);
 
-  
+  // Auto-select the first page when pages load
+  useEffect(() => {
+    if (!isLoading && Array.isArray(pages) && pages.length > 0 && activePageId === null) {
+      const firstPage = pages[0] as any;
+      if (firstPage?.id) {
+        // Trigger the same logic as clicking on the first page
+        setActivePageId(firstPage.id);
+        const ext = firstPage?.latestImages?.imageMetadata?.[0]?.extension;
+        const isPdf = String(ext ?? '').toLowerCase() === 'pdf';
+        
+        if (!isPdf) {
+          onPreviewUrlChange?.(null);
+          onPreviewUnavailableChange?.(true);
+          onPreviewLoadingChange?.(false);
+        } else {
+          // Load the preview for the first page
+          (async () => {
+            try {
+              onPreviewLoadingChange?.(true);
+              const response = await getPreview({ documentId, pageIds: firstPage.id });
+              const buffer = await response.arrayBuffer();
+              const blob = new Blob([buffer], { type: 'application/pdf' });
+              const url = URL.createObjectURL(blob);
+              if (previousUrlRef.current) {
+                URL.revokeObjectURL(previousUrlRef.current);
+              }
+              previousUrlRef.current = url;
+              onPreviewUrlChange?.(url);
+              onPreviewUnavailableChange?.(false);
+            } catch (err) {
+              console.error('Failed to fetch preview:', err);
+            } finally {
+              onPreviewLoadingChange?.(false);
+            }
+          })();
+        }
+      }
+    }
+  }, [isLoading, pages, activePageId, documentId]);
 
   if (isLoading) {
     return (
@@ -97,9 +136,11 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
                 }
                 onPreviewUrlChange?.(null);
                 onPreviewUnavailableChange?.(true);
+                onPreviewLoadingChange?.(false);
                 return;
               }
               try {
+                onPreviewLoadingChange?.(true);
                 const response = await getPreview({ documentId, pageIds: p.id });
                 const buffer = await response.arrayBuffer();
                 const blob = new Blob([buffer], { type: 'application/pdf' });
@@ -113,6 +154,8 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
                 onPreviewUnavailableChange?.(false);
               } catch (err) {
                 console.error('Failed to fetch preview:', err);
+              } finally {
+                onPreviewLoadingChange?.(false);
               }
             }}
             onDoubleClick={async () => {

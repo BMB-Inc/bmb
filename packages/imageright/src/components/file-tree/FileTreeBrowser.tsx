@@ -1,11 +1,13 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { Card, Stack, Center, Text, Group, Loader, ScrollArea, Checkbox } from '@mantine/core';
 import { IconSearch, IconFolder, IconFolderOpen, IconChevronRight, IconChevronDown, IconFileText } from '@tabler/icons-react';
 import { ClientSearch } from '../client-search/ClientSearch';
+import { DocumentSearch } from '../document-search/DocumentSearch';
 import BreadcrumbNav from '../file-browser/BreadcrumbNav';
 import PreviewPane from '../file-browser/PreviewPane';
 import { TreeLoadingSkeleton } from './TreeLoadingSkeleton';
 import { FolderTreeNode } from './FolderTreeNode';
+import { FolderItemCount } from './FolderItemCount';
 import { useClients } from '@hooks/index';
 import { useFolders, usePolicyFolders } from '@hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
@@ -21,6 +23,7 @@ type FileTreeBrowserProps = {
 
 export function FileTreeBrowser({ folderTypes, documentTypes }: FileTreeBrowserProps) {
   const { data: clients = [], isLoading: clientsLoading } = useClients();
+  const [documentSearch, setDocumentSearch] = useState('');
   
   // URL-persisted navigation state
   const {
@@ -33,6 +36,11 @@ export function FileTreeBrowser({ folderTypes, documentTypes }: FileTreeBrowserP
     toggleFolder: toggleRootFolder,
     collapseAll,
   } = useTreeNavigation();
+
+  // Memoize the search change handler
+  const handleDocumentSearchChange = useCallback((value: string) => {
+    setDocumentSearch(value);
+  }, []);
 
   const hasClients = Array.isArray(clients) && clients.length > 0;
 
@@ -114,6 +122,15 @@ export function FileTreeBrowser({ folderTypes, documentTypes }: FileTreeBrowserP
           />
         )}
 
+        {/* Document search - below breadcrumb, above folders */}
+        {selectedClientId && (
+          <DocumentSearch 
+            value={documentSearch} 
+            onChange={handleDocumentSearchChange}
+            placeholder="Search documents..."
+          />
+        )}
+
         {/* Client list (when no client selected) */}
         {!selectedClientId && (
           hasClients ? (
@@ -174,7 +191,6 @@ export function FileTreeBrowser({ folderTypes, documentTypes }: FileTreeBrowserP
                   {rootFolders.map((folder: any) => {
                     const isExpanded = expandedRootFolders.has(folder.id);
                     const folderName = folder.description ?? folder.folderTypeName ?? 'Folder';
-                    const folderType = folder.folderTypeName || folder.folderTypeDescription || 'Folder';
                     const folderDisplayName = folder.folderTypeDescription && folder.folderTypeDescription !== folderName
                       ? `${folderName} (${folder.folderTypeDescription})`
                       : folderName;
@@ -205,6 +221,12 @@ export function FileTreeBrowser({ folderTypes, documentTypes }: FileTreeBrowserP
                           <Text truncate style={{ minWidth: 0, flex: 1 }}>
                             {folderDisplayName}
                           </Text>
+                          <FolderItemCount
+                            clientId={selectedClientId}
+                            folderId={folder.id}
+                            folderTypes={normalizedFolderTypes}
+                            documentTypes={normalizedDocumentTypes}
+                          />
                         </Group>
 
                         {/* Expanded children */}
@@ -214,6 +236,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes }: FileTreeBrowserP
                             folderId={folder.id}
                             folderTypes={normalizedFolderTypes}
                             documentTypes={normalizedDocumentTypes}
+                            documentSearch={documentSearch}
                             selectedDocumentId={selectedDocumentId}
                             onDocumentSelect={handleDocumentSelect}
                           />
@@ -248,6 +271,7 @@ function RootFolderChildren({
   folderId,
   folderTypes,
   documentTypes,
+  documentSearch,
   selectedDocumentId,
   onDocumentSelect,
 }: {
@@ -255,6 +279,7 @@ function RootFolderChildren({
   folderId: number;
   folderTypes?: FolderTypes[];
   documentTypes?: DocumentTypes[];
+  documentSearch?: string;
   selectedDocumentId: number | null;
   onDocumentSelect: (documentId: number) => void;
 }) {
@@ -265,7 +290,7 @@ function RootFolderChildren({
   });
 
   const { data: rawDocuments = [], isLoading: documentsLoading } = useDocuments(
-    { clientId, folderId },
+    { clientId, folderId, description: documentSearch || undefined },
     documentTypes
   );
 
@@ -345,6 +370,7 @@ function RootFolderChildren({
               onToggle={() => toggleFolder(folder.id)}
               folderTypes={folderTypes}
               documentTypes={documentTypes}
+              documentSearch={documentSearch}
               selectedDocumentId={selectedDocumentId}
               onDocumentSelect={onDocumentSelect}
             />

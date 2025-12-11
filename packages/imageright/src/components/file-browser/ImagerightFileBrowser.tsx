@@ -1,6 +1,7 @@
-
+import { useState, useCallback } from 'react';
 import { Card, Stack, Center, Text } from '@mantine/core';
 import { ClientSearch } from '../client-search/ClientSearch';
+import { DocumentSearch } from '../document-search/DocumentSearch';
 import { type ImagerightClient } from '@bmb-inc/types';
 // ClientCard used inside ClientList
 import BreadcrumbNav from './BreadcrumbNav';
@@ -21,6 +22,12 @@ import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
 export const FolderFileBrowser = ({ folderTypes, documentTypes }: { folderTypes?: FolderTypes[], documentTypes?: DocumentTypes[] }) => {  
   // Real data hooks
   const { data: clients = [], isLoading: clientsLoading } = useClients();
+  const [documentSearch, setDocumentSearch] = useState('');
+  
+  const handleDocumentSearchChange = useCallback((value: string) => {
+    setDocumentSearch(value);
+  }, []);
+
   const {
     clientId: expandedClientId,
     folderId: expandedFolderId,
@@ -66,7 +73,7 @@ export const FolderFileBrowser = ({ folderTypes, documentTypes }: { folderTypes?
   const foldersLoading = wantsOnlyPoliciesAtRoot ? policyFoldersLoading : genericFoldersLoading;
   const { data: documents = [], isLoading: documentsLoading } = useDocuments(
     expandedClientId && currentFolderId
-      ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId) }
+      ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId), description: documentSearch || undefined }
       : undefined,
     normalizedDocumentTypes
   );
@@ -121,6 +128,15 @@ export const FolderFileBrowser = ({ folderTypes, documentTypes }: { folderTypes?
         />
 
         {(expandedClientId || hasClients) && breadcrumbItems}
+
+        {/* Document search - below breadcrumb, above content */}
+        {expandedClientId && currentFolderId && (
+          <DocumentSearch 
+            value={documentSearch} 
+            onChange={handleDocumentSearchChange}
+            placeholder="Search documents..."
+          />
+        )}
 
         {/* Single-pane content area */}
         {!expandedClientId && (
