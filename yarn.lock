@@ -432,6 +432,7 @@ __metadata:
     "@vitejs/plugin-basic-ssl": "npm:^2.1.0"
     "@vitejs/plugin-react-swc": "npm:^4.0.1"
     dotenv: "npm:^16.4.5"
+    eml-parse-js: "npm:^1.2.0-beta.1"
     eslint: "npm:^9.35.0"
     eslint-plugin-react-hooks: "npm:^5.2.0"
     eslint-plugin-react-refresh: "npm:^0.4.20"
@@ -1673,6 +1674,13 @@ __metadata:
   version: 4.46.3
   resolution: "@rollup/rollup-win32-x64-msvc@npm:4.46.3"
   conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@sinonjs/text-encoding@npm:^0.7.2":
+  version: 0.7.3
+  resolution: "@sinonjs/text-encoding@npm:0.7.3"
+  checksum: 10c0/b112d1e97af7f99fbdc63c7dbcd35d6a60764dfec85cfcfff532e55cce8ecd8453f9fa2139e70aea47142c940fd90cd201d19f370b9a0141700d8a6de3116815
   languageName: node
   linkType: hard
 
@@ -3083,6 +3091,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eml-parse-js@npm:^1.2.0-beta.1":
+  version: 1.2.0-beta.1
+  resolution: "eml-parse-js@npm:1.2.0-beta.1"
+  dependencies:
+    "@sinonjs/text-encoding": "npm:^0.7.2"
+    js-base64: "npm:^3.7.2"
+  checksum: 10c0/ecbf729ed84d3a07e26f25d97ee593b92ed5b69bea2b498b371b94fc74b3b88c7b2a3e607ce6be480abfff90fe3534c313f5ce7d19f8b6ad274f9b449af254e4
+  languageName: node
+  linkType: hard
+
 "emoji-regex@npm:^8.0.0":
   version: 8.0.0
   resolution: "emoji-regex@npm:8.0.0"
@@ -4247,6 +4265,13 @@ __metadata:
     "@pkgjs/parseargs":
       optional: true
   checksum: 10c0/6acc10d139eaefdbe04d2f679e6191b3abf073f111edf10b1de5302c97ec93fffeb2fdd8681ed17f16268aa9dd4f8c588ed9d1d3bffbbfa6e8bf897cbb3149b9
+  languageName: node
+  linkType: hard
+
+"js-base64@npm:^3.7.2":
+  version: 3.7.8
+  resolution: "js-base64@npm:3.7.8"
+  checksum: 10c0/a4452a7e7f32b0ef568a344157efec00c14593bbb1cf0c113f008dddff7ec515b35147af0cd70a7735adb69a2a2bdee921adffea2ea465e2c856ba50d649b11e
   languageName: node
   linkType: hard
 

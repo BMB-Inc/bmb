@@ -178,7 +178,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes }: FileTreeBrowserP
               gridTemplateColumns: 'minmax(360px, 1fr) minmax(280px, 0.6fr)',
               gap: 'var(--mantine-spacing-md)',
               alignItems: 'start',
-              height: '67vh',
+              height: '63vh',
               minHeight: 0,
             }}
           >

@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@bmb-inc/types": "workspace:*",
+    "eml-parse-js": "^1.2.0-beta.1",
     "nuqs": "^2.6.0",
     "zod": "^4.1.12"
   },

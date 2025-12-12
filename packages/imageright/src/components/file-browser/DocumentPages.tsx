@@ -36,13 +36,21 @@ const getMimeType = (ext: string | null): string => {
 type DocumentPagesProps = {
   documentId: number;
   onPreviewUrlChange?: (url: string | null, extension?: string | null) => void;
+  /** Called with raw data for email files (MSG, EML) that need client-side parsing */
+  onPreviewDataChange?: (data: ArrayBuffer | null, extension?: string | null) => void;
   onPreviewUnavailableChange?: (unavailable: boolean) => void;
   onPreviewLoadingChange?: (loading: boolean) => void;
   hideHeader?: boolean;
   onPageCountChange?: (count: number) => void;
 };
 
-export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavailableChange, onPreviewLoadingChange, hideHeader, onPageCountChange }: DocumentPagesProps) {
+// Check if extension is an email type that needs client-side parsing
+const isEmailType = (ext: string | null): boolean => {
+  if (!ext) return false;
+  return ['msg', 'eml'].includes(ext.toLowerCase());
+};
+
+export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataChange, onPreviewUnavailableChange, onPreviewLoadingChange, hideHeader, onPageCountChange }: DocumentPagesProps) {
   const { data: pages = [], isLoading } = usePages({ documentId });
   const { isSelected, toggleSelected, clearSelected, selectMany, handleSelectWithModifiers, setLastSelectedId } = useSelectedPages();
   const previousUrlRef = useRef<string | null>(null);
@@ -61,6 +69,7 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
       previousUrlRef.current = null;
     }
     onPreviewUrlChange?.(null, null);
+    onPreviewDataChange?.(null, null);
     onPreviewUnavailableChange?.(false);
     setActivePageId(null);
   }, [documentId, clearSelected]);
@@ -111,13 +120,21 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
             }
             
             const buffer = await response.arrayBuffer();
-            const blob = new Blob([buffer], { type: mimeType });
-            const url = URL.createObjectURL(blob);
-            if (previousUrlRef.current) {
-              URL.revokeObjectURL(previousUrlRef.current);
+            
+            // For email files, pass raw data instead of blob URL
+            if (isEmailType(ext)) {
+              onPreviewDataChange?.(buffer, ext);
+              onPreviewUrlChange?.(null, ext);
+            } else {
+              const blob = new Blob([buffer], { type: mimeType });
+              const url = URL.createObjectURL(blob);
+              if (previousUrlRef.current) {
+                URL.revokeObjectURL(previousUrlRef.current);
+              }
+              previousUrlRef.current = url;
+              onPreviewUrlChange?.(url, ext);
+              onPreviewDataChange?.(null, null);
             }
-            previousUrlRef.current = url;
-            onPreviewUrlChange?.(url, ext);
             onPreviewUnavailableChange?.(false);
           } catch (err) {
             console.error('Failed to fetch preview:', err);
@@ -222,14 +239,22 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewUnavail
                     }
                     
                     const buffer = await response.arrayBuffer();
-                    const blob = new Blob([buffer], { type: mimeType });
-                    const url = URL.createObjectURL(blob);
-                    // Revoke previous URL to avoid memory leaks
-                    if (previousUrlRef.current) {
-                      URL.revokeObjectURL(previousUrlRef.current);
+                    
+                    // For email files, pass raw data instead of blob URL
+                    if (isEmailType(ext)) {
+                      onPreviewDataChange?.(buffer, ext);
+                      onPreviewUrlChange?.(null, ext);
+                    } else {
+                      const blob = new Blob([buffer], { type: mimeType });
+                      const url = URL.createObjectURL(blob);
+                      // Revoke previous URL to avoid memory leaks
+                      if (previousUrlRef.current) {
+                        URL.revokeObjectURL(previousUrlRef.current);
+                      }
+                      previousUrlRef.current = url;
+                      onPreviewUrlChange?.(url, ext);
+                      onPreviewDataChange?.(null, null);
                     }
-                    previousUrlRef.current = url;
-                    onPreviewUrlChange?.(url, ext);
                     onPreviewUnavailableChange?.(false);
                   } catch (err) {
                     console.error('Failed to fetch preview:', err);
