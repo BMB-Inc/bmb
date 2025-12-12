@@ -34,6 +34,7 @@ export enum DocumentTypes {
   estimates = 'estimates',
   legalDocs = 'legalDocs',
   claimsReview = 'claimsReview',
+  newMail = 'newMail',
 }
 
 export const getDocumentsDto = z.object({
