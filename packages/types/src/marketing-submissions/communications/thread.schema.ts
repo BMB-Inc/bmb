@@ -50,6 +50,8 @@ export const marketingSubmissionsBindThreadSchema = z.object({
   thread_id: z.uuid(),
   status: bindingStatusEnum,
   premium: z.number().int().nonnegative().nullable().optional(),
+  taxes: z.number().int().nonnegative().nullable().optional(),
+  fees: z.number().int().nonnegative().nullable().optional(),
   line_of_business: lineOfBusinessSchema.nullable(),
   bound_submission_quote_id: z.string().uuid().nullable().optional(),
   declination_reason: z.string().trim().nullable().optional(),
