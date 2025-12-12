@@ -60,4 +60,4 @@ export const sendBindingEmailSchema = z.object({
   }),
 });
 
-export type SendBindingEmailDto = z.infer<typeof sendBindingEmailSchema>;
+export type SendBindingEmailSchema = z.infer<typeof sendBindingEmailSchema>;
