@@ -1,6 +1,6 @@
 {
   "name": "@bmb-inc/imageright",
-  "version": "0.0.44",
+  "version": "0.0.47",
   "type": "module",
   "files": [
     "dist"
@@ -22,7 +22,9 @@
   "dependencies": {
     "@bmb-inc/types": "workspace:*",
     "eml-parse-js": "^1.2.0-beta.1",
+    "msgreader": "^1.0.1",
     "nuqs": "^2.6.0",
+    "xlsx": "^0.18.5",
     "zod": "^4.1.12"
   },
   "peerDependencies": {

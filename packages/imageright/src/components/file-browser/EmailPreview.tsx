@@ -2,6 +2,7 @@ import { Stack, Text, Paper, Group, Badge, Divider, ScrollArea } from '@mantine/
 import { IconUser, IconUsers, IconCalendar, IconPaperclip } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { parseEml } from 'eml-parse-js';
+import MsgReader from 'msgreader';
 
 type EmailData = {
   subject: string;
@@ -78,6 +79,57 @@ function parseEmlData(parsed: any): EmailData {
   };
 }
 
+function parseMsgData(msgData: any): EmailData {
+  // Extract sender info
+  const senderName = msgData.senderName || '';
+  const senderEmail = msgData.senderEmail || '';
+  const from = senderEmail 
+    ? (senderName ? `${senderName} <${senderEmail}>` : senderEmail)
+    : senderName;
+
+  // Extract recipients
+  const recipients = msgData.recipients || [];
+  const toList = recipients
+    .map((r: any) => {
+      const name = r.name || '';
+      const email = r.email || '';
+      return email ? (name ? `${name} <${email}>` : email) : name;
+    })
+    .filter(Boolean)
+    .join(', ');
+
+  // Extract attachments
+  const attachments = (msgData.attachments || [])
+    .map((att: any) => att.fileName || att.name || 'Attachment')
+    .filter(Boolean);
+
+  // Format date if available
+  let dateStr = '';
+  if (msgData.messageDeliveryTime) {
+    try {
+      dateStr = new Date(msgData.messageDeliveryTime).toLocaleString();
+    } catch {
+      dateStr = msgData.messageDeliveryTime;
+    }
+  } else if (msgData.creationTime) {
+    try {
+      dateStr = new Date(msgData.creationTime).toLocaleString();
+    } catch {
+      dateStr = msgData.creationTime;
+    }
+  }
+
+  return {
+    subject: msgData.subject || '(No Subject)',
+    from,
+    to: toList,
+    date: dateStr,
+    htmlBody: msgData.bodyHTML || null,
+    textBody: msgData.body || null,
+    attachments,
+  };
+}
+
 export function EmailPreview({ data, extension }: EmailPreviewProps) {
   const [email, setEmail] = useState<EmailData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -106,7 +158,18 @@ export function EmailPreview({ data, extension }: EmailPreviewProps) {
           });
           return;
         } else if (ext === 'msg') {
-          setError('MSG files require server-side processing. Client-side preview not available.');
+          // Parse MSG file using msgreader
+          const msgReader = new MsgReader(data);
+          const msgData = msgReader.getFileData();
+          
+          if (!msgData) {
+            setError('Failed to parse MSG file');
+            setLoading(false);
+            return;
+          }
+          
+          const emailData = parseMsgData(msgData);
+          setEmail(emailData);
           setLoading(false);
           return;
         } else {

@@ -3,6 +3,7 @@ import { IconChecks, IconX } from '@tabler/icons-react';
 import { useState } from 'react';
 import DocumentPages from './DocumentPages';
 import EmailPreview from './EmailPreview';
+import SpreadsheetPreview from './SpreadsheetPreview';
 import { useSelectedPages } from '@hooks/useSelectedPages';
 import { usePages } from '@hooks/usePages';
 
@@ -11,12 +12,13 @@ type PreviewPaneProps = {
 };
 
 // Helper to determine preview type from extension
-const getPreviewType = (ext: string | null): 'pdf' | 'image' | 'email' | 'other' => {
+const getPreviewType = (ext: string | null): 'pdf' | 'image' | 'email' | 'spreadsheet' | 'other' => {
   if (!ext) return 'other';
   const extension = ext.toLowerCase();
   if (extension === 'pdf') return 'pdf';
   if (['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'tif', 'tiff'].includes(extension)) return 'image';
   if (['msg', 'eml'].includes(extension)) return 'email';
+  if (['xls', 'xlsx', 'xlsm', 'xlsb', 'csv'].includes(extension)) return 'spreadsheet';
   return 'other';
 };
 
@@ -147,6 +149,10 @@ export default function PreviewPane({ expandedDocumentId }: PreviewPaneProps) {
             ) : previewType === 'email' && previewData ? (
               <div style={{ position: 'absolute', inset: 0, overflow: 'auto' }}>
                 <EmailPreview data={previewData} extension={previewExtension || 'eml'} />
+              </div>
+            ) : previewType === 'spreadsheet' && previewData ? (
+              <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+                <SpreadsheetPreview data={previewData} extension={previewExtension || 'xlsx'} />
               </div>
             ) : previewUrl ? (
               previewType === 'pdf' ? (
