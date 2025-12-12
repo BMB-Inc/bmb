@@ -60,7 +60,6 @@ export const marketingSubmissionsBindThreadSchema = z.object({
   bmb_commission_pct: z.number().nonnegative().nullable().optional(),
   producer_commission: z.number().nonnegative().nullable().optional(),
   ae_commission: z.number().nonnegative().nullable().optional(),
-  fee: z.number().int().nonnegative().nullable().optional(),
   assessments: z.number().nonnegative().nullable().optional(),
   surplus_tax_type: surplusTaxTypeSchema.nullable(),
   surplus_lines: z.boolean().nullable(),

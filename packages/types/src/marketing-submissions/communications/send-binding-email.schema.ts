@@ -25,11 +25,6 @@ export const sendBindingEmailSchema = z.object({
     .coerce.number({ message: 'AE commission must be a valid number when provided.' })
     .nonnegative({ message: 'AE commission must be zero or a positive number.' })
     .optional(),
-  fee: z
-    .coerce.number({ message: 'Fee must be a valid number when provided.' })
-    .nonnegative({ message: 'Fee must be zero or a positive number.' })
-    .refine((value) => Number.isInteger(value), 'Fee must be a whole number when provided.')
-    .optional(),
   assessments: z
     .coerce.number({ message: 'Assessments must be a valid number when provided.' })
     .nonnegative({ message: 'Assessments must be zero or a positive number.' })
