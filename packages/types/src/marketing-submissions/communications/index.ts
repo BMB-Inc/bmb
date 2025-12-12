@@ -3,3 +3,4 @@ export * from './email-attachments.schema';
 export * from './email-draft-attachments.schema';
 export * from './subjectivity.schema';
 export * from './thread.schema';
+export * from './send-binding-email.schema';

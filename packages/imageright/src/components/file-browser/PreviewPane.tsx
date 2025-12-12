@@ -28,17 +28,20 @@ export default function PreviewPane({ expandedDocumentId }: PreviewPaneProps) {
   const [previewLoading, setPreviewLoading] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState<number>(0);
   const { selectMany, selectedPageIds, clearSelected } = useSelectedPages();
-  const { data: pages = [] } = usePages({ documentId: expandedDocumentId ? Number(expandedDocumentId) : 0 });
-  
+  const { data: pages = [] } = usePages({
+    documentId: expandedDocumentId ? Number(expandedDocumentId) : 0,
+  });
+
   const previewType = getPreviewType(previewExtension);
-  
+
   // Check if all pages are selected
   const allPageIds = Array.isArray(pages) ? pages.map((p: any) => p.id) : [];
-  const allSelected = allPageIds.length > 0 && allPageIds.every(id => selectedPageIds.includes(id));
-  
+  const allSelected =
+    allPageIds.length > 0 && allPageIds.every((id) => selectedPageIds.includes(id));
+
   const handleToggleSelectAll = () => {
     if (!Array.isArray(pages) || pages.length === 0) return;
-    
+
     if (allSelected) {
       // Deselect all
       clearSelected();
@@ -47,7 +50,7 @@ export default function PreviewPane({ expandedDocumentId }: PreviewPaneProps) {
       const allPagesWithMetadata = pages.map((p: any) => ({
         id: p.id,
         contentType: p?.latestImages?.imageMetadata?.[0]?.contentType ?? null,
-        extension: p?.latestImages?.imageMetadata?.[0]?.extension ?? null
+        extension: p?.latestImages?.imageMetadata?.[0]?.extension ?? null,
       }));
       selectMany(allPagesWithMetadata);
     }
@@ -60,25 +63,36 @@ export default function PreviewPane({ expandedDocumentId }: PreviewPaneProps) {
         gap: 'var(--mantine-spacing-md)',
         height: '100%',
         minHeight: 0,
-        minWidth: 0
+        minWidth: 0,
       }}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: 0, height: '100%', minWidth: 0 }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0,
+          height: '100%',
+          minWidth: 0,
+        }}
+      >
         <Divider
           labelPosition="left"
           label={
             <Group gap="xs">
               <Title order={6}>Pages{pageCount ? ` (${pageCount})` : ''}</Title>
               {expandedDocumentId && pageCount > 0 && (
-                <Tooltip label={allSelected ? "Deselect all pages" : "Select all pages"} openDelay={300}>
+                <Tooltip
+                  label={allSelected ? 'Deselect all pages' : 'Select all pages'}
+                  openDelay={300}
+                >
                   <Button
                     size="xs"
                     variant="subtle"
                     onClick={handleToggleSelectAll}
-                    color={allSelected ? "red" : undefined}
+                    color={allSelected ? 'red' : undefined}
                     leftSection={allSelected ? <IconX size={14} /> : <IconChecks size={14} />}
                   >
-                    {allSelected ? "Deselect all pages" : "Select all pages"}
+                    {allSelected ? 'Deselect all pages' : 'Select all pages'}
                   </Button>
                 </Tooltip>
               )}
@@ -103,11 +117,21 @@ export default function PreviewPane({ expandedDocumentId }: PreviewPaneProps) {
               onPageCountChange={(n) => setPageCount(n)}
             />
           ) : (
-            <Text c="dimmed" size="sm">Select a document to view pages</Text>
+            <Text c="dimmed" size="sm">
+              Select a document to view pages
+            </Text>
           )}
         </div>
       </div>
-      <div style={{ minHeight: 0, minWidth: 0, height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div
+        style={{
+          minHeight: 0,
+          minWidth: 0,
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         <Stack gap={6} style={{ flex: 1, minHeight: 0, minWidth: 0 }}>
           <Divider labelPosition="left" label={<Title order={6}>Preview</Title>} />
           <div style={{ flex: 1, minHeight: 0, minWidth: 0, overflow: 'hidden', position: 'relative' }}>
@@ -115,7 +139,9 @@ export default function PreviewPane({ expandedDocumentId }: PreviewPaneProps) {
               <Center style={{ height: '100%', width: '100%', position: 'absolute', inset: 0 }}>
                 <Stack align="center" gap="sm">
                   <Loader size="md" />
-                  <Text c="dimmed" size="sm">Loading preview...</Text>
+                  <Text c="dimmed" size="sm">
+                    Loading preview...
+                  </Text>
                 </Stack>
               </Center>
             ) : previewType === 'email' && previewData ? (
@@ -144,7 +170,11 @@ export default function PreviewPane({ expandedDocumentId }: PreviewPaneProps) {
                       Preview not available for {previewExtension?.toUpperCase() || 'this'} files.
                     </Text>
                     <Text c="dimmed" size="xs">
-                      <a href={previewUrl} download style={{ color: 'var(--mantine-color-blue-6)' }}>
+                      <a
+                        href={previewUrl}
+                        download
+                        style={{ color: 'var(--mantine-color-blue-6)' }}
+                      >
                         Download file
                       </a>
                     </Text>
@@ -166,5 +196,3 @@ export default function PreviewPane({ expandedDocumentId }: PreviewPaneProps) {
     </div>
   );
 }
-
-

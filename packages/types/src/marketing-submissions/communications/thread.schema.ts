@@ -19,6 +19,7 @@ const bindingStatusValues: [
 
 const bindingStatusEnum = z.enum(bindingStatusValues);
 const lineOfBusinessSchema = z.string().trim().min(1);
+const surplusTaxTypeSchema = z.string().trim().min(1);
 
 export const marketingSubmissionsThreadSchema = z.object({
   id: z.uuid(),
@@ -50,9 +51,21 @@ export const marketingSubmissionsBindThreadSchema = z.object({
   thread_id: z.uuid(),
   status: bindingStatusEnum,
   premium: z.number().int().nonnegative().nullable().optional(),
+  taxes: z.number().int().nonnegative().nullable().optional(),
+  fees: z.number().int().nonnegative().nullable().optional(),
   line_of_business: lineOfBusinessSchema.nullable(),
   bound_submission_quote_id: z.string().uuid().nullable().optional(),
   declination_reason: z.string().trim().nullable().optional(),
+  minimum_earned_premium: z.number().int().nonnegative().nullable().optional(),
+  bmb_commission_pct: z.number().nonnegative().nullable().optional(),
+  producer_commission: z.number().nonnegative().nullable().optional(),
+  ae_commission: z.number().nonnegative().nullable().optional(),
+  fee: z.number().int().nonnegative().nullable().optional(),
+  assessments: z.number().nonnegative().nullable().optional(),
+  surplus_tax_type: surplusTaxTypeSchema.nullable(),
+  surplus_lines: z.boolean().nullable(),
+  surplus_lines_tax: z.number().nonnegative().nullable().optional(),
+  stamp_fee: z.number().nonnegative().nullable().optional(),
   created_at: z.coerce.date(),
   updated_at: z.coerce.date(),
 });
@@ -66,6 +79,8 @@ export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadS
   })
   .extend({
     line_of_business: lineOfBusinessSchema.nullable().optional(),
+    surplus_tax_type: surplusTaxTypeSchema.nullable().optional(),
+    surplus_lines: z.boolean().nullable().optional(),
   })
   .superRefine((data, ctx) => {
     if (
