@@ -8,4 +8,5 @@ export type MarketingSubmissionsQuoteResponse = MarketingSubmissionsQuoteSchema 
   contact_id: string | null;
   contact_name: string | null;
   contact_email: string | null;
+  is_bound: boolean;
 };
