@@ -47,10 +47,16 @@ export const sendBindingEmailSchema = z.object({
     .number({ message: 'Fees must be a valid number when provided.' })
     .nonnegative({ message: 'Fees must be zero or a positive number.' })
     .optional(),
+  bill: z.coerce
+    .number({ message: 'Bill amount must be a valid number when provided.' })
+    .nonnegative({ message: 'Bill amount must be zero or a positive number.' })
+    .optional(),
   premium: z.coerce
     .number({ message: 'Premium is required to send a binding email.' })
     .nonnegative({ message: 'Premium must be zero or a positive number.' })
     .min(1),
+  is_renewal: z.coerce.boolean().optional(),
+  primary_contact_id: z.string().uuid().optional(),
   body: z.string({ message: 'Binding email body is required.' }).trim().min(1, {
     message: 'Binding email body cannot be empty.',
   }),
