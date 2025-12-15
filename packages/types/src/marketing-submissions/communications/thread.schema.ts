@@ -53,6 +53,7 @@ export const marketingSubmissionsBindThreadSchema = z.object({
   premium: z.number().int().nonnegative().nullable().optional(),
   taxes: z.number().int().nonnegative().nullable().optional(),
   fees: z.number().int().nonnegative().nullable().optional(),
+  bill: z.number().int().nonnegative().nullable().optional(),
   line_of_business: lineOfBusinessSchema.nullable(),
   bound_submission_quote_id: z.string().uuid().nullable().optional(),
   declination_reason: z.string().trim().nullable().optional(),
@@ -65,6 +66,8 @@ export const marketingSubmissionsBindThreadSchema = z.object({
   surplus_lines: z.boolean().nullable(),
   surplus_lines_tax: z.number().nonnegative().nullable().optional(),
   stamp_fee: z.number().nonnegative().nullable().optional(),
+  is_renewal: z.boolean().nullable().optional(),
+  primary_contact_id: z.string().uuid().nullable().optional(),
   created_at: z.coerce.date(),
   updated_at: z.coerce.date(),
 });
