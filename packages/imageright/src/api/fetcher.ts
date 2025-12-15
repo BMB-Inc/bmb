@@ -1,9 +1,10 @@
-const IMAGERIGHT_API_URL = (import.meta as any).env.VITE_IMAGERIGHT_API_URL;
+import { getBaseUrl } from './constants';
 
-export const fetcher = async (url: string, options?: RequestInit) => {
+export const fetcher = async (url: string, baseUrl?: string, options?: RequestInit) => {
+  const apiUrl = getBaseUrl(baseUrl);
   try {
-  const response = await fetch(`${IMAGERIGHT_API_URL}${url}`, options);
-  const data = await response.json();
+    const response = await fetch(`${apiUrl}${url}`, options);
+    const data = await response.json();
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);

@@ -8,6 +8,8 @@ type ClientContentAreaProps = {
   navigateIntoFolder: (id: string, name?: string) => void;
   navigateToDocument: (id: string) => void;
   clearDocumentSelection: () => void;
+  /** File extensions to filter pages by (e.g., ['pdf', 'jpg']) */
+  allowedExtensions?: string[];
 };
 
 export default function ClientContentArea({
@@ -16,6 +18,7 @@ export default function ClientContentArea({
   navigateIntoFolder,
   navigateToDocument,
   clearDocumentSelection,
+  allowedExtensions,
 }: ClientContentAreaProps) {
   return (
     <div
@@ -37,7 +40,7 @@ export default function ClientContentArea({
           onDocumentClear={clearDocumentSelection}
         />
       </div>
-      <PreviewPane expandedDocumentId={expandedDocumentId} />
+      <PreviewPane expandedDocumentId={expandedDocumentId} allowedExtensions={allowedExtensions} />
     </div>
   );
 }

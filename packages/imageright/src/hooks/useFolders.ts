@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { getFolders } from "@api/index";
 import { FolderTypes } from "@bmb-inc/types";
+import { useImageRightConfig } from "../context/ImageRightContext";
+
 type FoldersQueryParams = {
   clientId?: number;
   folderId?: number | null;
@@ -8,6 +10,7 @@ type FoldersQueryParams = {
 };
 
 export const useFolders = (params?: FoldersQueryParams) => {
+  const { baseUrl } = useImageRightConfig();
   const [data, setData] = useState<Awaited<ReturnType<typeof getFolders>> | undefined>(undefined);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -24,7 +27,7 @@ export const useFolders = (params?: FoldersQueryParams) => {
     }
     setLoading(true);
     setError(null);
-    getFolders(params)
+    getFolders(params, baseUrl)
       .then((res) => {
         if (!cancelled) {
           // At root level (no folderId), only show root folders (parentFolderId is null)
@@ -38,12 +41,13 @@ export const useFolders = (params?: FoldersQueryParams) => {
       .catch((err: unknown) => { if (!cancelled) setError(err as Error); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [params?.clientId, params?.folderId, JSON.stringify(params?.folderTypes ?? null)]);
+  }, [params?.clientId, params?.folderId, JSON.stringify(params?.folderTypes ?? null), baseUrl]);
 
   return { data, isLoading, error } as const;
 }
 
 export const usePolicyFolders = (params?: FoldersQueryParams) => {
+  const { baseUrl } = useImageRightConfig();
   const [data, setData] = useState<Awaited<ReturnType<typeof getFolders>> | undefined>(undefined);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -61,7 +65,7 @@ export const usePolicyFolders = (params?: FoldersQueryParams) => {
     }
     setLoading(true);
     setError(null);
-    getFolders(effectiveParams)
+    getFolders(effectiveParams, baseUrl)
       .then((res) => {
         if (!cancelled) {
           // At root level (no folderId), only show root folders (parentFolderId is null)
@@ -75,7 +79,7 @@ export const usePolicyFolders = (params?: FoldersQueryParams) => {
       .catch((err: unknown) => { if (!cancelled) setError(err as Error); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [params?.clientId, params?.folderId, JSON.stringify(params?.folderTypes ?? null)]);
+  }, [params?.clientId, params?.folderId, JSON.stringify(params?.folderTypes ?? null), baseUrl]);
 
   return { data, isLoading, error } as const;
 }

@@ -2,10 +2,24 @@ import { Stack, Divider, Title, Skeleton, Group, ActionIcon, Tooltip } from '@ma
 import { IconChecks } from '@tabler/icons-react';
 import { usePages } from '@hooks/usePages';
 import PageRow from './PageRow';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { useSelectedPages } from '@hooks/index';
 import { getPreview } from '@api/preview/route';
 import { getImages } from '@api/images/route';
+import { useImageRightConfig } from '../../context/ImageRightContext';
+
+/** Filter pages by allowed extensions */
+const filterPagesByExtension = (pages: any[], allowedExtensions?: string[]): any[] => {
+  if (!allowedExtensions || allowedExtensions.length === 0) {
+    return pages;
+  }
+  const normalizedExtensions = allowedExtensions.map(ext => ext.toLowerCase());
+  return pages.filter((p: any) => {
+    const ext = p?.latestImages?.imageMetadata?.[0]?.extension;
+    if (!ext) return false;
+    return normalizedExtensions.includes(ext.toLowerCase());
+  });
+};
 
 // Helper to get MIME type from extension
 const getMimeType = (ext: string | null): string => {
@@ -42,6 +56,12 @@ type DocumentPagesProps = {
   onPreviewLoadingChange?: (loading: boolean) => void;
   hideHeader?: boolean;
   onPageCountChange?: (count: number) => void;
+  /** 
+   * File extensions to display (e.g., ['pdf', 'jpg', 'png']).
+   * When provided, only pages with these extensions will be shown.
+   * If not provided or empty, all extensions are shown.
+   */
+  allowedExtensions?: string[];
 };
 
 // Check if extension is an email type that needs client-side parsing
@@ -56,8 +76,15 @@ const isSpreadsheetType = (ext: string | null): boolean => {
   return ['xls', 'xlsx', 'xlsm', 'xlsb', 'csv'].includes(ext.toLowerCase());
 };
 
-export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataChange, onPreviewUnavailableChange, onPreviewLoadingChange, hideHeader, onPageCountChange }: DocumentPagesProps) {
-  const { data: pages = [], isLoading } = usePages({ documentId });
+export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataChange, onPreviewUnavailableChange, onPreviewLoadingChange, hideHeader, onPageCountChange, allowedExtensions }: DocumentPagesProps) {
+  const { baseUrl } = useImageRightConfig();
+  const { data: rawPages = [], isLoading } = usePages({ documentId });
+
+  // Filter pages by allowed extensions (client-side filtering after fetch)
+  const pages = useMemo(
+    () => filterPagesByExtension(rawPages, allowedExtensions),
+    [rawPages, allowedExtensions]
+  );
   const {
     isSelected,
     toggleSelected,
@@ -131,11 +158,11 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataCha
 
             if (isPdf) {
               // Use combined-pdf endpoint for PDFs
-              response = await getPreview({ documentId, pageIds: firstPage.id });
+              response = await getPreview({ documentId, pageIds: firstPage.id }, baseUrl);
               mimeType = 'application/pdf';
             } else {
               // Use images endpoint for all other files - pass pageId and imageId
-              response = await getImages(firstPage.id, imageId);
+              response = await getImages(firstPage.id, imageId, undefined, baseUrl);
               mimeType = getMimeType(ext);
             }
 
@@ -165,7 +192,7 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataCha
         })();
       }
     }
-  }, [isLoading, pages, activePageId, documentId, setLastSelectedId]);
+  }, [isLoading, pages, activePageId, documentId, setLastSelectedId, baseUrl]);
 
   if (isLoading) {
     return (
@@ -259,11 +286,11 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataCha
 
                     if (isPdf) {
                       // Use combined-pdf endpoint for PDFs
-                      response = await getPreview({ documentId, pageIds: p.id });
+                      response = await getPreview({ documentId, pageIds: p.id }, baseUrl);
                       mimeType = 'application/pdf';
                     } else {
                       // Use images endpoint for all other files - pass pageId and imageId
-                      response = await getImages(p.id, imageId);
+                      response = await getImages(p.id, imageId, undefined, baseUrl);
                       mimeType = getMimeType(ext);
                     }
 

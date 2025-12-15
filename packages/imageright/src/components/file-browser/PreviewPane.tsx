@@ -1,14 +1,29 @@
 import { Stack, Divider, Title, Text, Loader, Center, Group, Tooltip, Button } from '@mantine/core';
 import { IconChecks, IconX } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import DocumentPages from './DocumentPages';
 import EmailPreview from './EmailPreview';
 import SpreadsheetPreview from './SpreadsheetPreview';
 import { useSelectedPages } from '@hooks/useSelectedPages';
 import { usePages } from '@hooks/usePages';
 
+/** Filter pages by allowed extensions */
+const filterPagesByExtension = (pages: any[], allowedExtensions?: string[]): any[] => {
+  if (!allowedExtensions || allowedExtensions.length === 0) {
+    return pages;
+  }
+  const normalizedExtensions = allowedExtensions.map(ext => ext.toLowerCase());
+  return pages.filter((p: any) => {
+    const ext = p?.latestImages?.imageMetadata?.[0]?.extension;
+    if (!ext) return false;
+    return normalizedExtensions.includes(ext.toLowerCase());
+  });
+};
+
 type PreviewPaneProps = {
   expandedDocumentId: string | null | undefined;
+  /** File extensions to filter pages by (e.g., ['pdf', 'jpg']) */
+  allowedExtensions?: string[];
 };
 
 // Helper to determine preview type from extension
@@ -22,7 +37,7 @@ const getPreviewType = (ext: string | null): 'pdf' | 'image' | 'email' | 'spread
   return 'other';
 };
 
-export default function PreviewPane({ expandedDocumentId }: PreviewPaneProps) {
+export default function PreviewPane({ expandedDocumentId, allowedExtensions }: PreviewPaneProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewData, setPreviewData] = useState<ArrayBuffer | null>(null);
   const [previewExtension, setPreviewExtension] = useState<string | null>(null);
@@ -30,13 +45,19 @@ export default function PreviewPane({ expandedDocumentId }: PreviewPaneProps) {
   const [previewLoading, setPreviewLoading] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState<number>(0);
   const { selectMany, selectedPageIds, clearSelected } = useSelectedPages();
-  const { data: pages = [] } = usePages({
+  const { data: rawPages = [] } = usePages({
     documentId: expandedDocumentId ? Number(expandedDocumentId) : 0,
   });
 
+  // Filter pages by allowed extensions (client-side filtering after fetch)
+  const pages = useMemo(
+    () => filterPagesByExtension(rawPages, allowedExtensions),
+    [rawPages, allowedExtensions]
+  );
+
   const previewType = getPreviewType(previewExtension);
 
-  // Check if all pages are selected
+  // Check if all filtered pages are selected
   const allPageIds = Array.isArray(pages) ? pages.map((p: any) => p.id) : [];
   const allSelected =
     allPageIds.length > 0 && allPageIds.every((id) => selectedPageIds.includes(id));
@@ -48,7 +69,7 @@ export default function PreviewPane({ expandedDocumentId }: PreviewPaneProps) {
       // Deselect all
       clearSelected();
     } else {
-      // Select all
+      // Select all filtered pages
       const allPagesWithMetadata = pages.map((p: any) => ({
         id: p.id,
         contentType: p?.latestImages?.imageMetadata?.[0]?.contentType ?? null,
@@ -117,6 +138,7 @@ export default function PreviewPane({ expandedDocumentId }: PreviewPaneProps) {
               onPreviewLoadingChange={(loading) => setPreviewLoading(loading)}
               hideHeader
               onPageCountChange={(n) => setPageCount(n)}
+              allowedExtensions={allowedExtensions}
             />
           ) : (
             <Text c="dimmed" size="sm">

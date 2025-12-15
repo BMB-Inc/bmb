@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { getClients } from "@api/index";
 import { useQueryStates, parseAsString } from "nuqs";
+import { useImageRightConfig } from "../context/ImageRightContext";
 
 export const useClients = () => {
+  const { baseUrl } = useImageRightConfig();
   const [{ clientCode, clientName }] = useQueryStates({
     clientCode: parseAsString,
     clientName: parseAsString,
@@ -26,12 +28,12 @@ export const useClients = () => {
     }
     setLoading(true);
     setError(null);
-    getClients({ ...(code && { clientCode: code }), ...(name && { clientName: name }) })
+    getClients({ ...(code && { clientCode: code }), ...(name && { clientName: name }) }, baseUrl)
       .then((res) => { if (!cancelled) setData(res ?? []); })
       .catch((err: unknown) => { if (!cancelled) setError(err as Error); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [code, name, hasSearchQuery]);
+  }, [code, name, hasSearchQuery, baseUrl]);
 
   return { data, isLoading, error } as const;
 }

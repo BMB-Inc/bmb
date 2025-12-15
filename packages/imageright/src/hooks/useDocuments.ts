@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { getDocumentById, getDocuments } from "@api/index";
 import { type GetDocumentsDto, DocumentTypes } from "@bmb-inc/types";
+import { useImageRightConfig } from "../context/ImageRightContext";
 
 export const useDocuments = (params?: GetDocumentsDto, documentTypes?: DocumentTypes[]) => {
+  const { baseUrl } = useImageRightConfig();
   const [data, setData] = useState<Awaited<ReturnType<typeof getDocuments>> | undefined>(undefined);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -19,7 +21,7 @@ export const useDocuments = (params?: GetDocumentsDto, documentTypes?: DocumentT
     }
     setLoading(true);
     setError(null);
-    getDocuments(params, documentTypes)
+    getDocuments(params, documentTypes, baseUrl)
       .then((res) => {
         if (!cancelled) {
           setData(res);
@@ -34,17 +36,19 @@ export const useDocuments = (params?: GetDocumentsDto, documentTypes?: DocumentT
     return () => {
       cancelled = true;
     };
-  }, [params?.clientId, params?.folderId, params?.description, JSON.stringify(documentTypes ?? null)]);
+  }, [params?.clientId, params?.folderId, params?.description, JSON.stringify(documentTypes ?? null), baseUrl]);
 
   return { data, isLoading, error } as const;
 }
 
 /** Debug hook: Fetch all documents for a client and log unique document types */
 export const useAllDocumentTypes = (clientId?: number) => {
+  const { baseUrl } = useImageRightConfig();
+  
   useEffect(() => {
     if (!clientId) return;
     
-    getDocuments({ clientId })
+    getDocuments({ clientId }, undefined, baseUrl)
       .then((res) => {
         // Extract unique document types
         const typeMap = new Map<number, string>();
@@ -59,10 +63,11 @@ export const useAllDocumentTypes = (clientId?: number) => {
       .catch((err) => {
         console.error('[useAllDocumentTypes] Error fetching documents:', err);
       });
-  }, [clientId]);
+  }, [clientId, baseUrl]);
 }
 
 export const useDocumentById = (id: number) => {
+  const { baseUrl } = useImageRightConfig();
   const [data, setData] = useState<Awaited<ReturnType<typeof getDocumentById>> | undefined>(undefined);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -77,7 +82,7 @@ export const useDocumentById = (id: number) => {
     }
     setLoading(true);
     setError(null);
-    getDocumentById(id)
+    getDocumentById(id, baseUrl)
       .then((res) => {
         if (!cancelled) setData(res);
       })
@@ -90,7 +95,7 @@ export const useDocumentById = (id: number) => {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, baseUrl]);
 
   return { data, isLoading, error } as const;
 }

@@ -1,7 +1,7 @@
 import { fetcher } from "@api/fetcher";
 import { type GetClientsDto } from "@bmb-inc/types";
 
-export const getClients = async (params?: GetClientsDto) => {
+export const getClients = async (params?: GetClientsDto, baseUrl?: string) => {
   if (!params) {
     return [];
   }
@@ -20,6 +20,6 @@ export const getClients = async (params?: GetClientsDto) => {
   const queryString = searchParams.toString();
   const url = queryString ? `/clients?${queryString}` : '/clients';
   
-  const response = await fetcher(url);
+  const response = await fetcher(url, baseUrl);
   return response;
 }
