@@ -1,6 +1,6 @@
 {
   "name": "@bmb-inc/imageright",
-  "version": "0.0.43",
+  "version": "0.0.48",
   "type": "module",
   "files": [
     "dist"
@@ -22,7 +22,9 @@
   "dependencies": {
     "@bmb-inc/types": "workspace:*",
     "eml-parse-js": "^1.2.0-beta.1",
+    "msgreader": "^1.0.1",
     "nuqs": "^2.6.0",
+    "xlsx": "^0.18.5",
     "zod": "^4.1.12"
   },
   "peerDependencies": {
@@ -37,6 +39,8 @@
     "@mantine/core": "^8.2.5",
     "@mantine/hooks": "^8.2.5",
     "@rollup/plugin-alias": "^5.1.1",
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-replace": "^5.0.5",
     "@rollup/plugin-typescript": "^12.1.3",
     "@tanstack/react-query": "^5.89.0",

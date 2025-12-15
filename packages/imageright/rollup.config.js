@@ -2,6 +2,8 @@ import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
 import replace from "@rollup/plugin-replace";
 import alias from '@rollup/plugin-alias';
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
 import path from 'node:path';
 import dotenv from 'dotenv';
 
@@ -67,6 +69,13 @@ export default [
           { find: '@components', replacement: path.resolve(process.cwd(), 'src/components') },
           { find: '@modules', replacement: path.resolve(process.cwd(), 'src/modules') },
         ]
+      }),
+      resolve({
+        browser: true,
+        preferBuiltins: false,
+      }),
+      commonjs({
+        include: /node_modules/,
       }),
       cssModulePlugin(),
       replace({

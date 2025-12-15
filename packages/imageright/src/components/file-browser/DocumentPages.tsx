@@ -50,6 +50,12 @@ const isEmailType = (ext: string | null): boolean => {
   return ['msg', 'eml'].includes(ext.toLowerCase());
 };
 
+// Check if extension is a spreadsheet type that needs client-side parsing
+const isSpreadsheetType = (ext: string | null): boolean => {
+  if (!ext) return false;
+  return ['xls', 'xlsx', 'xlsm', 'xlsb', 'csv'].includes(ext.toLowerCase());
+};
+
 export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataChange, onPreviewUnavailableChange, onPreviewLoadingChange, hideHeader, onPageCountChange }: DocumentPagesProps) {
   const { data: pages = [], isLoading } = usePages({ documentId });
   const {
@@ -135,8 +141,8 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataCha
 
             const buffer = await response.arrayBuffer();
             
-            // For email files, pass raw data instead of blob URL
-            if (isEmailType(ext)) {
+            // For email and spreadsheet files, pass raw data instead of blob URL
+            if (isEmailType(ext) || isSpreadsheetType(ext)) {
               onPreviewDataChange?.(buffer, ext);
               onPreviewUrlChange?.(null, ext);
             } else {
@@ -263,8 +269,8 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataCha
 
                     const buffer = await response.arrayBuffer();
                     
-                    // For email files, pass raw data instead of blob URL
-                    if (isEmailType(ext)) {
+                    // For email and spreadsheet files, pass raw data instead of blob URL
+                    if (isEmailType(ext) || isSpreadsheetType(ext)) {
                       onPreviewDataChange?.(buffer, ext);
                       onPreviewUrlChange?.(null, ext);
                     } else {
