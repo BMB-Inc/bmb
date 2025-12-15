@@ -2,11 +2,13 @@ import { createContext, useCallback, useContext, useMemo, useState, useRef } fro
 
 export type SelectedPage = {
   id: number;
+  imageId: number | null;
   contentType: number | null;
   extension: string | null;
 };
 
 type PageMetadata = {
+  imageId: number | null;
   contentType: number | null;
   extension: string | null;
 };
@@ -19,12 +21,12 @@ type SelectedPagesContextValue = {
   isSelected: (id: number) => boolean;
   toggleSelected: (id: number, metadata?: PageMetadata, value?: boolean) => void;
   clearSelected: () => void;
-  selectMany: (pages: { id: number; contentType?: number | null; extension?: string | null }[]) => void;
+  selectMany: (pages: { id: number; imageId?: number | null; contentType?: number | null; extension?: string | null }[]) => void;
   /** Handle click with modifier keys (shift/ctrl) for multi-select */
   handleSelectWithModifiers: (
     id: number,
     metadata: PageMetadata,
-    visiblePages: { id: number; contentType: number | null; extension: string | null }[],
+    visiblePages: { id: number; imageId: number | null; contentType: number | null; extension: string | null }[],
     event: { shiftKey: boolean; ctrlKey: boolean; metaKey: boolean }
   ) => void;
   /** Set the anchor point for shift-select (called on regular click) */
@@ -45,7 +47,7 @@ export function SelectedPagesProvider({ children }: { children: React.ReactNode 
       const next = new Map(prev);
       const shouldSelect = value ?? !next.has(id);
       if (shouldSelect) {
-        next.set(id, metadata ?? { contentType: null, extension: null });
+        next.set(id, metadata ?? { imageId: null, contentType: null, extension: null });
       } else {
         next.delete(id);
       }
@@ -57,11 +59,11 @@ export function SelectedPagesProvider({ children }: { children: React.ReactNode 
     setSelected(new Map());
   }, []);
 
-  const selectMany = useCallback((pages: { id: number; contentType?: number | null; extension?: string | null }[]) => {
+  const selectMany = useCallback((pages: { id: number; imageId?: number | null; contentType?: number | null; extension?: string | null }[]) => {
     setSelected(prev => {
       const next = new Map(prev);
       for (const page of pages) {
-        next.set(page.id, { contentType: page.contentType ?? null, extension: page.extension ?? null });
+        next.set(page.id, { imageId: page.imageId ?? null, contentType: page.contentType ?? null, extension: page.extension ?? null });
       }
       return next;
     });
@@ -74,7 +76,7 @@ export function SelectedPagesProvider({ children }: { children: React.ReactNode 
   const handleSelectWithModifiers = useCallback((
     id: number,
     metadata: PageMetadata,
-    visiblePages: { id: number; contentType: number | null; extension: string | null }[],
+    visiblePages: { id: number; imageId: number | null; contentType: number | null; extension: string | null }[],
     event: { shiftKey: boolean; ctrlKey: boolean; metaKey: boolean }
   ) => {
     const { shiftKey, ctrlKey, metaKey } = event;
@@ -94,7 +96,7 @@ export function SelectedPagesProvider({ children }: { children: React.ReactNode 
         setSelected(prev => {
           const next = new Map(prev);
           for (const page of rangePages) {
-            next.set(page.id, { contentType: page.contentType, extension: page.extension });
+            next.set(page.id, { imageId: page.imageId, contentType: page.contentType, extension: page.extension });
           }
           return next;
         });
@@ -120,7 +122,7 @@ export function SelectedPagesProvider({ children }: { children: React.ReactNode 
 
   const value = useMemo<SelectedPagesContextValue>(() => ({
     selectedPageIds: Array.from(selected.keys()),
-    selectedPages: Array.from(selected.entries()).map(([id, meta]) => ({ id, contentType: meta.contentType, extension: meta.extension })),
+    selectedPages: Array.from(selected.entries()).map(([id, meta]) => ({ id, imageId: meta.imageId, contentType: meta.contentType, extension: meta.extension })),
     isSelected,
     toggleSelected,
     clearSelected,

@@ -100,7 +100,7 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataCha
   const toggleChecked = useCallback(
     (
       id: number,
-      metadata: { contentType: number | null; extension: string | null },
+      metadata: { imageId: number | null; contentType: number | null; extension: string | null },
       value?: boolean,
     ) => {
       toggleSelected(id, metadata, value);
@@ -221,6 +221,7 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataCha
   // Build array of pages with their metadata for selection tracking
   const allPagesWithMetadata = pages.map((p: any) => ({
     id: p.id,
+    imageId: p?.latestImages?.imageMetadata?.[0]?.id ?? null,
     contentType: p?.latestImages?.imageMetadata?.[0]?.contentType ?? null,
     extension: p?.latestImages?.imageMetadata?.[0]?.extension ?? null,
   }));
@@ -251,9 +252,9 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataCha
         return pages.map((p: any) => {
           const baseLabel = p.description || `Page ${p.pagenumber ?? ''}`;
           const ext = p?.latestImages?.imageMetadata?.[0]?.extension ?? null;
-          const imageId = p?.latestImages?.imageMetadata?.[0]?.id;
+          const imageId = p?.latestImages?.imageMetadata?.[0]?.id ?? null;
           const contentType = p?.latestImages?.imageMetadata?.[0]?.contentType ?? null;
-          const metadata = { contentType, extension: ext };
+          const metadata = { imageId, contentType, extension: ext };
           const label = ext ? `${baseLabel} (${String(ext).toUpperCase()})` : baseLabel;
           return (
             <PageRow

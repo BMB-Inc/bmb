@@ -75,7 +75,6 @@ function App() {
             documentTypes={DOCUMENT_TYPES}
             folderTypes={FOLDER_TYPES}
             defaultViewMode="tree"
-            allowedExtensions={['pdf']}
           />
 
           <Group justify="flex-end">
