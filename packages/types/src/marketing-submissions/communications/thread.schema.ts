@@ -123,3 +123,56 @@ export type MarketingSubmissionsBindThreadSchema = z.infer<
   typeof marketingSubmissionsBindThreadSchema
 >;
 export type MarketingSubmissionsBindThreadDto = z.infer<typeof marketingSubmissionsBindThreadDto>;
+
+/**
+ * Schema for contact options in bound quote data responses
+ */
+export const boundQuoteContactOptionSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  email: z.string().email(),
+  lob: z.array(z.string()),
+});
+
+export type BoundQuoteContactOptionSchema = z.infer<typeof boundQuoteContactOptionSchema>;
+
+/**
+ * Schema for bound quote data response
+ * Extends bind thread schema with carrier and contact information
+ */
+export const boundQuoteDataResponseSchema = marketingSubmissionsBindThreadSchema
+  .pick({
+    premium: true,
+    taxes: true,
+    fees: true,
+    bill: true,
+    line_of_business: true,
+    bound_submission_quote_id: true,
+    minimum_earned_premium: true,
+    bmb_commission_pct: true,
+    producer_commission: true,
+    ae_commission: true,
+    assessments: true,
+    surplus_tax_type: true,
+    is_renewal: true,
+    primary_contact_id: true,
+  })
+  .extend({
+    // Alias for line_of_business
+    coverage: z.string().nullable(),
+    // Carrier information
+    insurer: z.string().nullable(),
+    carrier: z.string().nullable(),
+    carrier_id: z.string().uuid().nullable(),
+    // Contact information
+    contact_name: z.string().nullable(),
+    contact_email: z.string().nullable(),
+    contact_id: z.string().uuid().nullable(),
+    all_contacts: z.array(boundQuoteContactOptionSchema),
+    // Alias for minimum_earned_premium
+    mep: z.number().nullable().optional(),
+    // Alias for surplus_tax_type
+    surplus_lines_type: z.string().nullable(),
+  });
+
+export type BoundQuoteDataResponseSchema = z.infer<typeof boundQuoteDataResponseSchema>;
