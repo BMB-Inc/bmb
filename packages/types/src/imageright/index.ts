@@ -9,3 +9,4 @@ export * from './pages';
 export * from './tasks';
 export * from './combined-documents';
 export * from './emails';
+export * from './workflows';
