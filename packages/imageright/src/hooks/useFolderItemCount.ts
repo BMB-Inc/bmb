@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getFolders, getDocuments } from "@api/index";
 import { FolderTypes, DocumentTypes } from "@bmb-inc/types";
+import { useImageRightConfig } from "../context/ImageRightContext";
 
 type FolderItemCountParams = {
   clientId: number;
@@ -19,6 +20,7 @@ type FolderItemCount = {
  * Hook to fetch the count of folders and documents within a given folder
  */
 export const useFolderItemCount = (params?: FolderItemCountParams) => {
+  const { baseUrl } = useImageRightConfig();
   const [data, setData] = useState<FolderItemCount | undefined>(undefined);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -43,10 +45,11 @@ export const useFolderItemCount = (params?: FolderItemCountParams) => {
         clientId: params.clientId,
         folderId: params.folderId,
         folderTypes: params.folderTypes ?? undefined,
-      }),
+      }, baseUrl),
       getDocuments(
         { clientId: params.clientId, folderId: params.folderId },
-        params.documentTypes
+        params.documentTypes,
+        baseUrl
       ),
     ])
       .then(([folders, documents]) => {
@@ -75,8 +78,8 @@ export const useFolderItemCount = (params?: FolderItemCountParams) => {
     params?.folderId,
     JSON.stringify(params?.folderTypes ?? null),
     JSON.stringify(params?.documentTypes ?? null),
+    baseUrl,
   ]);
 
   return { data, isLoading, error } as const;
 };
-

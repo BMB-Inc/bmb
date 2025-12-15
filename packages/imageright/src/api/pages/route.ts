@@ -1,7 +1,7 @@
 import { fetcher } from "@api/fetcher";
 import { type ImagerightPageParams } from "@bmb-inc/types";
 
-export const getPages = async (params?: ImagerightPageParams) => {
+export const getPages = async (params?: ImagerightPageParams, baseUrl?: string) => {
   if (!params) {
     return [];
   }
@@ -13,6 +13,6 @@ export const getPages = async (params?: ImagerightPageParams) => {
 
   const queryString = searchParams.toString();
   const url = queryString ? `/pages?${queryString}` : '/pages';
-  const response = await fetcher(url);
+  const response = await fetcher(url, baseUrl);
   return response;
 };

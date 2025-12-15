@@ -72,9 +72,11 @@ function App() {
       <Modal opened={opened} onClose={close} title="ImageRight" size="70%">
         <Stack>
           <ImageRightBrowser
-          documentTypes={DOCUMENT_TYPES}
+            documentTypes={DOCUMENT_TYPES}
             folderTypes={FOLDER_TYPES}
-            defaultViewMode="tree" />
+            defaultViewMode="tree"
+            allowedExtensions={['pdf']}
+          />
 
           <Group justify="flex-end">
             <Button variant="default" onClick={close}>

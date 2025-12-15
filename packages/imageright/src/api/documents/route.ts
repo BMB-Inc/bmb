@@ -1,7 +1,7 @@
 import { fetcher } from "@api/fetcher";
 import { DocumentTypes, GetDocumentsDto } from "@bmb-inc/types";
 
-export const getDocuments = async (params?: GetDocumentsDto, documentTypes?: DocumentTypes[]) => {
+export const getDocuments = async (params?: GetDocumentsDto, documentTypes?: DocumentTypes[], baseUrl?: string) => {
   if (!params) {
     return [];
   }
@@ -24,11 +24,11 @@ export const getDocuments = async (params?: GetDocumentsDto, documentTypes?: Doc
   
   const queryString = searchParams.toString();
   const url = queryString ? `/documents?${queryString}` : '/documents';
-  const response = await fetcher(url);
+  const response = await fetcher(url, baseUrl);
   return response;
 }
 
-export const getDocumentById = async (id: number) => {
-  const response = await fetcher(`/documents/${id}`);
+export const getDocumentById = async (id: number, baseUrl?: string) => {
+  const response = await fetcher(`/documents/${id}`, baseUrl);
   return response;
 }

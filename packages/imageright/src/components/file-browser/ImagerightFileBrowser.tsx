@@ -19,7 +19,7 @@ import { useCurrentItems } from './hooks/useCurrentItems';
 import { useFolderLabelFromDocs, useFolderLabelMap } from './hooks/useFolderLabels';
 import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
  
-export const FolderFileBrowser = ({ folderTypes, documentTypes }: { folderTypes?: FolderTypes[], documentTypes?: DocumentTypes[] }) => {  
+export const FolderFileBrowser = ({ folderTypes, documentTypes, allowedExtensions }: { folderTypes?: FolderTypes[], documentTypes?: DocumentTypes[], allowedExtensions?: string[] }) => {  
   // Real data hooks
   const { data: clients = [], isLoading: clientsLoading } = useClients();
   const [documentSearch, setDocumentSearch] = useState('');
@@ -166,6 +166,7 @@ export const FolderFileBrowser = ({ folderTypes, documentTypes }: { folderTypes?
                 navigateIntoFolder={(id, name) => navigateIntoFolder(id.toString(), name)}
                 navigateToDocument={(id) => navigateToDocument(id.toString())}
                 clearDocumentSelection={clearDocumentSelection}
+                allowedExtensions={allowedExtensions}
               />
             )}
           </Stack>

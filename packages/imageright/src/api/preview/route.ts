@@ -1,9 +1,10 @@
-// NOTE: This endpoint must return the raw Response now (for bytes). We intentionally do not use the JSON fetcher here.
-const IMAGERIGHT_API_URL = (import.meta as any).env.VITE_IMAGERIGHT_API_URL;
+import { getBaseUrl } from '../constants';
 
-export const getPreview = async (params: { documentId: number, pageIds: number }) => {
+// NOTE: This endpoint must return the raw Response now (for bytes). We intentionally do not use the JSON fetcher here.
+export const getPreview = async (params: { documentId: number, pageIds: number }, baseUrl?: string) => {
+	const apiUrl = getBaseUrl(baseUrl);
 	const url =
-		`${IMAGERIGHT_API_URL}/combined-pdf?` +
+		`${apiUrl}/combined-pdf?` +
 		new URLSearchParams({
 			documentId: params.documentId.toString(),
 			pageIds: params.pageIds.toString(),

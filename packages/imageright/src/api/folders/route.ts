@@ -6,7 +6,7 @@ type FoldersQueryParams = {
   folderTypes?: string | string[] | null;
 };
 
-export const getFolders = async (params?: FoldersQueryParams) => {
+export const getFolders = async (params?: FoldersQueryParams, baseUrl?: string) => {
   const searchParams = new URLSearchParams();
   if (params?.clientId) {
     searchParams.append('clientId', params.clientId.toString());
@@ -25,6 +25,6 @@ export const getFolders = async (params?: FoldersQueryParams) => {
   
   const queryString = searchParams.toString();
   const url = queryString ? `/folders?${queryString}` : '/folders';
-  const response = await fetcher(url);
+  const response = await fetcher(url, baseUrl);
   return response;
 }

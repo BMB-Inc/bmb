@@ -19,9 +19,11 @@ import { treeStyles } from './styles';
 type FileTreeBrowserProps = {
   folderTypes?: FolderTypes[];
   documentTypes?: DocumentTypes[];
+  /** File extensions to filter pages by (e.g., ['pdf', 'jpg']) */
+  allowedExtensions?: string[];
 };
 
-export function FileTreeBrowser({ folderTypes, documentTypes }: FileTreeBrowserProps) {
+export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions }: FileTreeBrowserProps) {
   const { data: clients = [], isLoading: clientsLoading } = useClients();
   const [documentSearch, setDocumentSearch] = useState('');
   
@@ -257,7 +259,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes }: FileTreeBrowserP
             </ScrollArea>
 
             {/* Preview pane */}
-            <PreviewPane expandedDocumentId={selectedDocumentId?.toString() ?? null} />
+            <PreviewPane expandedDocumentId={selectedDocumentId?.toString() ?? null} allowedExtensions={allowedExtensions} />
           </div>
         )}
       </Stack>

@@ -1,13 +1,14 @@
-const IMAGERIGHT_API_URL = (import.meta as any).env.VITE_IMAGERIGHT_API_URL;
+import { getBaseUrl } from '../constants';
 
-export const getEmailDocument = async (params: { documentId: number; pageId?: number }) => {
+export const getEmailDocument = async (params: { documentId: number; pageId?: number }, baseUrl?: string) => {
+  const apiUrl = getBaseUrl(baseUrl);
   const searchParams = new URLSearchParams();
   searchParams.set('documentId', params.documentId.toString());
   if (typeof params.pageId === 'number') {
     searchParams.set('pageId', params.pageId.toString());
   }
 
-  const response = await fetch(`${IMAGERIGHT_API_URL}/emails?${searchParams.toString()}`);
+  const response = await fetch(`${apiUrl}/emails?${searchParams.toString()}`);
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
