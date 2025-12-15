@@ -138,41 +138,36 @@ export type BoundQuoteContactOptionSchema = z.infer<typeof boundQuoteContactOpti
 
 /**
  * Schema for bound quote data response
- * Extends bind thread schema with carrier and contact information
+ * Returns bound quote data with carrier and contact information for UI display
  */
-export const boundQuoteDataResponseSchema = marketingSubmissionsBindThreadSchema
-  .pick({
-    premium: true,
-    taxes: true,
-    fees: true,
-    bill: true,
-    line_of_business: true,
-    bound_submission_quote_id: true,
-    minimum_earned_premium: true,
-    bmb_commission_pct: true,
-    producer_commission: true,
-    ae_commission: true,
-    assessments: true,
-    surplus_tax_type: true,
-    is_renewal: true,
-    primary_contact_id: true,
-  })
-  .extend({
-    // Alias for line_of_business
-    coverage: z.string().nullable(),
-    // Carrier information
-    insurer: z.string().nullable(),
-    carrier: z.string().nullable(),
-    carrier_id: z.string().uuid().nullable(),
-    // Contact information
-    contact_name: z.string().nullable(),
-    contact_email: z.string().nullable(),
-    contact_id: z.string().uuid().nullable(),
-    all_contacts: z.array(boundQuoteContactOptionSchema),
-    // Alias for minimum_earned_premium
-    mep: z.number().nullable().optional(),
-    // Alias for surplus_tax_type
-    surplus_lines_type: z.string().nullable(),
-  });
+export const boundQuoteDataResponseSchema = z.object({
+  // Carrier information
+  coverage: z.string().nullable(),
+  insurer: z.string().nullable(),
+  carrier: z.string().nullable(),
+  carrier_id: z.string().uuid().nullable(),
+  // Contact information
+  contact_name: z.string().nullable(),
+  contact_email: z.string().nullable(),
+  contact_id: z.string().uuid().nullable(),
+  primary_contact_id: z.string().uuid().nullable().optional(),
+  all_contacts: z.array(boundQuoteContactOptionSchema),
+  // Financial fields
+  premium: z.number().int().nonnegative().nullable().optional(),
+  mep: z.number().int().nonnegative().nullable().optional(),
+  bill: z.number().int().nonnegative().nullable().optional(),
+  taxes: z.number().int().nonnegative().nullable().optional(),
+  fees: z.number().int().nonnegative().nullable().optional(),
+  assessments: z.number().nonnegative().nullable().optional(),
+  // Commission fields
+  bmb_commission_pct: z.number().nonnegative().nullable().optional(),
+  producer_commission: z.number().nonnegative().nullable().optional(),
+  ae_commission: z.number().nonnegative().nullable().optional(),
+  // Classification fields
+  is_renewal: z.boolean().nullable().optional(),
+  surplus_lines_type: z.string().nullable(),
+  line_of_business: z.string().nullable(),
+  bound_submission_quote_id: z.string().uuid().nullable().optional(),
+});
 
 export type BoundQuoteDataResponseSchema = z.infer<typeof boundQuoteDataResponseSchema>;
