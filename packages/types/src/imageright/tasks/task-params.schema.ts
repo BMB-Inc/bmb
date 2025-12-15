@@ -21,7 +21,10 @@ export const ageModelSetSchema = z.object({
   to: z.coerce.number().optional(),
 });
 
-export const flowsStepsBuddiesSchema = z.record(z.array(z.coerce.number()).nonempty());
+export const flowsStepsBuddiesSchema = z.record(
+  z.string(),
+  z.array(z.coerce.number()).nonempty(),
+);
 
 export const taskFilterSchema = z.object({
   tasks: z.array(z.coerce.number().nonnegative()).nonempty().optional(),
