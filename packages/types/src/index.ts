@@ -6,3 +6,4 @@ export * from "./users";
 export * from "./expense-report";
 export * from "./imageright";
 export * from "./apps";
+export * from "./policy-checking";
