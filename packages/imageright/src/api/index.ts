@@ -7,3 +7,6 @@ export * from "./pages/route";
 export * from "./images/route";
 export * from "./emails/route";
 export * from "./preview/route";
+export * from "./tasks/route";
+export * from "./workflows/route";
+export * from "./workflows/steps/route";

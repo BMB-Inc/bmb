@@ -61,7 +61,9 @@
   },
   "packageManager": "yarn@4.9.2",
   "dependencies": {
+    "@mantine/dates": "^8.3.10",
     "@vitejs/plugin-react": "^5.0.0",
+    "dayjs": "^1.11.19",
     "express": "^5.1.0",
     "nuqs": "^2.7.0",
     "react-router-dom": "^7.8.2",

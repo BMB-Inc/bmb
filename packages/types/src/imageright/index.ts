@@ -10,3 +10,4 @@ export * from './tasks';
 export * from './combined-documents';
 export * from './emails';
 export * from './workflows';
+export * from './file-types.enum';

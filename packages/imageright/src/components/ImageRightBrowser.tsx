@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Group, SegmentedControl, Stack } from '@mantine/core';
 import { FolderFileBrowser } from './file-browser/ImagerightFileBrowser'; 
 import { FileTreeBrowser } from './file-tree';
-import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
+import { FolderTypes, DocumentTypes, FileTypes } from '@bmb-inc/types';
 import { ImageRightProvider, DEFAULT_BASE_URL } from '../context/ImageRightContext';
 
 export type ViewMode = 'table' | 'tree';
@@ -21,7 +21,7 @@ export type ImageRightBrowserProps = {
    * When provided, only pages with these extensions will be shown.
    * If not provided or empty, all extensions are shown.
    */
-  allowedExtensions?: string[];
+  allowedExtensions?: FileTypes[];
   /**
    * Base URL for the ImageRight API.
    * Defaults to 'https://staging.bmbinc.com/api/imageright'

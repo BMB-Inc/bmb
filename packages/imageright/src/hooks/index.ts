@@ -8,3 +8,5 @@ export * from './useSelectedPages';
 export * from './useSelectedDocuments';
 export * from './useTreeNavigation';
 export * from './useFolderItemCount';
+export * from './useTasks';
+export * from './useWorkflows';

@@ -1,0 +1,15 @@
+export enum FileTypes {
+  PNG = 'png',
+  JPG = 'jpg',
+  JPEG = 'jpeg',
+  GIF = 'gif',
+  BMP = 'bmp',
+  TIFF = 'tiff',
+  PDF = 'pdf',
+  DOC = 'doc',
+  DOCX = 'docx',
+  XLS = 'xls',
+  XLSX = 'xlsx',
+  MSG = 'msg',
+  EML = 'eml',
+}

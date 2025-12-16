@@ -1,8 +1,7 @@
 import { ImageRightBrowser } from "@components/ImageRightBrowser";
-import { Button, Group, Modal, Stack, Title } from "@mantine/core";
-import { DocumentTypes, FolderTypes } from "@bmb-inc/types";
-import { useDisclosure } from "@mantine/hooks";
-import { useSelectedPages } from "@hooks/useSelectedPages";
+import { Group, Stack, Title } from "@mantine/core";
+import { DocumentTypes, FileTypes, FolderTypes } from "@bmb-inc/types"; 
+import { TaskWorkflowViewer } from "@components/task-workflow";
 
 const FOLDER_TYPES = [
   FolderTypes.policyTerm,
@@ -57,34 +56,24 @@ const DOCUMENT_TYPES = [
   DocumentTypes.newMail,
 ];
 
+const FILE_TYPES = [FileTypes.PDF, FileTypes.JPG, FileTypes.PNG, FileTypes.DOC, FileTypes.DOCX, FileTypes.XLS, FileTypes.XLSX, FileTypes.MSG, FileTypes.EML];
+
 function App() {
-  const [opened, { open, close }] = useDisclosure(false);
-  const { selectedPages } = useSelectedPages();
-
-  console.log(selectedPages);
-
   return (
     <Stack m="lg">
       <Title order={1} ta="center" mb="xl">
         ImageRight
       </Title>
-      <Button onClick={open}>Open Modal</Button>
-      <Modal opened={opened} onClose={close} title="ImageRight" size="70%">
-        <Stack>
-          <ImageRightBrowser
-            documentTypes={DOCUMENT_TYPES}
-            folderTypes={FOLDER_TYPES}
-            defaultViewMode="tree"
-          />
-
-          <Group justify="flex-end">
-            <Button variant="default" onClick={close}>
-              Cancel
-            </Button>
-            <Button variant="filled">Use selected</Button>
-          </Group>
-        </Stack>
-      </Modal>
+      <Group justify="center">
+        <TaskWorkflowViewer
+        />
+      <ImageRightBrowser
+        documentTypes={DOCUMENT_TYPES}
+        folderTypes={FOLDER_TYPES}
+        defaultViewMode="tree"
+        allowedExtensions={FILE_TYPES}
+      />
+      </Group>
     </Stack>
   );
 }

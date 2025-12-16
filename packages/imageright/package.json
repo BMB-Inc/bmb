@@ -1,6 +1,6 @@
 {
   "name": "@bmb-inc/imageright",
-  "version": "0.0.50",
+  "version": "0.0.51",
   "type": "module",
   "files": [
     "dist"
@@ -29,14 +29,17 @@
   },
   "peerDependencies": {
     "@mantine/core": "^8.0.0",
+    "@mantine/dates": "^8.0.0",
     "@mantine/hooks": "^8.0.0",
     "@tanstack/react-query": "^5.0.0",
+    "dayjs": "^1.11.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
     "@mantine/core": "^8.2.5",
+    "@mantine/dates": "^8.2.5",
     "@mantine/hooks": "^8.2.5",
     "@rollup/plugin-alias": "^5.1.1",
     "@rollup/plugin-commonjs": "^29.0.0",
@@ -48,6 +51,7 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-basic-ssl": "^2.1.0",
     "@vitejs/plugin-react-swc": "^4.0.1",
+    "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
     "eslint": "^9.35.0",
     "eslint-plugin-react-hooks": "^5.2.0",
