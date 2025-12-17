@@ -24,10 +24,15 @@ export const marketingSubmissionsFileSchema = z.object({
   latest_version: z.int(),
   deleted: z.boolean().default(false),
   file_type: marketingSubmissionsFileTypeSchema.default('submission'),
+  imageright_document_id: z.number().int().nullable(),
 });
 
-export const createMarketingSubmissionsFileSchema =
-  marketingSubmissionsFileSchema.omit({ id: true });
+export const createMarketingSubmissionsFileSchema = marketingSubmissionsFileSchema
+  .omit({ id: true })
+  .extend({
+    imageright_document_id:
+      marketingSubmissionsFileSchema.shape.imageright_document_id.optional(),
+  });
 export const updateMarketingSubmissionsFileSchema =
   createMarketingSubmissionsFileSchema.partial();
 
