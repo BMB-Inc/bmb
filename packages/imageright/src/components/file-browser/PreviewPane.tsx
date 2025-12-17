@@ -1,11 +1,10 @@
 import { Stack, Divider, Title, Text, Loader, Center, Group, Tooltip, Button } from '@mantine/core';
 import { IconChecks, IconX } from '@tabler/icons-react';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import DocumentPages from './DocumentPages';
 import EmailPreview from './EmailPreview';
 import SpreadsheetPreview from './SpreadsheetPreview';
 import { useSelectedPages } from '@hooks/useSelectedPages';
-import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
 import { usePages } from '@hooks/usePages';
 
 /** Filter pages by allowed extensions */
@@ -46,8 +45,7 @@ export default function PreviewPane({ expandedDocumentId, allowedExtensions }: P
   const [previewLoading, setPreviewLoading] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState<number>(0);
   const { selectMany, selectedPageIds, clearSelected } = useSelectedPages();
-  const { isSelected: isDocumentSelected } = useSelectedDocuments();
-  const { data: rawPages = [], isLoading: pagesLoading } = usePages({
+  const { data: rawPages = [] } = usePages({
     documentId: expandedDocumentId ? Number(expandedDocumentId) : 0,
   });
 
@@ -56,32 +54,6 @@ export default function PreviewPane({ expandedDocumentId, allowedExtensions }: P
     () => filterPagesByExtension(rawPages, allowedExtensions),
     [rawPages, allowedExtensions]
   );
-
-  // Auto-select all pages when previewing a selected document
-  useEffect(() => {
-    if (!expandedDocumentId || pagesLoading || !pages || pages.length === 0) {
-      return;
-    }
-
-    const docId = Number(expandedDocumentId);
-    if (!isDocumentSelected(docId)) {
-      return;
-    }
-
-    // Check if all pages are already selected to avoid unnecessary updates
-    const allPageIds = pages.map((p: any) => p.id);
-    const allAlreadySelected = allPageIds.every((id: number) => selectedPageIds.includes(id));
-    
-    if (!allAlreadySelected) {
-      const allPagesWithMetadata = pages.map((p: any) => ({
-        id: p.id,
-        imageId: p?.latestImages?.imageMetadata?.[0]?.id ?? null,
-        contentType: p?.latestImages?.imageMetadata?.[0]?.contentType ?? null,
-        extension: p?.latestImages?.imageMetadata?.[0]?.extension ?? null,
-      }));
-      selectMany(allPagesWithMetadata);
-    }
-  }, [expandedDocumentId, pagesLoading, pages, isDocumentSelected, selectedPageIds, selectMany]);
 
   const previewType = getPreviewType(previewExtension);
 
