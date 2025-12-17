@@ -25,7 +25,22 @@ export const policyCheckRequestSchema = z.object({
   updated_at: z.coerce.date(),
 });
 
-export const policyCheckDocumentSelectionSchema = z.object({
+export const policyCheckImportSchema = z.object({
+  id: z.string().uuid(),
+  policyId: z.string().min(1),
+  clientId: z.number().int(),
+  folderId: z.number().int(),
+  documentId: z.number().int(),
+  pageIds: z.array(z.number().int()).optional(),
+  filename: z.string(),
+  contentType: z.string(),
+  size: z.number().int(),
+  createdAt: z.coerce.date(),
+});
+
+export const createPolicyCheckImportSchema = z.object({
+  clientId: z.number().int(),
+  folderId: z.number().int(),
   documentId: z.number().int(),
   pageIds: z
     .array(z.number().int())
@@ -34,11 +49,10 @@ export const policyCheckDocumentSelectionSchema = z.object({
 });
 
 export const createPolicyCheckRequestSchema = z.object({
-  clientId: z.number().int(),
-  folderId: z.number().int(),
-  documents: z.array(policyCheckDocumentSelectionSchema).min(1),
+  importIds: z.array(z.string().uuid()).min(1),
 });
 
 export type PolicyCheckRequest = z.infer<typeof policyCheckRequestSchema>;
-export type PolicyCheckDocumentSelection = z.infer<typeof policyCheckDocumentSelectionSchema>;
+export type PolicyCheckImport = z.infer<typeof policyCheckImportSchema>;
+export type CreatePolicyCheckImport = z.infer<typeof createPolicyCheckImportSchema>;
 export type CreatePolicyCheckRequest = z.infer<typeof createPolicyCheckRequestSchema>;
