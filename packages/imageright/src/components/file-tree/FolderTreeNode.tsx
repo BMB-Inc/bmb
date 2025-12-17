@@ -5,6 +5,7 @@ import { useFolders } from '@hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
 import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
+import { useSelectAllPagesForDocument } from '@hooks/useSelectAllPagesForDocument';
 import { FolderItemCount } from './FolderItemCount';
 import { treeStyles } from './styles';
 
@@ -21,6 +22,8 @@ type FolderTreeNodeProps = {
   documentSearch?: string;
   selectedDocumentId?: number | null;
   onDocumentSelect?: (documentId: number) => void;
+  /** Document IDs that have already been imported (will be displayed greyed out) */
+  importedDocumentIds?: string[];
 };
 
 export function FolderTreeNode({
@@ -36,6 +39,7 @@ export function FolderTreeNode({
   documentSearch,
   selectedDocumentId,
   onDocumentSelect,
+  importedDocumentIds,
 }: FolderTreeNodeProps) {
   // Only fetch children when expanded
   const { data: rawChildFolders = [], isLoading: foldersLoading } = useFolders(
@@ -78,6 +82,7 @@ export function FolderTreeNode({
     handleSelectWithModifiers,
     setLastSelectedId,
   } = useSelectedDocuments();
+  const { selectAllPagesForDocument } = useSelectAllPagesForDocument();
 
   const isLoading = foldersLoading || documentsLoading;
 
@@ -148,6 +153,7 @@ export function FolderTreeNode({
                   documentSearch={documentSearch}
                   selectedDocumentId={selectedDocumentId}
                   onDocumentSelect={onDocumentSelect}
+                  importedDocumentIds={importedDocumentIds}
                 />
               )})}
 
@@ -157,6 +163,17 @@ export function FolderTreeNode({
                 const docDisplayName = doc.documentTypeDescription && doc.documentTypeDescription !== docName
                   ? `${docName} (${doc.documentTypeDescription})`
                   : docName;
+                const isImported = importedDocumentIds?.includes(String(doc.id)) ?? false;
+                const isSelected = selectedDocumentId === doc.id;
+                
+                // Determine the appropriate style based on imported and selected state
+                const getDocumentStyle = () => {
+                  if (isImported) {
+                    return isSelected ? treeStyles.documentItemImportedSelected : treeStyles.documentItemImported;
+                  }
+                  return isSelected ? treeStyles.documentItemSelected : treeStyles.documentItem;
+                };
+                
                 return (
                 <Group
                   key={doc.id}
@@ -164,9 +181,7 @@ export function FolderTreeNode({
                   py={3}
                   px={6}
                   style={{
-                    ...(selectedDocumentId === doc.id
-                      ? treeStyles.documentItemSelected
-                      : treeStyles.documentItem),
+                    ...getDocumentStyle(),
                     userSelect: 'none',
                   }}
                   onClick={(e) => {
@@ -185,8 +200,12 @@ export function FolderTreeNode({
                     }
                   }}
                   onDoubleClick={() => {
-                    // Double-click - toggle checkbox for multi-select
-                    toggleDocumentSelected(doc.id, !isDocumentSelected(doc.id));
+                    // Double-click - toggle document selection and select all pages when selecting
+                    const willBeSelected = !isDocumentSelected(doc.id);
+                    toggleDocumentSelected(doc.id, willBeSelected);
+                    if (willBeSelected) {
+                      selectAllPagesForDocument(doc.id);
+                    }
                   }}
                 >
                   <Checkbox
@@ -194,8 +213,12 @@ export function FolderTreeNode({
                     checked={isDocumentSelected(doc.id)}
                     onChange={(e) => {
                       e.stopPropagation();
-                      toggleDocumentSelected(doc.id, e.currentTarget.checked);
+                      const isChecked = e.currentTarget.checked;
+                      toggleDocumentSelected(doc.id, isChecked);
                       setLastSelectedId(doc.id);
+                      if (isChecked) {
+                        selectAllPagesForDocument(doc.id);
+                      }
                     }}
                     onClick={(e) => e.stopPropagation()}
                   />
@@ -211,6 +234,11 @@ export function FolderTreeNode({
                   <Text truncate style={{ minWidth: 0, flex: 1 }}>
                     {docDisplayName}
                   </Text>
+                  {isImported && (
+                    <Text c="dimmed" size="xs" fs="italic" style={{ flexShrink: 0 }}>
+                      Imported Already
+                    </Text>
+                  )}
                 </Group>
               )})}
 
@@ -240,6 +268,7 @@ function RecursiveFolderNode({
   documentSearch,
   selectedDocumentId,
   onDocumentSelect,
+  importedDocumentIds,
 }: Omit<FolderTreeNodeProps, 'isExpanded' | 'onToggle'>) {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -257,6 +286,7 @@ function RecursiveFolderNode({
       documentSearch={documentSearch}
       selectedDocumentId={selectedDocumentId}
       onDocumentSelect={onDocumentSelect}
+      importedDocumentIds={importedDocumentIds}
     />
   );
 }

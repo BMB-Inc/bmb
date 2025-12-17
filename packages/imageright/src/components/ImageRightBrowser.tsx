@@ -27,6 +27,11 @@ export type ImageRightBrowserProps = {
    * Defaults to 'https://staging.bmbinc.com/api/imageright'
    */
   baseUrl?: string;
+  /**
+   * Array of document IDs that have already been imported.
+   * Documents with matching IDs will be displayed with greyed-out styling.
+   */
+  importedDocumentIds?: string[];
 };
 
 /**
@@ -40,6 +45,7 @@ export function ImageRightBrowser({
   showViewToggle = true,
   allowedExtensions,
   baseUrl = DEFAULT_BASE_URL,
+  importedDocumentIds,
 }: ImageRightBrowserProps) {
   const [viewMode, setViewMode] = useState<ViewMode>(defaultViewMode);
 
@@ -61,9 +67,9 @@ export function ImageRightBrowser({
         )}
 
         {viewMode === 'table' ? (
-          <FolderFileBrowser folderTypes={folderTypes} documentTypes={documentTypes} allowedExtensions={allowedExtensions} />
+          <FolderFileBrowser folderTypes={folderTypes} documentTypes={documentTypes} allowedExtensions={allowedExtensions} importedDocumentIds={importedDocumentIds} />
         ) : (
-          <FileTreeBrowser folderTypes={folderTypes} documentTypes={documentTypes} allowedExtensions={allowedExtensions} />
+          <FileTreeBrowser folderTypes={folderTypes} documentTypes={documentTypes} allowedExtensions={allowedExtensions} importedDocumentIds={importedDocumentIds} />
         )}
       </Stack>
     </ImageRightProvider>

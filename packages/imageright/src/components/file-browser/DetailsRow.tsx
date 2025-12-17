@@ -1,6 +1,7 @@
-import { Checkbox, Table } from '@mantine/core';
+import { Checkbox, Table, Text } from '@mantine/core';
 import { IconFolder, IconFileText, IconBuilding } from '@tabler/icons-react';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
+import { useSelectAllPagesForDocument } from '@hooks/useSelectAllPagesForDocument';
 import type { BrowserItem } from './types';
 
 type DetailsRowProps = {
@@ -11,15 +12,32 @@ type DetailsRowProps = {
   onDocumentOpen?: (id: number) => void;
   onDocumentClear?: () => void;
   visibleDocumentIds?: number[];
+  /** Document IDs that have already been imported (will be displayed greyed out) */
+  importedDocumentIds?: string[];
 };
 
-export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpen, onDocumentOpen, onDocumentClear, visibleDocumentIds = [] }: DetailsRowProps) {
+export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpen, onDocumentOpen, onDocumentClear, visibleDocumentIds = [], importedDocumentIds }: DetailsRowProps) {
   const { 
     isSelected: isDocumentSelected, 
     toggleSelected: toggleDocumentSelected,
     handleSelectWithModifiers,
     setLastSelectedId,
   } = useSelectedDocuments();
+  const { selectAllPagesForDocument } = useSelectAllPagesForDocument();
+
+  // Check if this document has been imported
+  const isImported = item.kind === 'document' && (importedDocumentIds?.includes(String(item.id)) ?? false);
+
+  // Determine row background color based on state
+  const getRowBackgroundColor = () => {
+    if (item.kind !== 'document') return undefined;
+    
+    const isSelected = selectedDocumentId === item.id;
+    if (isImported) {
+      return isSelected ? 'var(--mantine-color-blue-light)' : 'var(--mantine-color-gray-1)';
+    }
+    return isSelected ? 'var(--mantine-color-blue-light)' : undefined;
+  };
 
   return (
     <Table.Tr
@@ -35,8 +53,12 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
             });
           } else {
             // Regular click - toggle checkbox and set as anchor
-            toggleDocumentSelected(item.id, !isDocumentSelected(item.id));
+            const willBeSelected = !isDocumentSelected(item.id);
+            toggleDocumentSelected(item.id, willBeSelected);
             setLastSelectedId(item.id);
+            if (willBeSelected) {
+              selectAllPagesForDocument(item.id);
+            }
           }
           onDocumentOpen?.(item.id);
           return;
@@ -44,10 +66,21 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
         if (item.kind === 'folder') onFolderOpen(item.id, item.name);
         if (item.kind === 'client') onClientOpen?.(item.id);
       }}
+      onDoubleClick={() => {
+        if (item.kind === 'document') {
+          // Double-click - toggle document selection and select all pages when selecting
+          const willBeSelected = !isDocumentSelected(item.id);
+          toggleDocumentSelected(item.id, willBeSelected);
+          if (willBeSelected) {
+            selectAllPagesForDocument(item.id);
+          }
+        }
+      }}
       style={{
         cursor: item.kind === 'folder' || item.kind === 'client' || item.kind === 'document' ? 'pointer' : 'default',
-        backgroundColor: item.kind === 'document' && selectedDocumentId === item.id ? 'var(--mantine-color-blue-light)' : undefined,
+        backgroundColor: getRowBackgroundColor(),
         userSelect: item.kind === 'document' ? 'none' : undefined,
+        opacity: isImported ? 0.5 : undefined,
       }}
     >
       <Table.Td>
@@ -58,8 +91,12 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
               checked={isDocumentSelected(item.id)}
               onChange={(e) => {
                 e.stopPropagation();
-                toggleDocumentSelected(item.id, e.currentTarget.checked);
+                const isChecked = e.currentTarget.checked;
+                toggleDocumentSelected(item.id, isChecked);
                 setLastSelectedId(item.id);
+                if (isChecked) {
+                  selectAllPagesForDocument(item.id);
+                }
               }}
               onClick={(e) => e.stopPropagation()}
             />
@@ -68,6 +105,11 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
           {item.kind === 'client' && <IconBuilding size={16} color="var(--mantine-color-blue-5)" />}
           {item.kind === 'document' && <IconFileText size={16} color={selectedDocumentId === item.id ? 'var(--mantine-color-blue-9)' : 'var(--mantine-color-blue-7)'} />}
           {item.name}
+          {isImported && (
+            <Text c="dimmed" size="xs" fs="italic" style={{ flexShrink: 0, marginLeft: 'auto' }}>
+              Imported Already
+            </Text>
+          )}
         </div>
       </Table.Td>
       <Table.Td>{item.type}</Table.Td>

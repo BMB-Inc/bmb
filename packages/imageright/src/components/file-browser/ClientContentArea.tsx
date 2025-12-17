@@ -10,6 +10,8 @@ type ClientContentAreaProps = {
   clearDocumentSelection: () => void;
   /** File extensions to filter pages by (e.g., ['pdf', 'jpg']) */
   allowedExtensions?: string[];
+  /** Document IDs that have already been imported (will be displayed greyed out) */
+  importedDocumentIds?: string[];
 };
 
 export default function ClientContentArea({
@@ -19,6 +21,7 @@ export default function ClientContentArea({
   navigateToDocument,
   clearDocumentSelection,
   allowedExtensions,
+  importedDocumentIds,
 }: ClientContentAreaProps) {
   return (
     <div
@@ -38,6 +41,7 @@ export default function ClientContentArea({
           onDocumentOpen={(id) => navigateToDocument(id.toString())}
           selectedDocumentId={expandedDocumentId ? Number(expandedDocumentId) : null}
           onDocumentClear={clearDocumentSelection}
+          importedDocumentIds={importedDocumentIds}
         />
       </div>
       <PreviewPane expandedDocumentId={expandedDocumentId} allowedExtensions={allowedExtensions} />

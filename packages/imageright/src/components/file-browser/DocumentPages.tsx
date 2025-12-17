@@ -88,7 +88,6 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataCha
   const {
     isSelected,
     toggleSelected,
-    clearSelected,
     selectMany,
     handleSelectWithModifiers,
     setLastSelectedId,
@@ -108,8 +107,7 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataCha
     [toggleSelected],
   );
   useEffect(() => {
-    // Clear selected pages when the document changes
-    clearSelected();
+    // Reset preview state when the document changes (but preserve page selections in context)
     // Revoke any existing preview URL on document change
     if (previousUrlRef.current) {
       URL.revokeObjectURL(previousUrlRef.current);
@@ -119,7 +117,7 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataCha
     onPreviewDataChange?.(null, null);
     onPreviewUnavailableChange?.(false);
     setActivePageId(null);
-  }, [documentId, clearSelected]);
+  }, [documentId]);
 
   useEffect(() => {
     return () => {

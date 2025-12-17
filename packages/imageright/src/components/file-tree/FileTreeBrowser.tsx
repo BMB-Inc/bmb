@@ -12,6 +12,7 @@ import { useClients } from '@hooks/index';
 import { useFolders, usePolicyFolders } from '@hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
+import { useSelectAllPagesForDocument } from '@hooks/useSelectAllPagesForDocument';
 import { useTreeNavigation } from '@hooks/useTreeNavigation';
 import { FolderTypes, DocumentTypes, type ImagerightClient } from '@bmb-inc/types';
 import { treeStyles } from './styles';
@@ -21,9 +22,11 @@ type FileTreeBrowserProps = {
   documentTypes?: DocumentTypes[];
   /** File extensions to filter pages by (e.g., ['pdf', 'jpg']) */
   allowedExtensions?: string[];
+  /** Document IDs that have already been imported (will be displayed greyed out) */
+  importedDocumentIds?: string[];
 };
 
-export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions }: FileTreeBrowserProps) {
+export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions, importedDocumentIds }: FileTreeBrowserProps) {
   const { data: clients = [], isLoading: clientsLoading } = useClients();
   const [documentSearch, setDocumentSearch] = useState('');
   
@@ -241,6 +244,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions 
                             documentSearch={documentSearch}
                             selectedDocumentId={selectedDocumentId}
                             onDocumentSelect={handleDocumentSelect}
+                            importedDocumentIds={importedDocumentIds}
                           />
                         )}
                       </div>
@@ -276,6 +280,7 @@ function RootFolderChildren({
   documentSearch,
   selectedDocumentId,
   onDocumentSelect,
+  importedDocumentIds,
 }: {
   clientId: number;
   folderId: number;
@@ -284,6 +289,7 @@ function RootFolderChildren({
   documentSearch?: string;
   selectedDocumentId: number | null;
   onDocumentSelect: (documentId: number) => void;
+  importedDocumentIds?: string[];
 }) {
   const { data: rawChildFolders = [], isLoading: foldersLoading } = useFolders({
     clientId,
@@ -322,6 +328,7 @@ function RootFolderChildren({
     handleSelectWithModifiers,
     setLastSelectedId,
   } = useSelectedDocuments();
+  const { selectAllPagesForDocument } = useSelectAllPagesForDocument();
   const [expandedFolders, setExpandedFolders] = useState<Set<number>>(new Set());
 
   const isLoading = foldersLoading || documentsLoading;
@@ -375,6 +382,7 @@ function RootFolderChildren({
               documentSearch={documentSearch}
               selectedDocumentId={selectedDocumentId}
               onDocumentSelect={onDocumentSelect}
+              importedDocumentIds={importedDocumentIds}
             />
           )})}
 
@@ -384,6 +392,17 @@ function RootFolderChildren({
             const docDisplayName = doc.documentTypeDescription && doc.documentTypeDescription !== docName
               ? `${docName} (${doc.documentTypeDescription})`
               : docName;
+            const isImported = importedDocumentIds?.includes(String(doc.id)) ?? false;
+            const isSelected = selectedDocumentId === doc.id;
+            
+            // Determine the appropriate style based on imported and selected state
+            const getDocumentStyle = () => {
+              if (isImported) {
+                return isSelected ? treeStyles.documentItemImportedSelected : treeStyles.documentItemImported;
+              }
+              return isSelected ? treeStyles.documentItemSelected : treeStyles.documentItem;
+            };
+            
             return (
             <Group
               key={doc.id}
@@ -391,9 +410,7 @@ function RootFolderChildren({
               py={3}
               px={6}
               style={{
-                ...(selectedDocumentId === doc.id
-                  ? treeStyles.documentItemSelected
-                  : treeStyles.documentItem),
+                ...getDocumentStyle(),
                 userSelect: 'none',
               }}
               onClick={(e) => {
@@ -411,21 +428,29 @@ function RootFolderChildren({
                   setLastSelectedId(doc.id);
                 }
               }}
-              onDoubleClick={() => {
-                // Double-click - toggle checkbox for multi-select
-                toggleDocumentSelected(doc.id, !isDocumentSelected(doc.id));
-              }}
+                  onDoubleClick={() => {
+                    // Double-click - toggle document selection and select all pages when selecting
+                    const willBeSelected = !isDocumentSelected(doc.id);
+                    toggleDocumentSelected(doc.id, willBeSelected);
+                    if (willBeSelected) {
+                      selectAllPagesForDocument(doc.id);
+                    }
+                  }}
             >
-              <Checkbox
-                size="xs"
-                checked={isDocumentSelected(doc.id)}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  toggleDocumentSelected(doc.id, e.currentTarget.checked);
-                  setLastSelectedId(doc.id);
-                }}
-                onClick={(e) => e.stopPropagation()}
-              />
+                    <Checkbox
+                        size="xs"
+                        checked={isDocumentSelected(doc.id)}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          const isChecked = e.currentTarget.checked;
+                          toggleDocumentSelected(doc.id, isChecked);
+                          setLastSelectedId(doc.id);
+                          if (isChecked) {
+                            selectAllPagesForDocument(doc.id);
+                          }
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                      />
               <IconFileText
                 size={16}
                 color={
@@ -438,6 +463,11 @@ function RootFolderChildren({
               <Text truncate style={{ minWidth: 0, flex: 1 }}>
                 {docDisplayName}
               </Text>
+              {isImported && (
+                <Text c="dimmed" size="xs" fs="italic" style={{ flexShrink: 0 }}>
+                  Imported Already
+                </Text>
+              )}
             </Group>
           )})}
           

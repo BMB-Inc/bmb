@@ -2,6 +2,7 @@ import { ImageRightBrowser } from "@components/ImageRightBrowser";
 import { Group, Stack, Title } from "@mantine/core";
 import { DocumentTypes, FileTypes, FolderTypes } from "@bmb-inc/types"; 
 import { TaskWorkflowViewer } from "@components/task-workflow";
+import { useSelectedPages } from "./hooks/useSelectedPages";
 
 const FOLDER_TYPES = [
   FolderTypes.policyTerm,
@@ -59,21 +60,20 @@ const DOCUMENT_TYPES = [
 const FILE_TYPES = [FileTypes.PDF, FileTypes.JPG, FileTypes.PNG, FileTypes.DOC, FileTypes.DOCX, FileTypes.XLS, FileTypes.XLSX, FileTypes.MSG, FileTypes.EML];
 
 function App() {
+  const { selectedPages} = useSelectedPages();
+  console.log(selectedPages);
   return (
     <Stack m="lg">
       <Title order={1} ta="center" mb="xl">
         ImageRight
       </Title>
-      <Group justify="center">
-        <TaskWorkflowViewer
-        />
       <ImageRightBrowser
         documentTypes={DOCUMENT_TYPES}
         folderTypes={FOLDER_TYPES}
         defaultViewMode="tree"
         allowedExtensions={FILE_TYPES}
+        importedDocumentIds={['57369342']}
       />
-      </Group>
     </Stack>
   );
 }

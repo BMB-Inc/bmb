@@ -56,6 +56,18 @@ export const treeStyles = {
     backgroundColor: 'var(--mantine-color-blue-light)',
   } as CSSProperties,
 
+  documentItemImported: {
+    ...baseDocumentItem,
+    opacity: 0.5,
+    backgroundColor: 'var(--mantine-color-gray-1)',
+  } as CSSProperties,
+
+  documentItemImportedSelected: {
+    ...baseDocumentItem,
+    opacity: 0.5,
+    backgroundColor: 'var(--mantine-color-blue-light)',
+  } as CSSProperties,
+
   pageItem: {
     ...baseDocumentItem,
     userSelect: 'none' as const,
