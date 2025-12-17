@@ -25,15 +25,20 @@ export const policyCheckRequestSchema = z.object({
   updated_at: z.coerce.date(),
 });
 
-export const createPolicyCheckRequestSchema = z.object({
-  clientId: z.number().int(),
-  folderId: z.number().int(),
-  documentIds: z.array(z.number().int()).min(1),
+export const policyCheckDocumentSelectionSchema = z.object({
+  documentId: z.number().int(),
   pageIds: z
     .array(z.number().int())
     .min(1, { message: 'At least one pageId must be provided when pageIds is supplied.' })
     .optional(),
 });
 
+export const createPolicyCheckRequestSchema = z.object({
+  clientId: z.number().int(),
+  folderId: z.number().int(),
+  documents: z.array(policyCheckDocumentSelectionSchema).min(1),
+});
+
 export type PolicyCheckRequest = z.infer<typeof policyCheckRequestSchema>;
+export type PolicyCheckDocumentSelection = z.infer<typeof policyCheckDocumentSelectionSchema>;
 export type CreatePolicyCheckRequest = z.infer<typeof createPolicyCheckRequestSchema>;
