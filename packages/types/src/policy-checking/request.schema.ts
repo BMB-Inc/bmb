@@ -16,8 +16,8 @@ const requestStatusValues: [PolicyCheckRequestStatus, ...PolicyCheckRequestStatu
 
 export const policyCheckRequestSchema = z.object({
   id: z.uuid(),
-  client_id: z.number().int(),
-  folder_id: z.number().int(),
+  client_id: z.number().int().nullable(),
+  folder_id: z.number().int().nullable(),
   policy_id: z.number().int().nullable(),
   status: z.enum(requestStatusValues),
   created_by_user_id: z.uuid(),
@@ -28,8 +28,8 @@ export const policyCheckRequestSchema = z.object({
 export const policyCheckImportSchema = z.object({
   id: z.string().uuid(),
   policyId: z.number().int(),
-  clientId: z.number().int(),
-  folderId: z.number().int(),
+  clientId: z.number().int().nullable(),
+  folderId: z.number().int().nullable(),
   documentId: z.number().int().nullable(),
   pageIds: z.array(z.number().int()).optional(),
   filename: z.string(),
@@ -49,8 +49,8 @@ export const createPolicyCheckImportSchema = z.object({
 });
 
 export const uploadPolicyCheckDocumentSchema = z.object({
-  clientId: z.number().int(),
-  folderId: z.number().int(),
+  clientId: z.number().int().optional(),
+  folderId: z.number().int().optional(),
   policyId: z.number().int(),
 });
 

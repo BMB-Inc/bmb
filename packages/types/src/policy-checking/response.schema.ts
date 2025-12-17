@@ -43,8 +43,8 @@ export const checkResponseResultSchema = z.object({
 
 export const policyCheckRequestWithDetailsSchema = z.object({
   id: z.string(),
-  clientId: z.number().int(),
-  folderId: z.number().int(),
+  clientId: z.number().int().nullable(),
+  folderId: z.number().int().nullable(),
   policyId: z.number().int().nullable(),
   status: z.enum(['pending', 'sent', 'responded', 'failed']),
   createdByUserId: z.string(),
