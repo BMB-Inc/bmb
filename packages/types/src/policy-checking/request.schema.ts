@@ -29,7 +29,10 @@ export const createPolicyCheckRequestSchema = z.object({
   clientId: z.number().int(),
   folderId: z.number().int(),
   documentIds: z.array(z.number().int()).min(1),
-  pageIds: z.array(z.number().int()).optional(),
+  pageIds: z
+    .array(z.number().int())
+    .min(1, { message: 'At least one pageId must be provided when pageIds is supplied.' })
+    .optional(),
 });
 
 export type PolicyCheckRequest = z.infer<typeof policyCheckRequestSchema>;
