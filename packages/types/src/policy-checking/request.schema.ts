@@ -18,7 +18,7 @@ export const policyCheckRequestSchema = z.object({
   id: z.uuid(),
   client_id: z.number().int(),
   folder_id: z.number().int(),
-  policy_id: z.string().nullable(),
+  policy_id: z.number().int().nullable(),
   status: z.enum(requestStatusValues),
   created_by_user_id: z.uuid(),
   created_at: z.coerce.date(),
@@ -27,7 +27,7 @@ export const policyCheckRequestSchema = z.object({
 
 export const policyCheckImportSchema = z.object({
   id: z.string().uuid(),
-  policyId: z.string().min(1),
+  policyId: z.number().int(),
   clientId: z.number().int(),
   folderId: z.number().int(),
   documentId: z.number().int(),
