@@ -1,5 +1,24 @@
 import z from 'zod/v4';
 
+const comparisonRowSchema = z.object({
+  item: z.string(),
+  newPolicy: z.string().nullable(),
+  discrepancy: z.string().nullable(),
+});
+
+const nestedSectionSchema = z.record(z.string(), z.array(z.string()));
+
+export const policyCheckParsedResultSchema = z.object({
+  textContent: z.string().optional(),
+  policyComparison: z.array(comparisonRowSchema).optional(),
+  coverageComparison: z.array(comparisonRowSchema).optional(),
+  namedInsureds: nestedSectionSchema.optional(),
+  coveredLocations: nestedSectionSchema.optional(),
+  formComparison: nestedSectionSchema.optional(),
+  additionalConsiderations: z.array(z.string()).optional(),
+  receivedAt: z.string().optional(),
+});
+
 export const policyCheckResponseSchema = z.object({
   id: z.uuid(),
   request_id: z.uuid(),
@@ -16,7 +35,7 @@ export const checkResponseResultSchema = z.object({
     .object({
       id: z.string(),
       rawBody: z.string().nullable(),
-      parsedResult: z.record(z.string(), z.unknown()).nullable(),
+      parsedResult: policyCheckParsedResultSchema.nullable(),
       receivedAt: z.coerce.date().nullable(),
     })
     .optional(),
@@ -48,11 +67,13 @@ export const policyCheckRequestWithDetailsSchema = z.object({
   response: z
     .object({
       receivedAt: z.coerce.date().nullable(),
-      parsedResult: z.record(z.string(), z.unknown()).nullable(),
+      parsedResult: policyCheckParsedResultSchema.nullable(),
     })
     .optional(),
 });
 
 export type PolicyCheckResponse = z.infer<typeof policyCheckResponseSchema>;
+export type PolicyCheckParsedResult = z.infer<typeof policyCheckParsedResultSchema>;
+export type PolicyCheckComparisonRow = z.infer<typeof comparisonRowSchema>;
 export type CheckResponseResult = z.infer<typeof checkResponseResultSchema>;
 export type PolicyCheckRequestWithDetails = z.infer<typeof policyCheckRequestWithDetailsSchema>;
