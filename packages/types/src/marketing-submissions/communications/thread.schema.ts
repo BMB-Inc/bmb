@@ -80,6 +80,7 @@ export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadS
     updated_at: true,
   })
   .extend({
+    quote_id: z.string().uuid().optional(),
     line_of_business: lineOfBusinessSchema.nullable().optional(),
     surplus_tax_type: surplusTaxTypeSchema.nullable().optional(),
     surplus_lines: z.boolean().nullable().optional(),
