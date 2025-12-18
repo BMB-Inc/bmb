@@ -23,6 +23,7 @@ export function useSelectAllPagesForDocument() {
       // Add all pages from this document to the selection (accumulates with existing)
       const allPagesWithMetadata = pages.map((p: any) => ({
         id: p.id,
+        documentId,
         imageId: p?.latestImages?.imageMetadata?.[0]?.id ?? null,
         contentType: p?.latestImages?.imageMetadata?.[0]?.contentType ?? null,
         extension: p?.latestImages?.imageMetadata?.[0]?.extension ?? null,

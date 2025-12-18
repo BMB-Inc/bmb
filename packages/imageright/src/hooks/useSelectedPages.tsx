@@ -2,15 +2,23 @@ import { createContext, useCallback, useContext, useMemo, useState, useRef } fro
 
 export type SelectedPage = {
   id: number;
+  documentId: number;
   imageId: number | null;
   contentType: number | null;
   extension: string | null;
 };
 
 type PageMetadata = {
+  documentId: number;
   imageId: number | null;
   contentType: number | null;
   extension: string | null;
+};
+
+/** Pages grouped by document - allows importing pages from different document types together */
+export type SelectedPagesByDocument = {
+  documentId: number;
+  pages: SelectedPage[];
 };
 
 type SelectedPagesContextValue = {
@@ -18,15 +26,19 @@ type SelectedPagesContextValue = {
   selectedPageIds: number[];
   /** Array of selected pages with their content types and extensions */
   selectedPages: SelectedPage[];
+  /** Pages grouped by document - allows importing pages from different document types together */
+  selectedPagesByDocument: SelectedPagesByDocument[];
   isSelected: (id: number) => boolean;
   toggleSelected: (id: number, metadata?: PageMetadata, value?: boolean) => void;
   clearSelected: () => void;
-  selectMany: (pages: { id: number; imageId?: number | null; contentType?: number | null; extension?: string | null }[]) => void;
+  /** Deselect all pages belonging to a specific document */
+  deselectPagesForDocument: (documentId: number) => void;
+  selectMany: (pages: { id: number; documentId: number; imageId?: number | null; contentType?: number | null; extension?: string | null }[]) => void;
   /** Handle click with modifier keys (shift/ctrl) for multi-select */
   handleSelectWithModifiers: (
     id: number,
     metadata: PageMetadata,
-    visiblePages: { id: number; imageId: number | null; contentType: number | null; extension: string | null }[],
+    visiblePages: { id: number; documentId: number; imageId: number | null; contentType: number | null; extension: string | null }[],
     event: { shiftKey: boolean; ctrlKey: boolean; metaKey: boolean }
   ) => void;
   /** Set the anchor point for shift-select (called on regular click) */
@@ -43,11 +55,15 @@ export function SelectedPagesProvider({ children }: { children: React.ReactNode 
   const isSelected = useCallback((id: number) => selected.has(id), [selected]);
 
   const toggleSelected = useCallback((id: number, metadata?: PageMetadata, value?: boolean) => {
+    if (!metadata?.documentId) {
+      console.warn('toggleSelected called without documentId - page selection requires documentId');
+      return;
+    }
     setSelected(prev => {
       const next = new Map(prev);
       const shouldSelect = value ?? !next.has(id);
       if (shouldSelect) {
-        next.set(id, metadata ?? { imageId: null, contentType: null, extension: null });
+        next.set(id, metadata);
       } else {
         next.delete(id);
       }
@@ -59,11 +75,24 @@ export function SelectedPagesProvider({ children }: { children: React.ReactNode 
     setSelected(new Map());
   }, []);
 
-  const selectMany = useCallback((pages: { id: number; imageId?: number | null; contentType?: number | null; extension?: string | null }[]) => {
+  const deselectPagesForDocument = useCallback((documentId: number) => {
+    setSelected(prev => {
+      const next = new Map(prev);
+      // Remove all pages that belong to this document
+      for (const [pageId, meta] of prev.entries()) {
+        if (meta.documentId === documentId) {
+          next.delete(pageId);
+        }
+      }
+      return next;
+    });
+  }, []);
+
+  const selectMany = useCallback((pages: { id: number; documentId: number; imageId?: number | null; contentType?: number | null; extension?: string | null }[]) => {
     setSelected(prev => {
       const next = new Map(prev);
       for (const page of pages) {
-        next.set(page.id, { imageId: page.imageId ?? null, contentType: page.contentType ?? null, extension: page.extension ?? null });
+        next.set(page.id, { documentId: page.documentId, imageId: page.imageId ?? null, contentType: page.contentType ?? null, extension: page.extension ?? null });
       }
       return next;
     });
@@ -76,7 +105,7 @@ export function SelectedPagesProvider({ children }: { children: React.ReactNode 
   const handleSelectWithModifiers = useCallback((
     id: number,
     metadata: PageMetadata,
-    visiblePages: { id: number; imageId: number | null; contentType: number | null; extension: string | null }[],
+    visiblePages: { id: number; documentId: number; imageId: number | null; contentType: number | null; extension: string | null }[],
     event: { shiftKey: boolean; ctrlKey: boolean; metaKey: boolean }
   ) => {
     const { shiftKey, ctrlKey, metaKey } = event;
@@ -96,7 +125,7 @@ export function SelectedPagesProvider({ children }: { children: React.ReactNode 
         setSelected(prev => {
           const next = new Map(prev);
           for (const page of rangePages) {
-            next.set(page.id, { imageId: page.imageId, contentType: page.contentType, extension: page.extension });
+            next.set(page.id, { documentId: page.documentId, imageId: page.imageId, contentType: page.contentType, extension: page.extension });
           }
           return next;
         });
@@ -120,16 +149,39 @@ export function SelectedPagesProvider({ children }: { children: React.ReactNode 
     }
   }, []);
 
-  const value = useMemo<SelectedPagesContextValue>(() => ({
-    selectedPageIds: Array.from(selected.keys()),
-    selectedPages: Array.from(selected.entries()).map(([id, meta]) => ({ id, imageId: meta.imageId, contentType: meta.contentType, extension: meta.extension })),
-    isSelected,
-    toggleSelected,
-    clearSelected,
-    selectMany,
-    handleSelectWithModifiers,
-    setLastSelectedId,
-  }), [selected, isSelected, toggleSelected, clearSelected, selectMany, handleSelectWithModifiers, setLastSelectedId]);
+  const value = useMemo<SelectedPagesContextValue>(() => {
+    const allSelectedPages = Array.from(selected.entries()).map(([id, meta]) => ({ 
+      id, 
+      documentId: meta.documentId,
+      imageId: meta.imageId, 
+      contentType: meta.contentType, 
+      extension: meta.extension 
+    }));
+    
+    // Group pages by document for easier import handling
+    const pagesByDocMap = new Map<number, SelectedPage[]>();
+    for (const page of allSelectedPages) {
+      const existing = pagesByDocMap.get(page.documentId) ?? [];
+      existing.push(page);
+      pagesByDocMap.set(page.documentId, existing);
+    }
+    
+    const selectedPagesByDocument: SelectedPagesByDocument[] = Array.from(pagesByDocMap.entries())
+      .map(([documentId, pages]) => ({ documentId, pages }));
+
+    return {
+      selectedPageIds: Array.from(selected.keys()),
+      selectedPages: allSelectedPages,
+      selectedPagesByDocument,
+      isSelected,
+      toggleSelected,
+      clearSelected,
+      deselectPagesForDocument,
+      selectMany,
+      handleSelectWithModifiers,
+      setLastSelectedId,
+    };
+  }, [selected, isSelected, toggleSelected, clearSelected, deselectPagesForDocument, selectMany, handleSelectWithModifiers, setLastSelectedId]);
 
   return (
     <SelectedPagesContext.Provider value={value}>{children}</SelectedPagesContext.Provider>

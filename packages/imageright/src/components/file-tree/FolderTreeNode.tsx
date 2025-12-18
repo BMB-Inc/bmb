@@ -6,6 +6,7 @@ import { useDocuments } from '@hooks/useDocuments';
 import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
 import { useSelectAllPagesForDocument } from '@hooks/useSelectAllPagesForDocument';
+import { useSelectedPages } from '@hooks/useSelectedPages';
 import { FolderItemCount } from './FolderItemCount';
 import { treeStyles } from './styles';
 
@@ -83,6 +84,7 @@ export function FolderTreeNode({
     setLastSelectedId,
   } = useSelectedDocuments();
   const { selectAllPagesForDocument } = useSelectAllPagesForDocument();
+  const { deselectPagesForDocument } = useSelectedPages();
 
   const isLoading = foldersLoading || documentsLoading;
 
@@ -200,11 +202,13 @@ export function FolderTreeNode({
                     }
                   }}
                   onDoubleClick={() => {
-                    // Double-click - toggle document selection and select all pages when selecting
+                    // Double-click - toggle document selection and select/deselect all pages
                     const willBeSelected = !isDocumentSelected(doc.id);
                     toggleDocumentSelected(doc.id, willBeSelected);
                     if (willBeSelected) {
                       selectAllPagesForDocument(doc.id);
+                    } else {
+                      deselectPagesForDocument(doc.id);
                     }
                   }}
                 >
@@ -218,6 +222,8 @@ export function FolderTreeNode({
                       setLastSelectedId(doc.id);
                       if (isChecked) {
                         selectAllPagesForDocument(doc.id);
+                      } else {
+                        deselectPagesForDocument(doc.id);
                       }
                     }}
                     onClick={(e) => e.stopPropagation()}

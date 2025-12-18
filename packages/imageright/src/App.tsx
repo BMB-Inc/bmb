@@ -60,20 +60,19 @@ const DOCUMENT_TYPES = [
 const FILE_TYPES = [FileTypes.PDF, FileTypes.JPG, FileTypes.PNG, FileTypes.DOC, FileTypes.DOCX, FileTypes.XLS, FileTypes.XLSX, FileTypes.MSG, FileTypes.EML];
 
 function App() {
-  const { selectedPages} = useSelectedPages();
-  console.log(selectedPages);
+  const { selectedPages, selectedPagesByDocument } = useSelectedPages();
+  console.log('selectedPages:', selectedPages);
+  console.log('selectedPagesByDocument:', selectedPagesByDocument);
   return (
     <Stack m="lg">
       <Title order={1} ta="center" mb="xl">
         ImageRight
       </Title>
       <ImageRightBrowser
-        documentTypes={DOCUMENT_TYPES}
-        folderTypes={FOLDER_TYPES}
+        // documentTypes={DOCUMENT_TYPES}
+        // folderTypes={FOLDER_TYPES}
         defaultViewMode="tree"
-        allowedExtensions={FILE_TYPES}
-        importedDocumentIds={['57369342']}
-      />
+        />
     </Stack>
   );
 }

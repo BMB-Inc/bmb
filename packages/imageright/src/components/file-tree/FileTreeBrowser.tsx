@@ -8,7 +8,7 @@ import PreviewPane from '../file-browser/PreviewPane';
 import { TreeLoadingSkeleton } from './TreeLoadingSkeleton';
 import { FolderTreeNode } from './FolderTreeNode';
 import { FolderItemCount } from './FolderItemCount';
-import { useClients } from '@hooks/index';
+import { useClients, useSelectedPages } from '@hooks/index';
 import { useFolders, usePolicyFolders } from '@hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
@@ -329,6 +329,7 @@ function RootFolderChildren({
     setLastSelectedId,
   } = useSelectedDocuments();
   const { selectAllPagesForDocument } = useSelectAllPagesForDocument();
+  const { deselectPagesForDocument } = useSelectedPages();
   const [expandedFolders, setExpandedFolders] = useState<Set<number>>(new Set());
 
   const isLoading = foldersLoading || documentsLoading;
@@ -429,11 +430,13 @@ function RootFolderChildren({
                 }
               }}
                   onDoubleClick={() => {
-                    // Double-click - toggle document selection and select all pages when selecting
+                    // Double-click - toggle document selection and select/deselect all pages
                     const willBeSelected = !isDocumentSelected(doc.id);
                     toggleDocumentSelected(doc.id, willBeSelected);
                     if (willBeSelected) {
                       selectAllPagesForDocument(doc.id);
+                    } else {
+                      deselectPagesForDocument(doc.id);
                     }
                   }}
             >
@@ -447,6 +450,8 @@ function RootFolderChildren({
                           setLastSelectedId(doc.id);
                           if (isChecked) {
                             selectAllPagesForDocument(doc.id);
+                          } else {
+                            deselectPagesForDocument(doc.id);
                           }
                         }}
                         onClick={(e) => e.stopPropagation()}
