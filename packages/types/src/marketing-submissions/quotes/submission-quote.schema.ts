@@ -20,11 +20,13 @@ export const marketingSubmissionsQuoteSchema = z.object({
   file_version: z.number().int().positive(),
   imported_by_user: z.uuid(),
   imported_at: z.coerce.date(),
+  deleted: z.boolean().default(false),
 });
 
 export const createMarketingSubmissionsQuoteSchema = marketingSubmissionsQuoteSchema.omit({
   id: true,
   imported_at: true,
+  deleted: true,
 });
 
 export const updateMarketingSubmissionsQuoteSchema = marketingSubmissionsQuoteSchema

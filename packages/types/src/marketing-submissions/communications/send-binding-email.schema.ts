@@ -52,10 +52,6 @@ export const sendBindingEmailSchema = z.object({
     .nonnegative({ message: 'Fees must be zero or a positive number.' })
     .optional(),
   bill: billTypeEnum.nullable().optional(),
-  premium: z.coerce
-    .number({ message: 'Premium is required to send a binding email.' })
-    .nonnegative({ message: 'Premium must be zero or a positive number.' })
-    .min(1),
   is_renewal: z.coerce.boolean().optional(),
   primary_contact_id: z.string().uuid().optional(),
   contact_id: z.string().uuid().optional(),
