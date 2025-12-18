@@ -1,5 +1,9 @@
 import z from 'zod/v4';
 
+import { MarketingSubmissionsBillType } from './thread.schema';
+
+const billTypeEnum = z.nativeEnum(MarketingSubmissionsBillType);
+
 export const sendBindingEmailSchema = z.object({
   quote_id: z.string().uuid({
     message: 'A valid submission quote id is required to send a binding email.',
@@ -47,10 +51,7 @@ export const sendBindingEmailSchema = z.object({
     .number({ message: 'Fees must be a valid number when provided.' })
     .nonnegative({ message: 'Fees must be zero or a positive number.' })
     .optional(),
-  bill: z.coerce
-    .number({ message: 'Bill amount must be a valid number when provided.' })
-    .nonnegative({ message: 'Bill amount must be zero or a positive number.' })
-    .optional(),
+  bill: billTypeEnum.nullable().optional(),
   premium: z.coerce
     .number({ message: 'Premium is required to send a binding email.' })
     .nonnegative({ message: 'Premium must be zero or a positive number.' })

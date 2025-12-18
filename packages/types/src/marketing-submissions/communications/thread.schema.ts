@@ -46,6 +46,18 @@ export type UpdateMarketingSubmissionsThreadSchema = z.infer<
   typeof updateMarketingSubmissionsThreadSchema
 >;
 
+export enum MarketingSubmissionsBillType {
+  DIRECT = 'DIRECT',
+  AGENCY = 'AGENCY',
+}
+
+const billTypeValues: [MarketingSubmissionsBillType, ...MarketingSubmissionsBillType[]] = [
+  MarketingSubmissionsBillType.DIRECT,
+  MarketingSubmissionsBillType.AGENCY,
+];
+
+const billTypeEnum = z.enum(billTypeValues);
+
 export const marketingSubmissionsBindThreadSchema = z.object({
   id: z.uuid(),
   quote_id: z.string().uuid(),
@@ -54,7 +66,7 @@ export const marketingSubmissionsBindThreadSchema = z.object({
   premium: z.number().int().nonnegative().nullable().optional(),
   taxes: z.number().int().nonnegative().nullable().optional(),
   fees: z.number().int().nonnegative().nullable().optional(),
-  bill: z.number().int().nonnegative().nullable().optional(),
+  bill: billTypeEnum.nullable().optional(),
   line_of_business: lineOfBusinessSchema.nullable(),
   declination_reason: z.string().trim().nullable().optional(),
   minimum_earned_premium: z.number().int().nonnegative().nullable().optional(),
