@@ -8,6 +8,10 @@ export const sendBindingEmailSchema = z.object({
   quote_id: z.string().uuid({
     message: 'A valid submission quote id is required to send a binding email.',
   }),
+  premium: z.coerce
+    .number({ message: 'Premium must be a valid number.' })
+    .nonnegative({ message: 'Premium must be zero or a positive number.' })
+    .optional(),
   line_of_business: z.string().trim().min(1).optional(),
   minimum_earned_premium: z.coerce
     .number({ message: 'Minimum earned premium must be a valid number when provided.' })

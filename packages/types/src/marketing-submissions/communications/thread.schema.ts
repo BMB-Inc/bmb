@@ -98,19 +98,6 @@ export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadS
     surplus_lines: z.boolean().nullable().optional(),
   })
   .superRefine((data, ctx) => {
-    if (
-      data.status === MarketingSubmissionsBindingStatus.BOUND ||
-      data.status === MarketingSubmissionsBindingStatus.QUOTED
-    ) {
-      if (typeof data.premium !== 'number') {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['premium'],
-          message: 'Premium is required when binding or quoting a submission.',
-        });
-      }
-    }
-
     if (data.status === MarketingSubmissionsBindingStatus.DECLINED) {
       if (typeof data.declination_reason !== 'string' || data.declination_reason.length === 0) {
         ctx.addIssue({
