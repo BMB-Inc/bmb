@@ -72,6 +72,7 @@ function App() {
         // documentTypes={DOCUMENT_TYPES}
         // folderTypes={FOLDER_TYPES}
         defaultViewMode="tree"
+        allowedExtensions={[FileTypes.PDF, FileTypes.JPG, FileTypes.DOC, FileTypes.DOCX, FileTypes.XLS, FileTypes.XLSX, FileTypes.MSG, FileTypes.EML]}
         />
     </Stack>
   );

@@ -25,6 +25,8 @@ type FolderTreeNodeProps = {
   onDocumentSelect?: (documentId: number) => void;
   /** Document IDs that have already been imported (will be displayed greyed out) */
   importedDocumentIds?: string[];
+  /** File extensions to filter pages by (e.g., ['pdf', 'jpg']) */
+  allowedExtensions?: string[];
 };
 
 export function FolderTreeNode({
@@ -41,6 +43,7 @@ export function FolderTreeNode({
   selectedDocumentId,
   onDocumentSelect,
   importedDocumentIds,
+  allowedExtensions,
 }: FolderTreeNodeProps) {
   // Only fetch children when expanded
   const { data: rawChildFolders = [], isLoading: foldersLoading } = useFolders(
@@ -83,7 +86,7 @@ export function FolderTreeNode({
     handleSelectWithModifiers,
     setLastSelectedId,
   } = useSelectedDocuments();
-  const { selectAllPagesForDocument } = useSelectAllPagesForDocument();
+  const { selectAllPagesForDocument } = useSelectAllPagesForDocument(allowedExtensions);
   const { deselectPagesForDocument } = useSelectedPages();
 
   const isLoading = foldersLoading || documentsLoading;
@@ -156,6 +159,7 @@ export function FolderTreeNode({
                   selectedDocumentId={selectedDocumentId}
                   onDocumentSelect={onDocumentSelect}
                   importedDocumentIds={importedDocumentIds}
+                  allowedExtensions={allowedExtensions}
                 />
               )})}
 
@@ -275,6 +279,7 @@ function RecursiveFolderNode({
   selectedDocumentId,
   onDocumentSelect,
   importedDocumentIds,
+  allowedExtensions,
 }: Omit<FolderTreeNodeProps, 'isExpanded' | 'onToggle'>) {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -293,6 +298,7 @@ function RecursiveFolderNode({
       selectedDocumentId={selectedDocumentId}
       onDocumentSelect={onDocumentSelect}
       importedDocumentIds={importedDocumentIds}
+      allowedExtensions={allowedExtensions}
     />
   );
 }

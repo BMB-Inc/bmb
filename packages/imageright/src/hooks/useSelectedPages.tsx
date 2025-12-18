@@ -55,16 +55,18 @@ export function SelectedPagesProvider({ children }: { children: React.ReactNode 
   const isSelected = useCallback((id: number) => selected.has(id), [selected]);
 
   const toggleSelected = useCallback((id: number, metadata?: PageMetadata, value?: boolean) => {
-    if (!metadata?.documentId) {
-      console.warn('toggleSelected called without documentId - page selection requires documentId');
-      return;
-    }
     setSelected(prev => {
       const next = new Map(prev);
       const shouldSelect = value ?? !next.has(id);
       if (shouldSelect) {
+        // Only require documentId when selecting
+        if (!metadata?.documentId) {
+          console.warn('toggleSelected called without documentId - page selection requires documentId');
+          return prev;
+        }
         next.set(id, metadata);
       } else {
+        // When deselecting, just remove the page
         next.delete(id);
       }
       return next;

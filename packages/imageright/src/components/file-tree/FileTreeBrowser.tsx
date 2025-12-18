@@ -245,6 +245,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
                             selectedDocumentId={selectedDocumentId}
                             onDocumentSelect={handleDocumentSelect}
                             importedDocumentIds={importedDocumentIds}
+                            allowedExtensions={allowedExtensions}
                           />
                         )}
                       </div>
@@ -281,6 +282,7 @@ function RootFolderChildren({
   selectedDocumentId,
   onDocumentSelect,
   importedDocumentIds,
+  allowedExtensions,
 }: {
   clientId: number;
   folderId: number;
@@ -290,6 +292,7 @@ function RootFolderChildren({
   selectedDocumentId: number | null;
   onDocumentSelect: (documentId: number) => void;
   importedDocumentIds?: string[];
+  allowedExtensions?: string[];
 }) {
   const { data: rawChildFolders = [], isLoading: foldersLoading } = useFolders({
     clientId,
@@ -328,7 +331,7 @@ function RootFolderChildren({
     handleSelectWithModifiers,
     setLastSelectedId,
   } = useSelectedDocuments();
-  const { selectAllPagesForDocument } = useSelectAllPagesForDocument();
+  const { selectAllPagesForDocument } = useSelectAllPagesForDocument(allowedExtensions);
   const { deselectPagesForDocument } = useSelectedPages();
   const [expandedFolders, setExpandedFolders] = useState<Set<number>>(new Set());
 
@@ -384,6 +387,7 @@ function RootFolderChildren({
               selectedDocumentId={selectedDocumentId}
               onDocumentSelect={onDocumentSelect}
               importedDocumentIds={importedDocumentIds}
+              allowedExtensions={allowedExtensions}
             />
           )})}
 
