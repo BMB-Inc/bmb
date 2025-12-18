@@ -57,6 +57,7 @@ export const sendBindingEmailSchema = z.object({
     .min(1),
   is_renewal: z.coerce.boolean().optional(),
   primary_contact_id: z.string().uuid().optional(),
+  contact_id: z.string().uuid().optional(),
   body: z.string({ message: 'Binding email body is required.' }).trim().min(1, {
     message: 'Binding email body cannot be empty.',
   }),

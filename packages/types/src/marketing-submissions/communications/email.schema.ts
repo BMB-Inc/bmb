@@ -5,6 +5,12 @@ export enum MarketingSubmissionsEmailDirection {
   OUTBOUND = 'outbound',
 }
 
+export const marketingSubmissionsEmailCategorySchema = z.enum([
+  'SUBMISSION',
+  'RESUBMISSION',
+  'BINDING',
+]);
+
 const marketingSubmissionsEmailBodySchema = z.object({
   contentType: z.string(),
   content: z.string().nullable().optional(),
@@ -30,6 +36,7 @@ export const marketingSubmissionsEmailSchema = z.object({
   received_at: z.coerce.date().nullable().optional(),
   direction: z.enum(emailDirectionValues),
   body: z.string().nullable().optional(),
+  category: marketingSubmissionsEmailCategorySchema.nullable().optional(),
 });
 
 export const submissionInboxSchema = marketingSubmissionsEmailSchema.extend({
@@ -95,4 +102,7 @@ export type CreateMarketingSubmissionsEmailSchema = z.infer<
 >;
 export type UpdateMarketingSubmissionsEmailSchema = z.infer<
   typeof updateMarketingSubmissionsEmailSchema
+>;
+export type MarketingSubmissionsEmailCategory = z.infer<
+  typeof marketingSubmissionsEmailCategorySchema
 >;
