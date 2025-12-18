@@ -48,14 +48,14 @@ export type UpdateMarketingSubmissionsThreadSchema = z.infer<
 
 export const marketingSubmissionsBindThreadSchema = z.object({
   id: z.uuid(),
-  thread_id: z.uuid(),
+  quote_id: z.string().uuid(),
+  thread_id: z.string().uuid().nullable().optional(),
   status: bindingStatusEnum,
   premium: z.number().int().nonnegative().nullable().optional(),
   taxes: z.number().int().nonnegative().nullable().optional(),
   fees: z.number().int().nonnegative().nullable().optional(),
   bill: z.number().int().nonnegative().nullable().optional(),
   line_of_business: lineOfBusinessSchema.nullable(),
-  bound_submission_quote_id: z.string().uuid().nullable().optional(),
   declination_reason: z.string().trim().nullable().optional(),
   minimum_earned_premium: z.number().int().nonnegative().nullable().optional(),
   bmb_commission_pct: z.number().nonnegative().nullable().optional(),
@@ -98,16 +98,6 @@ export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadS
       }
     }
 
-    if (data.status === MarketingSubmissionsBindingStatus.BOUND) {
-      if (typeof data.bound_submission_quote_id !== 'string') {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ['bound_submission_quote_id'],
-          message: 'Bound status requires a submission quote id.',
-        });
-      }
-    }
-
     if (data.status === MarketingSubmissionsBindingStatus.DECLINED) {
       if (typeof data.declination_reason !== 'string' || data.declination_reason.length === 0) {
         ctx.addIssue({
@@ -125,49 +115,9 @@ export type MarketingSubmissionsBindThreadSchema = z.infer<
 export type MarketingSubmissionsBindThreadDto = z.infer<typeof marketingSubmissionsBindThreadDto>;
 
 /**
- * Schema for contact options in bound quote data responses
+ * Schema for the submission-level bound quote data response
+ * Surfaces the persisted thread binding statuses for every thread in the submission
  */
-export const boundQuoteContactOptionSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string(),
-  email: z.string().email(),
-  lob: z.array(z.string()),
-});
-
-export type BoundQuoteContactOptionSchema = z.infer<typeof boundQuoteContactOptionSchema>;
-
-/**
- * Schema for bound quote data response
- * Returns bound quote data with carrier and contact information for UI display
- */
-export const boundQuoteDataResponseSchema = z.object({
-  // Carrier information
-  coverage: z.string().nullable(),
-  insurer: z.string().nullable(),
-  carrier: z.string().nullable(),
-  carrier_id: z.string().uuid().nullable(),
-  // Contact information
-  contact_name: z.string().nullable(),
-  contact_email: z.string().nullable(),
-  contact_id: z.string().uuid().nullable(),
-  primary_contact_id: z.string().uuid().nullable().optional(),
-  all_contacts: z.array(boundQuoteContactOptionSchema),
-  // Financial fields
-  premium: z.number().int().nonnegative().nullable().optional(),
-  mep: z.number().int().nonnegative().nullable().optional(),
-  bill: z.number().int().nonnegative().nullable().optional(),
-  taxes: z.number().int().nonnegative().nullable().optional(),
-  fees: z.number().int().nonnegative().nullable().optional(),
-  assessments: z.number().nonnegative().nullable().optional(),
-  // Commission fields
-  bmb_commission_pct: z.number().nonnegative().nullable().optional(),
-  producer_commission: z.number().nonnegative().nullable().optional(),
-  ae_commission: z.number().nonnegative().nullable().optional(),
-  // Classification fields
-  is_renewal: z.boolean().nullable().optional(),
-  surplus_lines_type: z.string().nullable(),
-  line_of_business: z.string().nullable(),
-  bound_submission_quote_id: z.string().uuid().nullable().optional(),
-});
+export const boundQuoteDataResponseSchema = z.array(marketingSubmissionsBindThreadSchema);
 
 export type BoundQuoteDataResponseSchema = z.infer<typeof boundQuoteDataResponseSchema>;

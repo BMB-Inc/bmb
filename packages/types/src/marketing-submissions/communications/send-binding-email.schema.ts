@@ -1,7 +1,7 @@
 import z from 'zod/v4';
 
 export const sendBindingEmailSchema = z.object({
-  bound_submission_quote_id: z.string().uuid({
+  quote_id: z.string().uuid({
     message: 'A valid submission quote id is required to send a binding email.',
   }),
   line_of_business: z.string().trim().min(1).optional(),
