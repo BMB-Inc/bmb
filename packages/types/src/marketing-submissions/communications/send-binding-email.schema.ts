@@ -1,8 +1,9 @@
 import z from 'zod/v4';
 
-import { MarketingSubmissionsBillType } from './thread.schema';
+import { MarketingSubmissionsBillType, SurplusTaxEnum } from './thread.schema';
 
-const billTypeEnum = z.nativeEnum(MarketingSubmissionsBillType);
+const billTypeEnum = z.enum(MarketingSubmissionsBillType);
+const surplusTaxEnum = z.enum(SurplusTaxEnum);
 
 export const sendBindingEmailSchema = z.object({
   quote_id: z.string().uuid({
@@ -37,7 +38,7 @@ export const sendBindingEmailSchema = z.object({
     .number({ message: 'Assessments must be a valid number when provided.' })
     .nonnegative({ message: 'Assessments must be zero or a positive number.' })
     .optional(),
-  surplus_tax_type: z.string().trim().min(1).optional(),
+  surplus_tax_type: surplusTaxEnum.optional(),
   surplus_lines: z.boolean().optional(),
   surplus_lines_tax: z.coerce
     .number({ message: 'Surplus lines tax must be a valid number when provided.' })
