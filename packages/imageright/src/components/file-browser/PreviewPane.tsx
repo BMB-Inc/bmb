@@ -63,7 +63,7 @@ export default function PreviewPane({ expandedDocumentId, allowedExtensions }: P
     allPageIds.length > 0 && allPageIds.every((id) => selectedPageIds.includes(id));
 
   const handleToggleSelectAll = () => {
-    if (!Array.isArray(pages) || pages.length === 0) return;
+    if (!Array.isArray(pages) || pages.length === 0 || !expandedDocumentId) return;
 
     if (allSelected) {
       // Deselect all
@@ -72,6 +72,7 @@ export default function PreviewPane({ expandedDocumentId, allowedExtensions }: P
       // Select all filtered pages
       const allPagesWithMetadata = pages.map((p: any) => ({
         id: p.id,
+        documentId: Number(expandedDocumentId),
         imageId: p?.latestImages?.imageMetadata?.[0]?.id ?? null,
         contentType: p?.latestImages?.imageMetadata?.[0]?.contentType ?? null,
         extension: p?.latestImages?.imageMetadata?.[0]?.extension ?? null,
