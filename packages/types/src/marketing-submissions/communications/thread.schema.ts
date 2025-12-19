@@ -19,7 +19,11 @@ const bindingStatusValues: [
 
 const bindingStatusEnum = z.enum(bindingStatusValues);
 const lineOfBusinessSchema = z.string().trim().min(1);
-const surplusTaxTypeSchema = z.string().trim().min(1);
+enum SurplusTaxEnum {
+  BMB = 'BMB',
+  BKR = 'BKR',
+}
+const surplusTaxTypeSchema = z.enum(SurplusTaxEnum);
 
 export const marketingSubmissionsThreadSchema = z.object({
   id: z.uuid(),
