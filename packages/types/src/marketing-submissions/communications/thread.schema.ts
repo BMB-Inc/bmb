@@ -19,7 +19,7 @@ const bindingStatusValues: [
 
 const bindingStatusEnum = z.enum(bindingStatusValues);
 const lineOfBusinessSchema = z.string().trim().min(1);
-enum SurplusTaxEnum {
+export enum SurplusTaxEnum {
   BMB = 'BMB',
   BKR = 'BKR',
 }
