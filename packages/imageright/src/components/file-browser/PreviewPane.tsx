@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import DocumentPages from './DocumentPages';
 import EmailPreview from './EmailPreview';
 import SpreadsheetPreview from './SpreadsheetPreview';
+import WordDocPreview from './WordDocPreview';
 import { useSelectedPages } from '@hooks/useSelectedPages';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
 import { usePages } from '@hooks/usePages';
@@ -28,13 +29,15 @@ type PreviewPaneProps = {
 };
 
 // Helper to determine preview type from extension
-const getPreviewType = (ext: string | null): 'pdf' | 'image' | 'email' | 'spreadsheet' | 'other' => {
+const getPreviewType = (ext: string | null): 'pdf' | 'image' | 'email' | 'spreadsheet' | 'word' | 'word-legacy' | 'other' => {
   if (!ext) return 'other';
   const extension = ext.toLowerCase();
   if (extension === 'pdf') return 'pdf';
   if (['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'tif', 'tiff'].includes(extension)) return 'image';
   if (['msg', 'eml'].includes(extension)) return 'email';
   if (['xls', 'xlsx', 'xlsm', 'xlsb', 'csv'].includes(extension)) return 'spreadsheet';
+  if (extension === 'docx') return 'word';
+  if (extension === 'doc') return 'word-legacy';
   return 'other';
 };
 
@@ -184,6 +187,27 @@ export default function PreviewPane({ expandedDocumentId, allowedExtensions }: P
               <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
                 <SpreadsheetPreview data={previewData} extension={previewExtension || 'xlsx'} />
               </div>
+            ) : previewType === 'word' && previewData ? (
+              <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+                <WordDocPreview data={previewData} extension={previewExtension || 'docx'} />
+              </div>
+            ) : previewType === 'word-legacy' && previewUrl ? (
+              <Center style={{ position: 'absolute', inset: 0 }}>
+                <Stack align="center" gap="sm">
+                  <Text c="dimmed" size="sm">
+                    Preview not available for legacy .DOC files.
+                  </Text>
+                  <Text c="dimmed" size="xs">
+                    <a
+                      href={previewUrl}
+                      download
+                      style={{ color: 'var(--mantine-color-blue-6)' }}
+                    >
+                      Download file
+                    </a>
+                  </Text>
+                </Stack>
+              </Center>
             ) : previewUrl ? (
               previewType === 'pdf' ? (
                 <object

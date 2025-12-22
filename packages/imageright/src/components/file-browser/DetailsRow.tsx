@@ -51,15 +51,10 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
               ctrlKey: e.ctrlKey,
               metaKey: e.metaKey,
             });
-          } else {
-            // Regular click - toggle checkbox and set as anchor
-            const willBeSelected = !isDocumentSelected(item.id);
-            toggleDocumentSelected(item.id, willBeSelected);
-            setLastSelectedId(item.id);
-            if (willBeSelected) {
-              selectAllPagesForDocument(item.id);
-            }
           }
+          // Always set anchor for shift+click range selection
+          setLastSelectedId(item.id);
+          // Single click - just preview the document (no selection)
           onDocumentOpen?.(item.id);
           return;
         }
@@ -71,6 +66,7 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
           // Double-click - toggle document selection and select all pages when selecting
           const willBeSelected = !isDocumentSelected(item.id);
           toggleDocumentSelected(item.id, willBeSelected);
+          setLastSelectedId(item.id);
           if (willBeSelected) {
             selectAllPagesForDocument(item.id);
           }
