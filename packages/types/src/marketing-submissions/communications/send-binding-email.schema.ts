@@ -4,6 +4,8 @@ import { MarketingSubmissionsBillType, SurplusTaxEnum } from './thread.schema';
 
 const billTypeEnum = z.enum(MarketingSubmissionsBillType);
 const surplusTaxEnum = z.enum(SurplusTaxEnum);
+const bindingDateSchema = z.coerce.date();
+const policyNumberSchema = z.string().trim().min(1);
 
 export const sendBindingEmailSchema = z.object({
   quote_id: z.string().uuid({
@@ -57,6 +59,9 @@ export const sendBindingEmailSchema = z.object({
     .nonnegative({ message: 'Fees must be zero or a positive number.' })
     .optional(),
   bill: billTypeEnum.nullable().optional(),
+  eff_date: bindingDateSchema.optional(),
+  exp_date: bindingDateSchema.optional(),
+  policy_number: policyNumberSchema.optional(),
   is_renewal: z.coerce.boolean().optional(),
   primary_contact_id: z.string().uuid().optional(),
   contact_id: z.string().uuid().optional(),

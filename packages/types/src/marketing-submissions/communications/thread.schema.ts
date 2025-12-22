@@ -19,6 +19,8 @@ const bindingStatusValues: [
 
 const bindingStatusEnum = z.enum(bindingStatusValues);
 const lineOfBusinessSchema = z.string().trim().min(1);
+const bindingDateSchema = z.coerce.date();
+const policyNumberSchema = z.string().trim().min(1);
 export enum SurplusTaxEnum {
   BMB = 'BMB',
   BKR = 'BKR',
@@ -84,6 +86,9 @@ export const marketingSubmissionsBindThreadSchema = z.object({
   stamp_fee: z.number().nonnegative().nullable().optional(),
   is_renewal: z.boolean().nullable().optional(),
   primary_contact_id: z.string().uuid().nullable().optional(),
+  exp_date: bindingDateSchema.nullable(),
+  eff_date: bindingDateSchema.nullable(),
+  policy_number: policyNumberSchema.nullable(),
   created_at: z.coerce.date(),
   updated_at: z.coerce.date(),
 });
@@ -100,6 +105,9 @@ export const marketingSubmissionsBindThreadDto = marketingSubmissionsBindThreadS
     line_of_business: lineOfBusinessSchema.nullable().optional(),
     surplus_tax_type: surplusTaxTypeSchema.nullable().optional(),
     surplus_lines: z.boolean().nullable().optional(),
+    exp_date: bindingDateSchema.nullable().optional(),
+    eff_date: bindingDateSchema.nullable().optional(),
+    policy_number: policyNumberSchema.nullable().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.status === MarketingSubmissionsBindingStatus.DECLINED) {
