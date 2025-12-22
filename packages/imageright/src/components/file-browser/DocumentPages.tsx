@@ -3,7 +3,7 @@ import { IconChecks } from '@tabler/icons-react';
 import { usePages } from '@hooks/usePages';
 import PageRow from './PageRow';
 import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
-import { useSelectedPages } from '@hooks/index';
+import { useSelectedPages, useSelectedDocuments } from '@hooks/index';
 import { getPreview } from '@api/preview/route';
 import { getImages } from '@api/images/route';
 import { useImageRightConfig } from '../../context/ImageRightContext';
@@ -92,6 +92,7 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataCha
     handleSelectWithModifiers,
     setLastSelectedId,
   } = useSelectedPages();
+  const { toggleSelected: toggleDocumentSelected } = useSelectedDocuments();
   const previousUrlRef = useRef<string | null>(null);
   const [activePageId, setActivePageId] = useState<number | null>(null);
 
@@ -237,7 +238,10 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataCha
                 <ActionIcon
                   size="xs"
                   variant="subtle"
-                  onClick={() => selectMany(allPagesWithMetadata)}
+                  onClick={() => {
+                    selectMany(allPagesWithMetadata);
+                    toggleDocumentSelected(documentId, true);
+                  }}
                   disabled={pages.length === 0}
                 >
                   <IconChecks size={14} />

@@ -11,3 +11,4 @@ export * from './useTreeNavigation';
 export * from './useFolderItemCount';
 export * from './useTasks';
 export * from './useWorkflows';
+export * from './useFilteredDocumentsByExtension';

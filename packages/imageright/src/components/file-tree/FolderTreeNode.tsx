@@ -3,12 +3,14 @@ import { Group, Text, Loader, Checkbox } from '@mantine/core';
 import { IconFolder, IconFolderOpen, IconChevronRight, IconChevronDown, IconFileText } from '@tabler/icons-react';
 import { useFolders } from '@hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
+import { useFilteredDocumentsByExtension } from '@hooks/useFilteredDocumentsByExtension';
 import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
 import { useSelectAllPagesForDocument } from '@hooks/useSelectAllPagesForDocument';
 import { useSelectedPages } from '@hooks/useSelectedPages';
 import { FolderItemCount } from './FolderItemCount';
 import { treeStyles } from './styles';
+import classes from '../../modules/file-tree.module.css';
 
 type FolderTreeNodeProps = {
   clientId: number;
@@ -68,7 +70,7 @@ export function FolderTreeNode({
   }, [rawChildFolders]);
 
   // Sort documents by date modified (newest first)
-  const documents = useMemo(() => {
+  const sortedDocuments = useMemo(() => {
     if (!rawDocuments || rawDocuments.length === 0) return [];
     return [...rawDocuments].sort((a: any, b: any) => {
       const aDate = a.dateLastModified || a.dateCreated ? new Date(a.dateLastModified || a.dateCreated).getTime() : 0;
@@ -76,6 +78,12 @@ export function FolderTreeNode({
       return bDate - aDate;
     });
   }, [rawDocuments]);
+
+  // Filter documents by allowed extensions (only show docs with pages matching extensions)
+  const { filteredDocuments: documents, isFiltering } = useFilteredDocumentsByExtension(
+    sortedDocuments,
+    allowedExtensions
+  );
 
   // Get list of visible document IDs for shift-select range
   const visibleDocumentIds = useMemo(() => documents.map((d: any) => d.id), [documents]);
@@ -89,7 +97,7 @@ export function FolderTreeNode({
   const { selectAllPagesForDocument } = useSelectAllPagesForDocument(allowedExtensions);
   const { deselectPagesForDocument } = useSelectedPages();
 
-  const isLoading = foldersLoading || documentsLoading;
+  const isLoading = foldersLoading || documentsLoading || isFiltering;
 
   return (
     <div>
@@ -98,10 +106,8 @@ export function FolderTreeNode({
         gap="xs"
         py={4}
         px={6}
-        style={{
-          ...(isExpanded ? treeStyles.childItemExpanded : treeStyles.childItem),
-          paddingLeft: depth * 20 + 6,
-        }}
+        className={classes.folderRow}
+        style={{ paddingLeft: depth * 20 + 6 }}
         onClick={onToggle}
       >
         {isExpanded ? (
@@ -122,6 +128,7 @@ export function FolderTreeNode({
           folderId={folderId}
           folderTypes={folderTypes}
           documentTypes={documentTypes}
+          allowedExtensions={allowedExtensions}
         />
       </Group>
 
@@ -226,6 +233,8 @@ export function FolderTreeNode({
                       setLastSelectedId(doc.id);
                       if (isChecked) {
                         selectAllPagesForDocument(doc.id);
+                        // Also open the document to view its pages
+                        onDocumentSelect?.(doc.id);
                       } else {
                         deselectPagesForDocument(doc.id);
                       }

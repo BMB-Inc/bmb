@@ -8,7 +8,7 @@ import PreviewPane from '../file-browser/PreviewPane';
 import { TreeLoadingSkeleton } from './TreeLoadingSkeleton';
 import { FolderTreeNode } from './FolderTreeNode';
 import { FolderItemCount } from './FolderItemCount';
-import { useClients, useSelectedPages } from '@hooks/index';
+import { useClients, useSelectedPages, useFilteredDocumentsByExtension } from '@hooks/index';
 import { useFolders, usePolicyFolders } from '@hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
@@ -16,6 +16,7 @@ import { useSelectAllPagesForDocument } from '@hooks/useSelectAllPagesForDocumen
 import { useTreeNavigation } from '@hooks/useTreeNavigation';
 import { FolderTypes, DocumentTypes, type ImagerightClient } from '@bmb-inc/types';
 import { treeStyles } from './styles';
+import classes from '../../modules/file-tree.module.css';
 
 type FileTreeBrowserProps = {
   folderTypes?: FolderTypes[];
@@ -207,10 +208,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
                           gap="xs"
                           py={6}
                           px={8}
-                          style={{
-                            ...(isExpanded ? treeStyles.rootExpanded : treeStyles.root),
-                            borderRadius: 'var(--mantine-radius-sm)',
-                          }}
+                          className={classes.folderRow}
                           onClick={() => toggleRootFolder(folder.id)}
                         >
                           {isExpanded ? (
@@ -231,6 +229,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
                             folderId={folder.id}
                             folderTypes={normalizedFolderTypes}
                             documentTypes={normalizedDocumentTypes}
+                            allowedExtensions={allowedExtensions}
                           />
                         </Group>
 
@@ -316,7 +315,7 @@ function RootFolderChildren({
   }, [rawChildFolders]);
 
   // Sort documents by date modified (newest first)
-  const documents = useMemo(() => {
+  const sortedDocuments = useMemo(() => {
     if (!rawDocuments || rawDocuments.length === 0) return [];
     return [...rawDocuments].sort((a: any, b: any) => {
       const aDate = a.dateLastModified || a.dateCreated ? new Date(a.dateLastModified || a.dateCreated).getTime() : 0;
@@ -324,6 +323,12 @@ function RootFolderChildren({
       return bDate - aDate;
     });
   }, [rawDocuments]);
+
+  // Filter documents by allowed extensions (only show docs with pages matching extensions)
+  const { filteredDocuments: documents, isFiltering } = useFilteredDocumentsByExtension(
+    sortedDocuments,
+    allowedExtensions
+  );
 
   const { 
     isSelected: isDocumentSelected, 
@@ -335,7 +340,7 @@ function RootFolderChildren({
   const { deselectPagesForDocument } = useSelectedPages();
   const [expandedFolders, setExpandedFolders] = useState<Set<number>>(new Set());
 
-  const isLoading = foldersLoading || documentsLoading;
+  const isLoading = foldersLoading || documentsLoading || isFiltering;
 
   // Get list of visible document IDs for shift-select range
   const visibleDocumentIds = useMemo(() => documents.map((d: any) => d.id), [documents]);
@@ -454,6 +459,8 @@ function RootFolderChildren({
                           setLastSelectedId(doc.id);
                           if (isChecked) {
                             selectAllPagesForDocument(doc.id);
+                            // Also open the document to view its pages
+                            onDocumentSelect(doc.id);
                           } else {
                             deselectPagesForDocument(doc.id);
                           }

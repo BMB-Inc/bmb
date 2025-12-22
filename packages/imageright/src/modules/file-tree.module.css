@@ -185,3 +185,18 @@
     }
   }
 }
+
+/* Folder row - hover only, no base background */
+.folderRow {
+  cursor: pointer;
+  border-radius: var(--mantine-radius-sm);
+
+  &:hover {
+    @mixin where-light {
+      background-color: var(--mantine-color-gray-1);
+    }
+    @mixin where-dark {
+      background-color: var(--mantine-color-dark-5);
+    }
+  }
+}

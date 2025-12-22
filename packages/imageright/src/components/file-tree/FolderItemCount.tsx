@@ -7,24 +7,29 @@ type FolderItemCountProps = {
   folderId: number;
   folderTypes?: FolderTypes[];
   documentTypes?: DocumentTypes[];
+  /** File extensions to filter documents by (only count docs with pages matching these extensions) */
+  allowedExtensions?: string[];
 };
 
 /**
  * Displays a badge showing the count of items (folders + documents) in a folder.
  * Shows a small loader while fetching, then displays the count.
  * Empty folders show "0" in a dimmed style.
+ * When allowedExtensions is provided, only counts documents with matching pages.
  */
 export function FolderItemCount({
   clientId,
   folderId,
   folderTypes,
   documentTypes,
+  allowedExtensions,
 }: FolderItemCountProps) {
   const { data, isLoading } = useFolderItemCount({
     clientId,
     folderId,
     folderTypes: folderTypes ?? null,
     documentTypes,
+    allowedExtensions,
   });
 
   if (isLoading) {

@@ -5,6 +5,7 @@ import DocumentPages from './DocumentPages';
 import EmailPreview from './EmailPreview';
 import SpreadsheetPreview from './SpreadsheetPreview';
 import { useSelectedPages } from '@hooks/useSelectedPages';
+import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
 import { usePages } from '@hooks/usePages';
 
 /** Filter pages by allowed extensions */
@@ -44,7 +45,8 @@ export default function PreviewPane({ expandedDocumentId, allowedExtensions }: P
   const [previewUnavailable, setPreviewUnavailable] = useState<boolean>(false);
   const [previewLoading, setPreviewLoading] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState<number>(0);
-  const { selectMany, selectedPageIds, clearSelected } = useSelectedPages();
+  const { selectMany, selectedPageIds, deselectPagesForDocument } = useSelectedPages();
+  const { toggleSelected: toggleDocumentSelected } = useSelectedDocuments();
   const { data: rawPages = [] } = usePages({
     documentId: expandedDocumentId ? Number(expandedDocumentId) : 0,
   });
@@ -65,19 +67,23 @@ export default function PreviewPane({ expandedDocumentId, allowedExtensions }: P
   const handleToggleSelectAll = () => {
     if (!Array.isArray(pages) || pages.length === 0 || !expandedDocumentId) return;
 
+    const docId = Number(expandedDocumentId);
+    
     if (allSelected) {
-      // Deselect all
-      clearSelected();
+      // Deselect all pages and document
+      deselectPagesForDocument(docId);
+      toggleDocumentSelected(docId, false);
     } else {
-      // Select all filtered pages
+      // Select all filtered pages and document
       const allPagesWithMetadata = pages.map((p: any) => ({
         id: p.id,
-        documentId: Number(expandedDocumentId),
+        documentId: docId,
         imageId: p?.latestImages?.imageMetadata?.[0]?.id ?? null,
         contentType: p?.latestImages?.imageMetadata?.[0]?.contentType ?? null,
         extension: p?.latestImages?.imageMetadata?.[0]?.extension ?? null,
       }));
       selectMany(allPagesWithMetadata);
+      toggleDocumentSelected(docId, true);
     }
   };
   return (
