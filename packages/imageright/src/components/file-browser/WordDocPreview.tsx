@@ -1,7 +1,7 @@
 import { Stack, Text, ScrollArea, Paper } from '@mantine/core';
 import { IconFileWord } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
-import mammoth from 'mammoth';
+import { useEffect, useState, useMemo } from 'react';
+import * as mammoth from 'mammoth/mammoth.browser';
 
 type WordDocPreviewProps = {
   data: ArrayBuffer;
@@ -13,29 +13,47 @@ export function WordDocPreview({ data, extension }: WordDocPreviewProps) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Create a stable fingerprint of the data for dependency comparison
+  const dataFingerprint = useMemo(() => {
+    const firstBytes = new Uint8Array(data.slice(0, 32));
+    return `${data.byteLength}:${Array.from(firstBytes).join(',')}`;
+  }, [data]);
+
   useEffect(() => {
+    let cancelled = false;
+    
     const convert = async () => {
       setLoading(true);
       setError(null);
 
       try {
         const result = await mammoth.convertToHtml({ arrayBuffer: data });
-        setHtml(result.value);
-        
-        // Log any conversion warnings (optional, for debugging)
-        if (result.messages.length > 0) {
-          console.debug('Mammoth conversion messages:', result.messages);
+        if (!cancelled) {
+          setHtml(result.value);
+          
+          // Log any conversion warnings (optional, for debugging)
+          if (result.messages.length > 0) {
+            console.debug('Mammoth conversion messages:', result.messages);
+          }
         }
       } catch (err) {
-        console.error('Failed to convert Word document:', err);
-        setError(err instanceof Error ? err.message : 'Failed to convert document');
+        if (!cancelled) {
+          console.error('Failed to convert Word document:', err);
+          setError(err instanceof Error ? err.message : 'Failed to convert document');
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
     convert();
-  }, [data, extension]);
+    
+    return () => {
+      cancelled = true;
+    };
+  }, [dataFingerprint, data]);
 
   if (loading) {
     return (

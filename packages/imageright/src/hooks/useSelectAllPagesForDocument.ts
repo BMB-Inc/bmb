@@ -27,7 +27,7 @@ export function useSelectAllPagesForDocument(allowedExtensions?: string[]) {
   const { baseUrl } = useImageRightConfig();
   const { selectMany } = useSelectedPages();
 
-  const selectAllPagesForDocument = useCallback(async (documentId: number) => {
+  const selectAllPagesForDocument = useCallback(async (documentId: number, folderId?: number | null) => {
     try {
       const rawPages = await getPages({ documentId }, baseUrl);
       
@@ -46,6 +46,7 @@ export function useSelectAllPagesForDocument(allowedExtensions?: string[]) {
       const allPagesWithMetadata = pages.map((p: any) => ({
         id: p.id,
         documentId,
+        folderId: folderId ?? null,
         imageId: p?.latestImages?.imageMetadata?.[0]?.id ?? null,
         contentType: p?.latestImages?.imageMetadata?.[0]?.contentType ?? null,
         extension: p?.latestImages?.imageMetadata?.[0]?.extension ?? null,

@@ -12,11 +12,13 @@ type DetailsRowProps = {
   onDocumentOpen?: (id: number) => void;
   onDocumentClear?: () => void;
   visibleDocumentIds?: number[];
+  /** Parent folder ID for tracking which folder the pages belong to */
+  folderId?: number | null;
   /** Document IDs that have already been imported (will be displayed greyed out) */
   importedDocumentIds?: string[];
 };
 
-export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpen, onDocumentOpen, onDocumentClear, visibleDocumentIds = [], importedDocumentIds }: DetailsRowProps) {
+export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpen, onDocumentOpen, onDocumentClear, visibleDocumentIds = [], folderId, importedDocumentIds }: DetailsRowProps) {
   const { 
     isSelected: isDocumentSelected, 
     toggleSelected: toggleDocumentSelected,
@@ -68,7 +70,7 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
           toggleDocumentSelected(item.id, willBeSelected);
           setLastSelectedId(item.id);
           if (willBeSelected) {
-            selectAllPagesForDocument(item.id);
+            selectAllPagesForDocument(item.id, folderId);
           }
         }
       }}
@@ -91,7 +93,7 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
                 toggleDocumentSelected(item.id, isChecked);
                 setLastSelectedId(item.id);
                 if (isChecked) {
-                  selectAllPagesForDocument(item.id);
+                  selectAllPagesForDocument(item.id, folderId);
                 }
               }}
               onClick={(e) => e.stopPropagation()}

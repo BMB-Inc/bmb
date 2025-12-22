@@ -5,6 +5,8 @@ import PreviewPane from './PreviewPane';
 type ClientContentAreaProps = {
   currentItems: import('./types').BrowserItem[];
   expandedDocumentId: string | null | undefined;
+  /** Parent folder ID for tracking which folder the pages belong to */
+  folderId?: number | null;
   navigateIntoFolder: (id: string, name?: string) => void;
   navigateToDocument: (id: string) => void;
   clearDocumentSelection: () => void;
@@ -17,6 +19,7 @@ type ClientContentAreaProps = {
 export default function ClientContentArea({
   currentItems,
   expandedDocumentId,
+  folderId,
   navigateIntoFolder,
   navigateToDocument,
   clearDocumentSelection,
@@ -41,10 +44,11 @@ export default function ClientContentArea({
           onDocumentOpen={(id) => navigateToDocument(id.toString())}
           selectedDocumentId={expandedDocumentId ? Number(expandedDocumentId) : null}
           onDocumentClear={clearDocumentSelection}
+          folderId={folderId}
           importedDocumentIds={importedDocumentIds}
         />
       </div>
-      <PreviewPane expandedDocumentId={expandedDocumentId} allowedExtensions={allowedExtensions} />
+      <PreviewPane expandedDocumentId={expandedDocumentId} folderId={folderId} allowedExtensions={allowedExtensions} />
     </div>
   );
 }

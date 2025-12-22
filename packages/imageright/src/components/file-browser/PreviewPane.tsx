@@ -24,6 +24,8 @@ const filterPagesByExtension = (pages: any[], allowedExtensions?: string[]): any
 
 type PreviewPaneProps = {
   expandedDocumentId: string | null | undefined;
+  /** Parent folder ID for tracking which folder the pages belong to */
+  folderId?: number | null;
   /** File extensions to filter pages by (e.g., ['pdf', 'jpg']) */
   allowedExtensions?: string[];
 };
@@ -41,7 +43,7 @@ const getPreviewType = (ext: string | null): 'pdf' | 'image' | 'email' | 'spread
   return 'other';
 };
 
-export default function PreviewPane({ expandedDocumentId, allowedExtensions }: PreviewPaneProps) {
+export default function PreviewPane({ expandedDocumentId, folderId, allowedExtensions }: PreviewPaneProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewData, setPreviewData] = useState<ArrayBuffer | null>(null);
   const [previewExtension, setPreviewExtension] = useState<string | null>(null);
@@ -81,6 +83,7 @@ export default function PreviewPane({ expandedDocumentId, allowedExtensions }: P
       const allPagesWithMetadata = pages.map((p: any) => ({
         id: p.id,
         documentId: docId,
+        folderId: folderId ?? null,
         imageId: p?.latestImages?.imageMetadata?.[0]?.id ?? null,
         contentType: p?.latestImages?.imageMetadata?.[0]?.contentType ?? null,
         extension: p?.latestImages?.imageMetadata?.[0]?.extension ?? null,
@@ -137,6 +140,7 @@ export default function PreviewPane({ expandedDocumentId, allowedExtensions }: P
           {expandedDocumentId ? (
             <DocumentPages
               documentId={Number(expandedDocumentId)}
+              folderId={folderId}
               onPreviewUrlChange={(url, ext) => {
                 setPreviewUrl(url);
                 setPreviewExtension(ext ?? null);

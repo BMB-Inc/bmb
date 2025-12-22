@@ -35,6 +35,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
   const {
     clientId: selectedClientId,
     documentId: selectedDocumentId,
+    folderId: selectedFolderId,
     expandedFolders: expandedRootFolders,
     navigateToClients,
     navigateToClient,
@@ -99,8 +100,8 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
     navigateToClients();
   };
 
-  const handleDocumentSelect = (docId: number) => {
-    selectDocument(selectedDocumentId === docId ? null : docId);
+  const handleDocumentSelect = (docId: number, parentFolderId: number) => {
+    selectDocument(selectedDocumentId === docId ? null : docId, parentFolderId);
   };
 
   // Client label for breadcrumb
@@ -263,7 +264,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
             </ScrollArea>
 
             {/* Preview pane */}
-            <PreviewPane expandedDocumentId={selectedDocumentId?.toString() ?? null} allowedExtensions={allowedExtensions} />
+            <PreviewPane expandedDocumentId={selectedDocumentId?.toString() ?? null} folderId={selectedFolderId} allowedExtensions={allowedExtensions} />
           </div>
         )}
       </Stack>
@@ -289,7 +290,7 @@ function RootFolderChildren({
   documentTypes?: DocumentTypes[];
   documentSearch?: string;
   selectedDocumentId: number | null;
-  onDocumentSelect: (documentId: number) => void;
+  onDocumentSelect: (documentId: number, folderId: number) => void;
   importedDocumentIds?: string[];
   allowedExtensions?: string[];
 }) {
@@ -434,7 +435,7 @@ function RootFolderChildren({
                   setLastSelectedId(doc.id);
                 } else {
                   // Single click - open preview and highlight
-                  onDocumentSelect(doc.id);
+                  onDocumentSelect(doc.id, folderId);
                   setLastSelectedId(doc.id);
                 }
               }}
@@ -443,10 +444,12 @@ function RootFolderChildren({
                     const willBeSelected = !isDocumentSelected(doc.id);
                     toggleDocumentSelected(doc.id, willBeSelected);
                     if (willBeSelected) {
-                      selectAllPagesForDocument(doc.id);
+                      selectAllPagesForDocument(doc.id, folderId);
                     } else {
                       deselectPagesForDocument(doc.id);
                     }
+                    // Also show the document's pages in preview
+                    onDocumentSelect(doc.id, folderId);
                   }}
             >
                     <Checkbox
@@ -458,9 +461,9 @@ function RootFolderChildren({
                           toggleDocumentSelected(doc.id, isChecked);
                           setLastSelectedId(doc.id);
                           if (isChecked) {
-                            selectAllPagesForDocument(doc.id);
+                            selectAllPagesForDocument(doc.id, folderId);
                             // Also open the document to view its pages
-                            onDocumentSelect(doc.id);
+                            onDocumentSelect(doc.id, folderId);
                           } else {
                             deselectPagesForDocument(doc.id);
                           }

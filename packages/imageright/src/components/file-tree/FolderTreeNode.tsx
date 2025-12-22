@@ -24,7 +24,7 @@ type FolderTreeNodeProps = {
   documentTypes?: DocumentTypes[];
   documentSearch?: string;
   selectedDocumentId?: number | null;
-  onDocumentSelect?: (documentId: number) => void;
+  onDocumentSelect?: (documentId: number, folderId: number) => void;
   /** Document IDs that have already been imported (will be displayed greyed out) */
   importedDocumentIds?: string[];
   /** File extensions to filter pages by (e.g., ['pdf', 'jpg']) */
@@ -208,7 +208,7 @@ export function FolderTreeNode({
                       setLastSelectedId(doc.id);
                     } else {
                       // Single click - open preview and highlight
-                      onDocumentSelect?.(doc.id);
+                      onDocumentSelect?.(doc.id, folderId);
                       setLastSelectedId(doc.id);
                     }
                   }}
@@ -217,10 +217,12 @@ export function FolderTreeNode({
                     const willBeSelected = !isDocumentSelected(doc.id);
                     toggleDocumentSelected(doc.id, willBeSelected);
                     if (willBeSelected) {
-                      selectAllPagesForDocument(doc.id);
+                      selectAllPagesForDocument(doc.id, folderId);
                     } else {
                       deselectPagesForDocument(doc.id);
                     }
+                    // Also show the document's pages in preview
+                    onDocumentSelect?.(doc.id, folderId);
                   }}
                 >
                   <Checkbox
@@ -232,9 +234,9 @@ export function FolderTreeNode({
                       toggleDocumentSelected(doc.id, isChecked);
                       setLastSelectedId(doc.id);
                       if (isChecked) {
-                        selectAllPagesForDocument(doc.id);
+                        selectAllPagesForDocument(doc.id, folderId);
                         // Also open the document to view its pages
-                        onDocumentSelect?.(doc.id);
+                        onDocumentSelect?.(doc.id, folderId);
                       } else {
                         deselectPagesForDocument(doc.id);
                       }

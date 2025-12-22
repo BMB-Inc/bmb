@@ -49,6 +49,8 @@ const getMimeType = (ext: string | null): string => {
 
 type DocumentPagesProps = {
   documentId: number;
+  /** Parent folder ID for tracking which folder the pages belong to */
+  folderId?: number | null;
   onPreviewUrlChange?: (url: string | null, extension?: string | null) => void;
   /** Called with raw data for email files (MSG, EML) that need client-side parsing */
   onPreviewDataChange?: (data: ArrayBuffer | null, extension?: string | null) => void;
@@ -82,7 +84,7 @@ const isWordDocType = (ext: string | null): boolean => {
   return ext.toLowerCase() === 'docx';
 };
 
-export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataChange, onPreviewUnavailableChange, onPreviewLoadingChange, hideHeader, onPageCountChange, allowedExtensions }: DocumentPagesProps) {
+export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPreviewDataChange, onPreviewUnavailableChange, onPreviewLoadingChange, hideHeader, onPageCountChange, allowedExtensions }: DocumentPagesProps) {
   const { baseUrl } = useImageRightConfig();
   const { data: rawPages = [], isLoading } = usePages({ documentId });
 
@@ -227,6 +229,7 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataCha
   const allPagesWithMetadata = pages.map((p: any) => ({
     id: p.id,
     documentId,
+    folderId: folderId ?? null,
     imageId: p?.latestImages?.imageMetadata?.[0]?.id ?? null,
     contentType: p?.latestImages?.imageMetadata?.[0]?.contentType ?? null,
     extension: p?.latestImages?.imageMetadata?.[0]?.extension ?? null,
@@ -263,7 +266,7 @@ export function DocumentPages({ documentId, onPreviewUrlChange, onPreviewDataCha
           const ext = p?.latestImages?.imageMetadata?.[0]?.extension ?? null;
           const imageId = p?.latestImages?.imageMetadata?.[0]?.id ?? null;
           const contentType = p?.latestImages?.imageMetadata?.[0]?.contentType ?? null;
-          const metadata = { documentId, imageId, contentType, extension: ext };
+          const metadata = { documentId, folderId: folderId ?? null, imageId, contentType, extension: ext };
           const label = ext ? `${baseLabel} (${String(ext).toUpperCase()})` : baseLabel;
           return (
             <PageRow

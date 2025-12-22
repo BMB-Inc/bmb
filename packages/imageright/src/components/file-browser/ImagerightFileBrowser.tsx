@@ -163,6 +163,7 @@ export const FolderFileBrowser = ({ folderTypes, documentTypes, allowedExtension
               <ClientContentArea
                 currentItems={currentItems}
                 expandedDocumentId={expandedDocumentId}
+                folderId={expandedFolderId ? Number(expandedFolderId) : null}
                 navigateIntoFolder={(id, name) => navigateIntoFolder(id.toString(), name)}
                 navigateToDocument={(id) => navigateToDocument(id.toString())}
                 clearDocumentSelection={clearDocumentSelection}

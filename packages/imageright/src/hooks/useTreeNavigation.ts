@@ -6,9 +6,10 @@ import { useCallback } from 'react';
  * Simpler than useBrowserNavigation - only stores essential state.
  */
 export function useTreeNavigation() {
-  const [{ clientId, documentId, expanded }, setQs] = useQueryStates({
+  const [{ clientId, documentId, folderId, expanded }, setQs] = useQueryStates({
     clientId: parseAsInteger,
     documentId: parseAsInteger,
+    folderId: parseAsInteger,
     // Store expanded folder IDs as comma-separated string
     expanded: parseAsString,
   });
@@ -28,8 +29,8 @@ export function useTreeNavigation() {
     setQs({ clientId: id, documentId: null, expanded: null }, { history: 'push' });
   }, [setQs]);
 
-  const selectDocument = useCallback((id: number | null) => {
-    setQs({ documentId: id }, { history: 'replace' });
+  const selectDocument = useCallback((id: number | null, parentFolderId?: number | null) => {
+    setQs({ documentId: id, folderId: parentFolderId ?? null }, { history: 'replace' });
   }, [setQs]);
 
   const toggleFolder = useCallback((folderId: number) => {
@@ -60,6 +61,7 @@ export function useTreeNavigation() {
   return {
     clientId,
     documentId,
+    folderId,
     expandedFolders,
     navigateToClients,
     navigateToClient,

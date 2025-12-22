@@ -7,6 +7,9 @@ type Document = {
   [key: string]: any;
 };
 
+// Module-level cache to track which documents have been checked across all hook instances
+const checkedDocsCache = new Map<number, boolean>();
+
 /**
  * Hook that filters documents based on whether they contain pages with allowed extensions.
  * If no allowedExtensions are provided, returns all documents unfiltered.
@@ -20,30 +23,47 @@ export function useFilteredDocumentsByExtension(
   allowedExtensions?: string[]
 ) {
   const { baseUrl } = useImageRightConfig();
-  const [filteredDocIds, setFilteredDocIds] = useState<Set<number>>(new Set());
+  const [filterResults, setFilterResults] = useState<Map<number, boolean>>(new Map());
   const [isFiltering, setIsFiltering] = useState(false);
-  const [checkedDocIds, setCheckedDocIds] = useState<Set<number>>(new Set());
 
-  // Normalize extensions for comparison
-  const normalizedExtensions = useMemo(() => 
-    allowedExtensions?.map(ext => ext.toLowerCase()) ?? [],
+  // Normalize extensions for comparison - create stable string key
+  const extensionsKey = useMemo(() => 
+    (allowedExtensions ?? []).map(ext => ext.toLowerCase()).sort().join(','),
     [allowedExtensions]
+  );
+  
+  const normalizedExtensions = useMemo(() => 
+    extensionsKey ? extensionsKey.split(',') : [],
+    [extensionsKey]
   );
 
   const hasExtensionFilter = normalizedExtensions.length > 0;
 
+  // Stable document IDs string for dependency comparison
+  const documentIdsKey = useMemo(() => 
+    documents.map(d => d.id).sort((a, b) => a - b).join(','),
+    [documents]
+  );
+
   useEffect(() => {
+    // No filtering needed - skip entirely
     if (!hasExtensionFilter || documents.length === 0) {
-      // No filtering needed - all documents pass
-      setFilteredDocIds(new Set(documents.map(d => d.id)));
       setIsFiltering(false);
       return;
     }
 
-    // Find documents we haven't checked yet
-    const uncheckedDocs = documents.filter(d => !checkedDocIds.has(d.id));
+    let cancelled = false;
+
+    // Find documents we haven't checked yet (using module-level cache)
+    const uncheckedDocs = documents.filter(d => !checkedDocsCache.has(d.id));
     
     if (uncheckedDocs.length === 0) {
+      // All documents already checked - just update results from cache
+      const results = new Map<number, boolean>();
+      documents.forEach(d => {
+        results.set(d.id, checkedDocsCache.get(d.id) ?? false);
+      });
+      setFilterResults(results);
       setIsFiltering(false);
       return;
     }
@@ -52,16 +72,15 @@ export function useFilteredDocumentsByExtension(
 
     // Check each unchecked document for pages with allowed extensions
     const checkDocuments = async () => {
-      const newFilteredIds = new Set(filteredDocIds);
-      const newCheckedIds = new Set(checkedDocIds);
+      const newResults: { docId: number; hasAllowed: boolean }[] = [];
 
       await Promise.all(
         uncheckedDocs.map(async (doc) => {
           try {
             const pages = await getPages({ documentId: doc.id }, baseUrl);
-            newCheckedIds.add(doc.id);
 
             if (!pages || !Array.isArray(pages) || pages.length === 0) {
+              newResults.push({ docId: doc.id, hasAllowed: false });
               return;
             }
 
@@ -72,33 +91,46 @@ export function useFilteredDocumentsByExtension(
               return normalizedExtensions.includes(ext.toLowerCase());
             });
 
-            if (hasAllowedPage) {
-              newFilteredIds.add(doc.id);
-            }
+            newResults.push({ docId: doc.id, hasAllowed: hasAllowedPage });
           } catch (error) {
             console.error(`Failed to fetch pages for document ${doc.id}:`, error);
             // On error, include the document (fail open)
-            newCheckedIds.add(doc.id);
-            newFilteredIds.add(doc.id);
+            newResults.push({ docId: doc.id, hasAllowed: true });
           }
         })
       );
 
-      setCheckedDocIds(newCheckedIds);
-      setFilteredDocIds(newFilteredIds);
+      if (cancelled) return;
+
+      // Update module-level cache
+      newResults.forEach(r => {
+        checkedDocsCache.set(r.docId, r.hasAllowed);
+      });
+
+      // Build final results map for this component's documents
+      const finalResults = new Map<number, boolean>();
+      documents.forEach(d => {
+        finalResults.set(d.id, checkedDocsCache.get(d.id) ?? false);
+      });
+
+      setFilterResults(finalResults);
       setIsFiltering(false);
     };
 
     checkDocuments();
-  }, [documents, normalizedExtensions, hasExtensionFilter, baseUrl, checkedDocIds, filteredDocIds]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [documentIdsKey, extensionsKey, hasExtensionFilter, baseUrl, documents, normalizedExtensions]);
 
   // Filter documents based on checked results
   const filteredDocuments = useMemo(() => {
     if (!hasExtensionFilter) {
       return documents;
     }
-    return documents.filter(d => filteredDocIds.has(d.id));
-  }, [documents, filteredDocIds, hasExtensionFilter]);
+    return documents.filter(d => filterResults.get(d.id) === true);
+  }, [documents, filterResults, hasExtensionFilter]);
 
   return {
     filteredDocuments,
@@ -107,4 +139,5 @@ export function useFilteredDocumentsByExtension(
     filteredCount: filteredDocuments.length,
   };
 }
+
 

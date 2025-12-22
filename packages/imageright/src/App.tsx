@@ -72,7 +72,7 @@ function App() {
         // documentTypes={DOCUMENT_TYPES}
         // folderTypes={FOLDER_TYPES}
         defaultViewMode="tree"
-        allowedExtensions={[FileTypes.DOC, FileTypes.DOCX]}
+        // allowedExtensions={[FileTypes.DOC, FileTypes.DOCX]}
         />
     </Stack>
   );

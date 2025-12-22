@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useMemo, useState, useRef } fro
 export type SelectedPage = {
   id: number;
   documentId: number;
+  folderId: number | null;
   imageId: number | null;
   contentType: number | null;
   extension: string | null;
@@ -10,6 +11,7 @@ export type SelectedPage = {
 
 type PageMetadata = {
   documentId: number;
+  folderId: number | null;
   imageId: number | null;
   contentType: number | null;
   extension: string | null;
@@ -18,6 +20,7 @@ type PageMetadata = {
 /** Pages grouped by document - allows importing pages from different document types together */
 export type SelectedPagesByDocument = {
   documentId: number;
+  folderId: number | null;
   pages: SelectedPage[];
 };
 
@@ -33,12 +36,12 @@ type SelectedPagesContextValue = {
   clearSelected: () => void;
   /** Deselect all pages belonging to a specific document */
   deselectPagesForDocument: (documentId: number) => void;
-  selectMany: (pages: { id: number; documentId: number; imageId?: number | null; contentType?: number | null; extension?: string | null }[]) => void;
+  selectMany: (pages: { id: number; documentId: number; folderId?: number | null; imageId?: number | null; contentType?: number | null; extension?: string | null }[]) => void;
   /** Handle click with modifier keys (shift/ctrl) for multi-select */
   handleSelectWithModifiers: (
     id: number,
     metadata: PageMetadata,
-    visiblePages: { id: number; documentId: number; imageId: number | null; contentType: number | null; extension: string | null }[],
+    visiblePages: { id: number; documentId: number; folderId: number | null; imageId: number | null; contentType: number | null; extension: string | null }[],
     event: { shiftKey: boolean; ctrlKey: boolean; metaKey: boolean }
   ) => void;
   /** Set the anchor point for shift-select (called on regular click) */
@@ -90,11 +93,11 @@ export function SelectedPagesProvider({ children }: { children: React.ReactNode 
     });
   }, []);
 
-  const selectMany = useCallback((pages: { id: number; documentId: number; imageId?: number | null; contentType?: number | null; extension?: string | null }[]) => {
+  const selectMany = useCallback((pages: { id: number; documentId: number; folderId?: number | null; imageId?: number | null; contentType?: number | null; extension?: string | null }[]) => {
     setSelected(prev => {
       const next = new Map(prev);
       for (const page of pages) {
-        next.set(page.id, { documentId: page.documentId, imageId: page.imageId ?? null, contentType: page.contentType ?? null, extension: page.extension ?? null });
+        next.set(page.id, { documentId: page.documentId, folderId: page.folderId ?? null, imageId: page.imageId ?? null, contentType: page.contentType ?? null, extension: page.extension ?? null });
       }
       return next;
     });
@@ -107,7 +110,7 @@ export function SelectedPagesProvider({ children }: { children: React.ReactNode 
   const handleSelectWithModifiers = useCallback((
     id: number,
     metadata: PageMetadata,
-    visiblePages: { id: number; documentId: number; imageId: number | null; contentType: number | null; extension: string | null }[],
+    visiblePages: { id: number; documentId: number; folderId: number | null; imageId: number | null; contentType: number | null; extension: string | null }[],
     event: { shiftKey: boolean; ctrlKey: boolean; metaKey: boolean }
   ) => {
     const { shiftKey, ctrlKey, metaKey } = event;
@@ -127,7 +130,7 @@ export function SelectedPagesProvider({ children }: { children: React.ReactNode 
         setSelected(prev => {
           const next = new Map(prev);
           for (const page of rangePages) {
-            next.set(page.id, { documentId: page.documentId, imageId: page.imageId, contentType: page.contentType, extension: page.extension });
+            next.set(page.id, { documentId: page.documentId, folderId: page.folderId, imageId: page.imageId, contentType: page.contentType, extension: page.extension });
           }
           return next;
         });
@@ -155,21 +158,27 @@ export function SelectedPagesProvider({ children }: { children: React.ReactNode 
     const allSelectedPages = Array.from(selected.entries()).map(([id, meta]) => ({ 
       id, 
       documentId: meta.documentId,
+      folderId: meta.folderId,
       imageId: meta.imageId, 
       contentType: meta.contentType, 
       extension: meta.extension 
     }));
     
     // Group pages by document for easier import handling
-    const pagesByDocMap = new Map<number, SelectedPage[]>();
+    // Use a composite key of documentId + folderId to handle same document in different folders
+    const pagesByDocMap = new Map<string, { documentId: number; folderId: number | null; pages: SelectedPage[] }>();
     for (const page of allSelectedPages) {
-      const existing = pagesByDocMap.get(page.documentId) ?? [];
-      existing.push(page);
-      pagesByDocMap.set(page.documentId, existing);
+      const key = `${page.documentId}-${page.folderId ?? 'null'}`;
+      const existing = pagesByDocMap.get(key);
+      if (existing) {
+        existing.pages.push(page);
+      } else {
+        pagesByDocMap.set(key, { documentId: page.documentId, folderId: page.folderId, pages: [page] });
+      }
     }
     
-    const selectedPagesByDocument: SelectedPagesByDocument[] = Array.from(pagesByDocMap.entries())
-      .map(([documentId, pages]) => ({ documentId, pages }));
+    const selectedPagesByDocument: SelectedPagesByDocument[] = Array.from(pagesByDocMap.values())
+      .map(({ documentId, folderId, pages }) => ({ documentId, folderId, pages }));
 
     return {
       selectedPageIds: Array.from(selected.keys()),
