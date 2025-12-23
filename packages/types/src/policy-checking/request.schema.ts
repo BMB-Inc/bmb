@@ -42,7 +42,7 @@ export const policyCheckImportsSchema = z.array(policyCheckImportSchema);
 
 export const importDocumentInputSchema = z.object({
   clientId: z.number().int(),
-  folderId: z.number().int(),
+  policyId: z.number().int(),
   documentId: z.number().int(),
   pageIds: z
     .array(z.number().int())
