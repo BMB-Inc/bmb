@@ -1,4 +1,5 @@
 export * from './attribute.schema';
+export * from './attribute-definitions.schema';
 export * from './clients';
 export * from './compression';
 export * from './documents';
