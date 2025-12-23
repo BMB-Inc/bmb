@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Card, Stack, Center, Text } from '@mantine/core';
 import { ClientSearch } from '../client-search/ClientSearch';
 import { DocumentSearch } from '../document-search/DocumentSearch';
@@ -102,6 +102,13 @@ export const FolderFileBrowser = ({ folderTypes, documentTypes, allowedExtension
   });
 
   const folderLabelMap = useFolderLabelMap(folders);
+
+  // Clear document selection if no folder is selected (document wouldn't be visible)
+  useEffect(() => {
+    if (expandedDocumentId && !currentFolderId) {
+      clearDocumentSelection();
+    }
+  }, [expandedDocumentId, currentFolderId, clearDocumentSelection]);
 
   const breadcrumbItems = (
     <BreadcrumbNav

@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
 import { Card, Stack, Center, Text, Group, Loader, ScrollArea, Checkbox } from '@mantine/core';
 import { IconSearch, IconFolder, IconFolderOpen, IconChevronRight, IconChevronDown, IconFileText } from '@tabler/icons-react';
 import { ClientSearch } from '../client-search/ClientSearch';
@@ -48,6 +48,15 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
   const handleDocumentSearchChange = useCallback((value: string) => {
     setDocumentSearch(value);
   }, []);
+
+  // Clear document selection on initial mount (page reload)
+  // The document won't be visible since sub-folder expansions aren't persisted
+  useEffect(() => {
+    if (selectedDocumentId) {
+      selectDocument(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount
 
   const hasClients = Array.isArray(clients) && clients.length > 0;
 

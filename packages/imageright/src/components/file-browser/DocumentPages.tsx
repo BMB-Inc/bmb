@@ -99,6 +99,7 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
     selectMany,
     handleSelectWithModifiers,
     setLastSelectedId,
+    selectedPages,
   } = useSelectedPages();
   const { toggleSelected: toggleDocumentSelected } = useSelectedDocuments();
   const previousUrlRef = useRef<string | null>(null);
@@ -111,9 +112,26 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
       metadata: { documentId: number; imageId: number | null; contentType: number | null; extension: string | null },
       value?: boolean,
     ) => {
+      const wasSelected = isSelected(id);
       toggleSelected(id, metadata, value);
+      
+      const isSelecting = value === true || (value === undefined && !wasSelected);
+      
+      if (isSelecting) {
+        // Select the document when selecting a page
+        toggleDocumentSelected(metadata.documentId, true);
+      } else {
+        // When deselecting, check if any other pages from this document remain selected
+        // Note: selectedPages still has the old state, so we need to filter out the page being deselected
+        const remainingPagesForDoc = selectedPages.filter(
+          p => p.documentId === metadata.documentId && p.id !== id
+        );
+        if (remainingPagesForDoc.length === 0) {
+          toggleDocumentSelected(metadata.documentId, false);
+        }
+      }
     },
-    [toggleSelected],
+    [toggleSelected, toggleDocumentSelected, isSelected, selectedPages],
   );
   useEffect(() => {
     // Reset preview state when the document changes (but preserve page selections in context)
@@ -280,12 +298,30 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
                 const hasModifier = shiftKey || ctrlKey || metaKey;
 
                 if (hasModifier) {
+                  const wasSelected = isSelected(p.id);
+                  const isCtrlOrCmd = ctrlKey || metaKey;
+                  
                   // Handle multi-selection with modifiers
                   handleSelectWithModifiers(p.id, metadata, allPagesWithMetadata, {
                     shiftKey,
                     ctrlKey,
                     metaKey,
                   });
+                  
+                  // Handle document selection based on modifier behavior
+                  if (isCtrlOrCmd && wasSelected) {
+                    // Ctrl/Cmd+click on selected page = deselect
+                    // Check if any other pages from this document remain selected
+                    const remainingPagesForDoc = selectedPages.filter(
+                      pg => pg.documentId === documentId && pg.id !== p.id
+                    );
+                    if (remainingPagesForDoc.length === 0) {
+                      toggleDocumentSelected(documentId, false);
+                    }
+                  } else {
+                    // Shift+click or Ctrl/Cmd+click on unselected page = select
+                    toggleDocumentSelected(documentId, true);
+                  }
                 } else {
                   // Regular click: set active page and load preview
                   setLastSelectedId(p.id);
