@@ -38,7 +38,7 @@ export const policyCheckImportSchema = z.object({
   createdAt: z.coerce.date(),
 });
 
-export const createPolicyCheckImportSchema = z.object({
+export const policyCheckImportDocumentSchema = z.object({
   clientId: z.number().int(),
   folderId: z.number().int(),
   documentId: z.number().int(),
@@ -46,6 +46,10 @@ export const createPolicyCheckImportSchema = z.object({
     .array(z.number().int())
     .min(1, { message: 'At least one pageId must be provided when pageIds is supplied.' })
     .optional(),
+});
+
+export const createPolicyCheckImportSchema = z.object({
+  documents: z.array(policyCheckImportDocumentSchema).min(1),
 });
 
 export const uploadPolicyCheckDocumentSchema = z.object({
@@ -60,6 +64,7 @@ export const createPolicyCheckRequestSchema = z.object({
 
 export type PolicyCheckRequest = z.infer<typeof policyCheckRequestSchema>;
 export type PolicyCheckImport = z.infer<typeof policyCheckImportSchema>;
+export type PolicyCheckImportDocument = z.infer<typeof policyCheckImportDocumentSchema>;
 export type CreatePolicyCheckImport = z.infer<typeof createPolicyCheckImportSchema>;
 export type CreatePolicyCheckRequest = z.infer<typeof createPolicyCheckRequestSchema>;
 export type UploadPolicyCheckDocument = z.infer<typeof uploadPolicyCheckDocumentSchema>;
