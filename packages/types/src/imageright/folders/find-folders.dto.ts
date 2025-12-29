@@ -3,6 +3,7 @@ import { z } from 'zod/v4';
 const folderAttributeFilterSchema = z.object({
   DisplayName: z.string().optional(),
   Name: z.string().optional(),
+  Value: z.union([z.string(), z.number(), z.boolean()]).optional().nullable(),
   Id: z.coerce.number().optional(),
 });
 
