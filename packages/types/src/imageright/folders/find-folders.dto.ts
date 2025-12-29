@@ -9,7 +9,7 @@ const folderAttributeFilterSchema = z.object({
 export const findFoldersBodyDto = z.object({
   Description: z.string().optional().nullable(),
   IsDeleted: z.boolean().optional(),
-  FileId: z.coerce.number(),
+  FileId: z.coerce.number().optional().nullable(),
   ParentId: z.coerce.number().optional().nullable(),
   FolderTypeIds: z.array(z.coerce.number()).optional(),
   Attributes: z.array(folderAttributeFilterSchema).optional(),
