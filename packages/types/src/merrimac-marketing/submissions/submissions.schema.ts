@@ -1,6 +1,9 @@
 import { z } from "zod/v4";
 import { merrimacMarketingAgentsSchema } from "../agents";
 
+const MIN_MONTH = 1;
+const MAX_MONTH = 12;
+
 export const statusEnum = {
   Inquiry: "Inquiry",
   Incomplete: "Incomplete",
@@ -100,10 +103,37 @@ export const createSubmissionSchema = submissionsSchema.omit({
 
 export const updateSubmissionSchema = createSubmissionSchema.partial();
 
+export const submissionsQuerySchema = z.object({
+  submission_id: z.string().uuid().optional(),
+  agents_id: z.string().uuid().optional(),
+  client_code: z.string().optional(),
+  marketer: z.string().optional(),
+  named_insured: z.string().optional(),
+  producer: z.string().optional(),
+  status: z.enum(statusEnum).optional(),
+  state: z.string().optional(),
+  type_of_risk: z
+    .union([z.array(z.enum(typeOfRiskEnum)), z.enum(typeOfRiskEnum)])
+    .optional(),
+  exp_start: z.coerce.date().optional(),
+  exp_end: z.coerce.date().optional(),
+  eff_start: z.coerce.date().optional(),
+  eff_end: z.coerce.date().optional(),
+  exp_year: z.coerce.number().int().positive().optional(),
+  exp_month: z.coerce.number().int().min(MIN_MONTH).max(MAX_MONTH).optional(),
+  eff_year: z.coerce.number().int().positive().optional(),
+  eff_month: z.coerce.number().int().min(MIN_MONTH).max(MAX_MONTH).optional(),
+  date_received_start: z.coerce.date().optional(),
+  date_received_end: z.coerce.date().optional(),
+});
+
 export type MerrimacMarketingSubmission = z.infer<typeof submissionsSchema>;
 export type CreateMerrimacMarketingSubmission = z.infer<
   typeof createSubmissionSchema
 >;
 export type UpdateMerrimacMarketingSubmission = z.infer<
   typeof updateSubmissionSchema
+>;
+export type MerrimacMarketingSubmissionsQuery = z.infer<
+  typeof submissionsQuerySchema
 >;
