@@ -3,6 +3,7 @@ import z from 'zod/v4';
 export enum MarketingSubmissionsBindingStatus {
   DECLINED = 'DECLINED',
   BOUND = 'BOUND',
+  ACTIVE = 'ACTIVE',
   CLOSED = 'CLOSED',
   QUOTED = 'QUOTED',
 }
@@ -13,6 +14,7 @@ const bindingStatusValues: [
 ] = [
   MarketingSubmissionsBindingStatus.DECLINED,
   MarketingSubmissionsBindingStatus.BOUND,
+  MarketingSubmissionsBindingStatus.ACTIVE,
   MarketingSubmissionsBindingStatus.CLOSED,
   MarketingSubmissionsBindingStatus.QUOTED,
 ];
