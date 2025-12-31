@@ -1,4 +1,4 @@
-export const DEFAULT_BASE_URL = 'https://staging.bmbinc.com/api/imageright';
+export const DEFAULT_BASE_URL = 'https://staging.bmbinc.com/api/Imageright';
 
 /**
  * Get the effective API base URL, checking context value, env var, and fallback.

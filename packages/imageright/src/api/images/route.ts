@@ -4,7 +4,9 @@ import { getBaseUrl } from '../constants';
 export const getImages = async (pageId?: number, imageId?: number, version?: number, baseUrl?: string) => {
   const apiUrl = getBaseUrl(baseUrl);
   const url = `${apiUrl}/images${pageId ? `?pageId=${pageId}` : ''}${imageId ? `${pageId ? '&' : '?'}imageId=${imageId}` : ''}${version ? `&version=${version}` : ''}`;
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    credentials: 'include', // Include cookies for authentication
+  });
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }

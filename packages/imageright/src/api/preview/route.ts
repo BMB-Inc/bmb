@@ -9,7 +9,9 @@ export const getPreview = async (params: { documentId: number, pageIds: number }
 			documentId: params.documentId.toString(),
 			pageIds: params.pageIds.toString(),
 		}).toString();
-	const response = await fetch(url);
+	const response = await fetch(url, {
+		credentials: 'include', // Include cookies for authentication
+	});
 	if (!response.ok) {
 		throw new Error(`HTTP error! status: ${response.status}`);
 	}

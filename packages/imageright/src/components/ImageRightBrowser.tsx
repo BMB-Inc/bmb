@@ -24,7 +24,7 @@ export type ImageRightBrowserProps = {
   allowedExtensions?: FileTypes[];
   /**
    * Base URL for the ImageRight API.
-   * Defaults to 'https://staging.bmbinc.com/api/imageright'
+   * Defaults to 'https://staging.bmbinc.com/api/Imageright'
    */
   baseUrl?: string;
   /**

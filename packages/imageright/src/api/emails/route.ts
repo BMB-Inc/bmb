@@ -8,7 +8,9 @@ export const getEmailDocument = async (params: { documentId: number; pageId?: nu
     searchParams.set('pageId', params.pageId.toString());
   }
 
-  const response = await fetch(`${apiUrl}/emails?${searchParams.toString()}`);
+  const response = await fetch(`${apiUrl}/emails?${searchParams.toString()}`, {
+    credentials: 'include', // Include cookies for authentication
+  });
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);

@@ -68,7 +68,17 @@ export const fetcher = async (url: string, baseUrl?: string, options?: RequestIn
   // Create the fetch promise
   const fetchPromise = (async () => {
     try {
-      const response = await fetch(`${apiUrl}${url}`, options);
+      // Merge default options with provided options, ensuring credentials are included
+      const fetchOptions: RequestInit = {
+        credentials: 'include', // Always include cookies for authentication
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(options?.headers || {}),
+        },
+      };
+      
+      const response = await fetch(`${apiUrl}${url}`, fetchOptions);
       const data = await response.json();
 
       if (!response.ok) {
