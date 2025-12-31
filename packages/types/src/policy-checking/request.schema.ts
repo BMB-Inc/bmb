@@ -19,6 +19,7 @@ export const policyCheckRequestSchema = z.object({
   client_id: z.number().int().nullable(),
   folder_id: z.number().int().nullable(),
   policy_id: z.number().int().nullable(),
+  email_template_id: z.uuid().nullable(),
   status: z.enum(requestStatusValues),
   created_by_user_id: z.uuid(),
   created_at: z.coerce.date(),
@@ -42,7 +43,7 @@ export const policyCheckImportsSchema = z.array(policyCheckImportSchema);
 
 export const importDocumentInputSchema = z.object({
   clientId: z.number().int(),
-  folderId: z.number().int(),
+  policyId: z.number().int(),
   documentId: z.number().int(),
   pageIds: z
     .array(z.number().int())
@@ -62,6 +63,7 @@ export const uploadPolicyCheckDocumentSchema = z.object({
 
 export const createPolicyCheckRequestSchema = z.object({
   importIds: z.array(z.string().uuid()).min(1),
+  emailTemplateId: z.string().uuid().optional(),
 });
 
 export type PolicyCheckRequest = z.infer<typeof policyCheckRequestSchema>;

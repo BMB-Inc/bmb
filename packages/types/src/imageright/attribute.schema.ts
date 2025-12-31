@@ -1,10 +1,10 @@
 import { z } from "zod/v4";
 
-const attributeValueSchema = z.object({
+export const attributeValueSchema = z.object({
   description: z.string(),
 });
 
-const attributeTypeSchema = z.object({
+export const attributeTypeSchema = z.object({
   description: z.string(),
   oneOf: z.enum(['atInt', 'atBool', 'atString', 'atDate', 'atFloat', 'atBinary', 'atUser', 'atCustom']),
 });

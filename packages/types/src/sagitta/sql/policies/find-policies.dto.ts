@@ -5,6 +5,8 @@ export const findPoliciesQueryDto = z.object({
   clientName: z.string().optional().nullable(),
   policyNumber: z.string().optional().nullable(),
   policyId: z.coerce.number().optional().nullable(),
+  limit: z.coerce.number().int().min(1).optional().nullable(),
+  page: z.coerce.number().int().min(0).optional().nullable(),
 });
 
 export type FindPoliciesQueryDto = z.infer<typeof findPoliciesQueryDto>;

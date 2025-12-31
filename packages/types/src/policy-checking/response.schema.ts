@@ -46,6 +46,7 @@ export const policyCheckRequestWithDetailsSchema = z.object({
   clientId: z.number().int().nullable(),
   folderId: z.number().int().nullable(),
   policyId: z.number().int().nullable(),
+  emailTemplateId: z.string().nullable(),
   status: z.enum(['pending', 'sent', 'responded', 'failed']),
   createdByUserId: z.string(),
   createdAt: z.coerce.date(),
