@@ -35,7 +35,6 @@ export const checkResponseResultSchema = z.object({
     .object({
       id: z.string(),
       rawBody: z.string().nullable(),
-      parsedResult: policyCheckParsedResultSchema.nullable(),
       receivedAt: z.coerce.date().nullable(),
     })
     .optional(),
@@ -68,7 +67,7 @@ export const policyCheckRequestWithDetailsSchema = z.object({
   response: z
     .object({
       receivedAt: z.coerce.date().nullable(),
-      parsedResult: policyCheckParsedResultSchema.nullable(),
+      rawBody: z.string().nullable(),
     })
     .optional(),
 });
