@@ -279,13 +279,14 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
         />
       )}
       {(() => {
-        return pages.map((p: any) => {
+        return pages.map((p: any, index: number) => {
+          const pageNumber = index + 1;
           const baseLabel = p.description || `Page ${p.pagenumber ?? ''}`;
           const ext = p?.latestImages?.imageMetadata?.[0]?.extension ?? null;
           const imageId = p?.latestImages?.imageMetadata?.[0]?.id ?? null;
           const contentType = p?.latestImages?.imageMetadata?.[0]?.contentType ?? null;
           const metadata = { documentId, folderId: folderId ?? null, imageId, contentType, extension: ext };
-          const label = ext ? `${baseLabel} (${String(ext).toUpperCase()})` : baseLabel;
+          const label = ext ? `${pageNumber}. ${baseLabel} (${String(ext).toUpperCase()})` : `${pageNumber}. ${baseLabel}`;
           return (
             <PageRow
               key={p.id}

@@ -17,6 +17,7 @@ import { useTreeNavigation } from '@hooks/useTreeNavigation';
 import { FolderTypes, DocumentTypes, type ImagerightClient } from '@bmb-inc/types';
 import { treeStyles } from './styles';
 import classes from '../../modules/file-tree.module.css';
+import { sortFolders } from '../file-browser/utils/folderSorting';
 
 type FileTreeBrowserProps = {
   folderTypes?: FolderTypes[];
@@ -88,16 +89,12 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
 
   const rootFoldersLoading = wantsOnlyPoliciesAtRoot ? policyFoldersLoading : genericFoldersLoading;
 
-  // Sort root folders by date modified (newest first)
+  // Sort root folders: New Mail first, then policy terms by year, then others by date
   const rootFolders = useMemo(() => {
     const folders = wantsOnlyPoliciesAtRoot ? policyFolders : genericFolders;
     if (!folders || folders.length === 0) return [];
     
-    return [...folders].sort((a: any, b: any) => {
-      const aDate = a.lastModified ? new Date(a.lastModified).getTime() : 0;
-      const bDate = b.lastModified ? new Date(b.lastModified).getTime() : 0;
-      return bDate - aDate; // Newest first
-    });
+    return sortFolders(folders);
   }, [wantsOnlyPoliciesAtRoot, policyFolders, genericFolders]);
 
   // Handlers
@@ -320,14 +317,10 @@ function RootFolderChildren({
     documentTypes
   );
 
-  // Sort folders by date modified (newest first)
+  // Sort child folders: New Mail first, then policy terms by year, then others by date
   const childFolders = useMemo(() => {
     if (!rawChildFolders || rawChildFolders.length === 0) return [];
-    return [...rawChildFolders].sort((a: any, b: any) => {
-      const aDate = a.lastModified ? new Date(a.lastModified).getTime() : 0;
-      const bDate = b.lastModified ? new Date(b.lastModified).getTime() : 0;
-      return bDate - aDate;
-    });
+    return sortFolders(rawChildFolders);
   }, [rawChildFolders]);
 
   // Sort documents by date modified (newest first)

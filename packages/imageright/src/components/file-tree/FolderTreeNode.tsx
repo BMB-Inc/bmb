@@ -11,6 +11,7 @@ import { useSelectedPages } from '@hooks/useSelectedPages';
 import { FolderItemCount } from './FolderItemCount';
 import { treeStyles } from './styles';
 import classes from '../../modules/file-tree.module.css';
+import { sortFolders } from '../file-browser/utils/folderSorting';
 
 type FolderTreeNodeProps = {
   clientId: number;
@@ -59,14 +60,10 @@ export function FolderTreeNode({
     documentTypes
   );
 
-  // Sort folders by date modified (newest first)
+  // Sort child folders: New Mail first, then policy terms by year, then others by date
   const childFolders = useMemo(() => {
     if (!rawChildFolders || rawChildFolders.length === 0) return [];
-    return [...rawChildFolders].sort((a: any, b: any) => {
-      const aDate = a.lastModified ? new Date(a.lastModified).getTime() : 0;
-      const bDate = b.lastModified ? new Date(b.lastModified).getTime() : 0;
-      return bDate - aDate;
-    });
+    return sortFolders(rawChildFolders);
   }, [rawChildFolders]);
 
   // Sort documents by date modified (newest first)

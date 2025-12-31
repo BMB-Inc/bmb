@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { sortFolders } from '../utils/folderSorting';
 
 type UseCurrentItemsParams = {
   clients: any[] | undefined;
@@ -37,9 +38,7 @@ export function useCurrentItems({
       })) as import('../types').BrowserItem[];
     }
 
-    const folderItems = (folders || [])
-      .slice()
-      .sort((a: any, b: any) => toTs(a?.lastModified) < toTs(b?.lastModified) ? 1 : -1)
+    const folderItems = sortFolders(folders || [])
       .map((f: any) => ({
         kind: 'folder' as const,
         id: f.id,
