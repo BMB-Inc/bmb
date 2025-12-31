@@ -8,7 +8,8 @@ type Document = {
 };
 
 // Module-level cache to track which documents have been checked across all hook instances
-const checkedDocsCache = new Map<number, boolean>();
+// Shared with useFolderItemCount to avoid duplicate page requests
+export const checkedDocsCache = new Map<number, boolean>();
 
 /**
  * Hook that filters documents based on whether they contain pages with allowed extensions.

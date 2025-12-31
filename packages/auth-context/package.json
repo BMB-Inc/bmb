@@ -1,11 +1,12 @@
 {
   "name": "@bmb-inc/auth-context",
   "description": "React context for user authentication state management",
-  "version": "0.0.47",
+  "version": "0.0.50",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "exports": {
+    "types": "./dist/index.d.ts",
     "require": "./dist/index.cjs",
     "import": "./dist/index.js"
   },

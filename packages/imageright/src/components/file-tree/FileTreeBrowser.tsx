@@ -219,7 +219,13 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
                           py={6}
                           px={8}
                           className={classes.folderRow}
-                          onClick={() => toggleRootFolder(folder.id)}
+                          onClick={() => {
+                            const isCurrentlyExpanded = expandedRootFolders.has(folder.id);
+                            if (!isCurrentlyExpanded) {
+                              console.log('Opening folder:', folder);
+                            }
+                            toggleRootFolder(folder.id);
+                          }}
                         >
                           {isExpanded ? (
                             <IconChevronDown size={16} style={{ flexShrink: 0 }} />
@@ -358,10 +364,15 @@ function RootFolderChildren({
   const toggleFolder = (id: number) => {
     setExpandedFolders((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
+      const isCurrentlyExpanded = next.has(id);
+      if (!isCurrentlyExpanded) {
+        const folder = childFolders.find((f: any) => f.id === id);
+        if (folder) {
+          console.log('Opening folder:', folder);
+        }
         next.add(id);
+      } else {
+        next.delete(id);
       }
       return next;
     });
@@ -416,11 +427,20 @@ function RootFolderChildren({
             const isSelected = selectedDocumentId === doc.id;
             
             // Determine the appropriate style based on imported and selected state
+            // Use CSS class for base styling (includes hover) and inline styles for selected/imported states
             const getDocumentStyle = () => {
+              const style: React.CSSProperties = { userSelect: 'none' };
               if (isImported) {
-                return isSelected ? treeStyles.documentItemImportedSelected : treeStyles.documentItemImported;
+                style.opacity = 0.5;
+                if (isSelected) {
+                  style.backgroundColor = 'var(--mantine-color-blue-light)';
+                } else {
+                  style.backgroundColor = 'var(--mantine-color-gray-1)';
+                }
+              } else if (isSelected) {
+                style.backgroundColor = 'var(--mantine-color-blue-light)';
               }
-              return isSelected ? treeStyles.documentItemSelected : treeStyles.documentItem;
+              return style;
             };
             
             return (
@@ -429,10 +449,8 @@ function RootFolderChildren({
               gap="xs"
               py={3}
               px={6}
-              style={{
-                ...getDocumentStyle(),
-                userSelect: 'none',
-              }}
+              className={classes.documentItem}
+              style={getDocumentStyle()}
               onClick={(e) => {
                 // Handle shift/ctrl+click for multi-select checkboxes
                 if (e.shiftKey || e.ctrlKey || e.metaKey) {

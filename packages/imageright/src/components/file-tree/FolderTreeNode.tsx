@@ -80,7 +80,7 @@ export function FolderTreeNode({
   }, [rawDocuments]);
 
   // Filter documents by allowed extensions (only show docs with pages matching extensions)
-  const { filteredDocuments: documents, isFiltering } = useFilteredDocumentsByExtension(
+  const { filteredDocuments: documents, isFiltering, filteredCount } = useFilteredDocumentsByExtension(
     sortedDocuments,
     allowedExtensions
   );
@@ -108,7 +108,13 @@ export function FolderTreeNode({
         px={6}
         className={classes.folderRow}
         style={{ paddingLeft: depth * 20 + 6 }}
-        onClick={onToggle}
+        onClick={() => {
+          if (!isExpanded) {
+            // Log folder data when opening
+            console.log('Opening folder:', { folderId, folderName, folderType, clientId });
+          }
+          onToggle();
+        }}
       >
         {isExpanded ? (
           <IconChevronDown size={16} style={{ flexShrink: 0 }} />
@@ -129,6 +135,9 @@ export function FolderTreeNode({
           folderTypes={folderTypes}
           documentTypes={documentTypes}
           allowedExtensions={allowedExtensions}
+          folders={isExpanded ? rawChildFolders : undefined}
+          documents={isExpanded ? sortedDocuments : undefined}
+          filteredDocumentCount={isExpanded && allowedExtensions ? filteredCount : undefined}
         />
       </Group>
 
@@ -180,11 +189,20 @@ export function FolderTreeNode({
                 const isSelected = selectedDocumentId === doc.id;
                 
                 // Determine the appropriate style based on imported and selected state
+                // Use CSS class for base styling (includes hover) and inline styles for selected/imported states
                 const getDocumentStyle = () => {
+                  const style: React.CSSProperties = { userSelect: 'none' };
                   if (isImported) {
-                    return isSelected ? treeStyles.documentItemImportedSelected : treeStyles.documentItemImported;
+                    style.opacity = 0.5;
+                    if (isSelected) {
+                      style.backgroundColor = 'var(--mantine-color-blue-light)';
+                    } else {
+                      style.backgroundColor = 'var(--mantine-color-gray-1)';
+                    }
+                  } else if (isSelected) {
+                    style.backgroundColor = 'var(--mantine-color-blue-light)';
                   }
-                  return isSelected ? treeStyles.documentItemSelected : treeStyles.documentItem;
+                  return style;
                 };
                 
                 return (
@@ -193,10 +211,8 @@ export function FolderTreeNode({
                   gap="xs"
                   py={3}
                   px={6}
-                  style={{
-                    ...getDocumentStyle(),
-                    userSelect: 'none',
-                  }}
+                  className={classes.documentItem}
+                  style={getDocumentStyle()}
                   onClick={(e) => {
                     // Handle shift/ctrl+click for multi-select checkboxes
                     if (e.shiftKey || e.ctrlKey || e.metaKey) {
@@ -302,7 +318,13 @@ function RecursiveFolderNode({
       folderType={folderType}
       depth={depth}
       isExpanded={isExpanded}
-      onToggle={() => setIsExpanded((prev) => !prev)}
+      onToggle={() => {
+        if (!isExpanded) {
+          // Log folder data when opening
+          console.log('Opening folder:', { folderId, folderName, folderType, clientId });
+        }
+        setIsExpanded((prev) => !prev);
+      }}
       folderTypes={folderTypes}
       documentTypes={documentTypes}
       documentSearch={documentSearch}

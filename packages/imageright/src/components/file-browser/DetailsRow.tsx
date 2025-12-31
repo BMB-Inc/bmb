@@ -65,10 +65,12 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
       }}
       onDoubleClick={() => {
         if (item.kind === 'document') {
-          // Double-click - toggle document selection and select all pages when selecting
+          // Double-click - toggle document selection, open document, and select all pages when selecting
           const willBeSelected = !isDocumentSelected(item.id);
           toggleDocumentSelected(item.id, willBeSelected);
           setLastSelectedId(item.id);
+          // Open document to show pages
+          onDocumentOpen?.(item.id);
           if (willBeSelected) {
             selectAllPagesForDocument(item.id, folderId);
           }
@@ -92,6 +94,8 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
                 const isChecked = e.currentTarget.checked;
                 toggleDocumentSelected(item.id, isChecked);
                 setLastSelectedId(item.id);
+                // Open document to show pages
+                onDocumentOpen?.(item.id);
                 if (isChecked) {
                   selectAllPagesForDocument(item.id, folderId);
                 }

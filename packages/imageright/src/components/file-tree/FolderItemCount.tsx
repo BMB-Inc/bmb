@@ -1,6 +1,7 @@
 import { Badge, Loader } from '@mantine/core';
 import { useFolderItemCount } from '@hooks/useFolderItemCount';
 import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
+import { useMemo } from 'react';
 
 type FolderItemCountProps = {
   clientId: number;
@@ -9,6 +10,12 @@ type FolderItemCountProps = {
   documentTypes?: DocumentTypes[];
   /** File extensions to filter documents by (only count docs with pages matching these extensions) */
   allowedExtensions?: string[];
+  /** Optional: Pre-fetched folders data to avoid duplicate requests */
+  folders?: any[];
+  /** Optional: Pre-fetched documents data to avoid duplicate requests */
+  documents?: any[];
+  /** Optional: Pre-computed filtered count from useFilteredDocumentsByExtension */
+  filteredDocumentCount?: number;
 };
 
 /**
@@ -16,6 +23,8 @@ type FolderItemCountProps = {
  * Shows a small loader while fetching, then displays the count.
  * Empty folders show "0" in a dimmed style.
  * When allowedExtensions is provided, only counts documents with matching pages.
+ * 
+ * OPTIMIZATION: If folders/documents are provided, uses them instead of making new requests.
  */
 export function FolderItemCount({
   clientId,
@@ -23,16 +32,44 @@ export function FolderItemCount({
   folderTypes,
   documentTypes,
   allowedExtensions,
+  folders: prefetchedFolders,
+  documents: prefetchedDocuments,
+  filteredDocumentCount,
 }: FolderItemCountProps) {
-  const { data, isLoading } = useFolderItemCount({
-    clientId,
-    folderId,
-    folderTypes: folderTypes ?? null,
-    documentTypes,
-    allowedExtensions,
-  });
+  // If we have pre-fetched data, use it directly instead of making requests
+  const hasPrefetchedData = prefetchedFolders !== undefined || prefetchedDocuments !== undefined;
+  
+  const { data: fetchedData, isLoading } = useFolderItemCount(
+    hasPrefetchedData ? undefined : {
+      clientId,
+      folderId,
+      folderTypes: folderTypes ?? null,
+      documentTypes,
+      allowedExtensions,
+    }
+  );
 
-  if (isLoading) {
+  // Compute count from pre-fetched data if available
+  const computedData = useMemo(() => {
+    if (!hasPrefetchedData) {
+      return fetchedData;
+    }
+
+    const folderCount = prefetchedFolders?.length ?? 0;
+    // Use filtered count if provided, otherwise use document count
+    const documentCount = filteredDocumentCount ?? prefetchedDocuments?.length ?? 0;
+
+    return {
+      folderCount,
+      documentCount,
+      totalCount: folderCount + documentCount,
+    };
+  }, [hasPrefetchedData, prefetchedFolders, prefetchedDocuments, filteredDocumentCount, fetchedData]);
+
+  const data = computedData;
+  const isActuallyLoading = !hasPrefetchedData && isLoading;
+
+  if (isActuallyLoading) {
     return <Loader size={10} />;
   }
 

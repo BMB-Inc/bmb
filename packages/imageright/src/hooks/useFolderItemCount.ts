@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getFolders, getDocuments, getPages } from "@api/index";
 import { FolderTypes, DocumentTypes } from "@bmb-inc/types";
 import { useImageRightConfig } from "../context/ImageRightContext";
+import { checkedDocsCache } from "./useFilteredDocumentsByExtension";
 
 type FolderItemCountParams = {
   clientId: number;
@@ -20,24 +21,34 @@ type FolderItemCount = {
 
 /**
  * Check if a document has any pages with allowed extensions
+ * Uses shared cache from useFilteredDocumentsByExtension to avoid duplicate requests
  */
 const documentHasAllowedPages = async (
   documentId: number,
   normalizedExtensions: string[],
   baseUrl?: string
 ): Promise<boolean> => {
+  // Check shared cache first
+  if (checkedDocsCache.has(documentId)) {
+    return checkedDocsCache.get(documentId)!;
+  }
+
   try {
     const pages = await getPages({ documentId }, baseUrl);
     if (!pages || !Array.isArray(pages) || pages.length === 0) {
+      checkedDocsCache.set(documentId, false);
       return false;
     }
-    return pages.some((p: any) => {
+    const hasAllowed = pages.some((p: any) => {
       const ext = p?.latestImages?.imageMetadata?.[0]?.extension;
       if (!ext) return false;
       return normalizedExtensions.includes(ext.toLowerCase());
     });
+    checkedDocsCache.set(documentId, hasAllowed);
+    return hasAllowed;
   } catch {
     // On error, include the document (fail open)
+    checkedDocsCache.set(documentId, true);
     return true;
   }
 };
@@ -91,12 +102,22 @@ export const useFolderItemCount = (params?: FolderItemCountParams) => {
 
         // If extension filter is provided, filter documents by their pages
         if (hasExtensionFilter && documents && documents.length > 0) {
-          const filterResults = await Promise.all(
-            documents.map((doc: any) => 
-              documentHasAllowedPages(doc.id, normalizedExtensions, baseUrl)
-            )
-          );
-          documentCount = filterResults.filter(Boolean).length;
+          // Check shared cache first for documents we've already checked
+          const uncachedDocs = documents.filter((doc: any) => !checkedDocsCache.has(doc.id));
+          
+          // Only fetch pages for documents not in cache
+          if (uncachedDocs.length > 0) {
+            await Promise.all(
+              uncachedDocs.map((doc: any) => 
+                documentHasAllowedPages(doc.id, normalizedExtensions, baseUrl)
+              )
+            );
+          }
+          
+          // Count documents using shared cache
+          documentCount = documents.filter((doc: any) => 
+            checkedDocsCache.get(doc.id) === true
+          ).length;
         }
 
         if (!cancelled) {

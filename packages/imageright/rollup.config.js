@@ -4,28 +4,12 @@ import replace from "@rollup/plugin-replace";
 import alias from '@rollup/plugin-alias';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
+import postcss from 'rollup-plugin-postcss';
 import path from 'node:path';
 import dotenv from 'dotenv';
 
 // Load environment variables from .env if present
 dotenv.config();
-
-// Custom plugin to stub CSS modules to empty objects so consumers are not required to import CSS
-const cssModulePlugin = () => ({
-  name: 'css-module',
-  resolveId(source) {
-    if (source.endsWith('.module.css') || source.endsWith('.css')) {
-      return { id: source, external: false };
-    }
-    return null;
-  },
-  load(id) {
-    if (id.endsWith('.module.css') || id.endsWith('.css')) {
-      return 'export default {};';
-    }
-    return null;
-  }
-});
 
 // List of external dependencies that should not be bundled
 const externalDeps = [
@@ -77,7 +61,16 @@ export default [
       commonjs({
         include: /node_modules/,
       }),
-      cssModulePlugin(),
+      postcss({
+        extract: 'styles.css',
+        modules: {
+          generateScopedName: '[name]__[local]___[hash:base64:5]',
+        },
+        config: {
+          path: path.resolve(process.cwd(), 'postcss.config.cjs'),
+        },
+        minimize: false,
+      }),
       replace({
         preventAssignment: true,
         values: (() => {
