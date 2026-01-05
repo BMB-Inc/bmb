@@ -61,6 +61,10 @@ export const uploadPolicyCheckDocumentSchema = z.object({
   policyId: z.number().int(),
 });
 
+export const renamePolicyCheckDocumentSchema = z.object({
+  name: z.string().min(1).max(255),
+});
+
 export const createPolicyCheckRequestSchema = z.object({
   importIds: z.array(z.string().uuid()).min(1),
   emailTemplateId: z.string().uuid().optional(),
@@ -73,3 +77,4 @@ export type ImportDocumentInput = z.infer<typeof importDocumentInputSchema>;
 export type CreatePolicyCheckImport = z.infer<typeof createPolicyCheckImportSchema>;
 export type CreatePolicyCheckRequest = z.infer<typeof createPolicyCheckRequestSchema>;
 export type UploadPolicyCheckDocument = z.infer<typeof uploadPolicyCheckDocumentSchema>;
+export type RenamePolicyCheckDocument = z.infer<typeof renamePolicyCheckDocumentSchema>;
