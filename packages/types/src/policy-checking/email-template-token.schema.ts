@@ -1,7 +1,15 @@
 import z from 'zod/v4';
 
+export const policyCheckEmailTemplateTokenKeySchema = z.enum([
+  'policyId',
+  'CLIENTCODE',
+  'documentCount',
+  'documentNames',
+  'documentList',
+]);
+
 export const policyCheckEmailTemplateTokenSchema = z.object({
-  key: z.string(),
+  key: policyCheckEmailTemplateTokenKeySchema,
   token: z.string(),
   description: z.string(),
 });
