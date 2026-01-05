@@ -60,6 +60,26 @@ export const policyCheckResponseDetailSchema = z.object({
   createdAt: z.coerce.date(),
 });
 
+export const exportPolicyCheckResponseSchema = z.object({
+  responseId: z.string(),
+  folderId: z.number().int(),
+  filename: z.string().min(1).optional(),
+});
+
+export const policyCheckResponseExportSchema = z.object({
+  id: z.string(),
+  requestId: z.string(),
+  responseId: z.string(),
+  folderId: z.number().int(),
+  documentTypeId: z.number().int(),
+  documentId: z.number().int(),
+  pageId: z.number().int(),
+  filename: z.string(),
+  errorMessage: z.string().nullable(),
+  createdByUserId: z.string(),
+  createdAt: z.coerce.date(),
+});
+
 export const checkResponseResultSchema = z.object({
   found: z.boolean(),
   response: z
@@ -124,8 +144,10 @@ export type PolicyCheckResponse = z.infer<typeof policyCheckResponseSchema>;
 export type PolicyCheckParsedResult = z.infer<typeof policyCheckParsedResultSchema>;
 export type PolicyCheckComparisonRow = z.infer<typeof comparisonRowSchema>;
 export type CheckResponseResult = z.infer<typeof checkResponseResultSchema>;
+export type ExportPolicyCheckResponse = z.infer<typeof exportPolicyCheckResponseSchema>;
 export type PolicyCheckDocumentMetadata = z.infer<typeof policyCheckDocumentMetadataSchema>;
 export type PolicyCheckEmailSummary = z.infer<typeof policyCheckEmailSummarySchema>;
 export type PolicyCheckResponseDetail = z.infer<typeof policyCheckResponseDetailSchema>;
+export type PolicyCheckResponseExport = z.infer<typeof policyCheckResponseExportSchema>;
 export type PolicyCheckRequestSummary = z.infer<typeof policyCheckRequestSummarySchema>;
 export type PolicyCheckRequestWithDetails = z.infer<typeof policyCheckRequestWithDetailsSchema>;
