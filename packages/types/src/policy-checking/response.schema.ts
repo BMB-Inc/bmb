@@ -24,9 +24,40 @@ export const policyCheckResponseSchema = z.object({
   request_id: z.uuid(),
   email_id: z.uuid(),
   raw_body: z.string().nullable(),
-  parsed_result: z.string().nullable(),
+  parsed_result: policyCheckParsedResultSchema.nullable(),
   parsed_at: z.coerce.date().nullable(),
   created_at: z.coerce.date(),
+});
+
+export const policyCheckDocumentMetadataSchema = z.object({
+  id: z.string(),
+  documentId: z.number().int().nullable(),
+  filename: z.string(),
+  contentType: z.string(),
+  size: z.number().int(),
+  createdAt: z.coerce.date(),
+});
+
+export const policyCheckEmailSummarySchema = z.object({
+  id: z.string(),
+  direction: z.enum(['outbound', 'inbound']),
+  subject: z.string(),
+  conversationId: z.string().nullable(),
+  graphMessageId: z.string().nullable(),
+  internetMessageId: z.string().nullable(),
+  sentAt: z.coerce.date().nullable(),
+  receivedAt: z.coerce.date().nullable(),
+  createdAt: z.coerce.date(),
+});
+
+export const policyCheckResponseDetailSchema = z.object({
+  id: z.string(),
+  requestId: z.string(),
+  emailId: z.string(),
+  rawBody: z.string().nullable(),
+  parsedResult: policyCheckParsedResultSchema.nullable(),
+  receivedAt: z.coerce.date().nullable(),
+  createdAt: z.coerce.date(),
 });
 
 export const checkResponseResultSchema = z.object({
@@ -36,8 +67,29 @@ export const checkResponseResultSchema = z.object({
       id: z.string(),
       rawBody: z.string().nullable(),
       receivedAt: z.coerce.date().nullable(),
+      parsedResult: policyCheckParsedResultSchema.nullable().optional(),
     })
     .optional(),
+});
+
+export const policyCheckRequestSummarySchema = z.object({
+  id: z.string(),
+  clientId: z.number().int().nullable(),
+  folderId: z.number().int().nullable(),
+  policyId: z.number().int().nullable(),
+  emailTemplateId: z.string().nullable(),
+  status: z.enum(['pending', 'sent', 'responded', 'failed']),
+  createdByUserId: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  documents: z.array(policyCheckDocumentMetadataSchema),
+  email: z
+    .object({
+      conversationId: z.string().nullable(),
+      sentAt: z.coerce.date().nullable(),
+    })
+    .optional(),
+  latestResponse: policyCheckResponseDetailSchema.optional(),
 });
 
 export const policyCheckRequestWithDetailsSchema = z.object({
@@ -50,14 +102,9 @@ export const policyCheckRequestWithDetailsSchema = z.object({
   createdByUserId: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-  documents: z.array(
-    z.object({
-      id: z.string(),
-      filename: z.string(),
-      contentType: z.string(),
-      size: z.number().int(),
-    }),
-  ),
+  documents: z.array(policyCheckDocumentMetadataSchema),
+  emails: z.array(policyCheckEmailSummarySchema),
+  responses: z.array(policyCheckResponseDetailSchema),
   email: z
     .object({
       conversationId: z.string().nullable(),
@@ -68,6 +115,7 @@ export const policyCheckRequestWithDetailsSchema = z.object({
     .object({
       receivedAt: z.coerce.date().nullable(),
       rawBody: z.string().nullable(),
+      parsedResult: policyCheckParsedResultSchema.nullable().optional(),
     })
     .optional(),
 });
@@ -76,4 +124,8 @@ export type PolicyCheckResponse = z.infer<typeof policyCheckResponseSchema>;
 export type PolicyCheckParsedResult = z.infer<typeof policyCheckParsedResultSchema>;
 export type PolicyCheckComparisonRow = z.infer<typeof comparisonRowSchema>;
 export type CheckResponseResult = z.infer<typeof checkResponseResultSchema>;
+export type PolicyCheckDocumentMetadata = z.infer<typeof policyCheckDocumentMetadataSchema>;
+export type PolicyCheckEmailSummary = z.infer<typeof policyCheckEmailSummarySchema>;
+export type PolicyCheckResponseDetail = z.infer<typeof policyCheckResponseDetailSchema>;
+export type PolicyCheckRequestSummary = z.infer<typeof policyCheckRequestSummarySchema>;
 export type PolicyCheckRequestWithDetails = z.infer<typeof policyCheckRequestWithDetailsSchema>;
