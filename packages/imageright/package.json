@@ -24,11 +24,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@bmb-inc/auth-context": "workspace:*",
     "@bmb-inc/types": "workspace:*",
     "eml-parse-js": "^1.2.0-beta.1",
     "mammoth": "^1.11.0",
     "msgreader": "^1.0.1",
     "nuqs": "^2.6.0",
+    "pdfjs-dist": "^5.4.530",
+    "react-pdf": "^10.3.0",
     "xlsx": "^0.18.5",
     "zod": "^4.1.12"
   },

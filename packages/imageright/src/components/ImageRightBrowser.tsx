@@ -44,7 +44,7 @@ export function ImageRightBrowser({
   defaultViewMode = 'tree',
   showViewToggle = true,
   allowedExtensions,
-  baseUrl = DEFAULT_BASE_URL,
+  baseUrl, // Don't default here - let ImageRightProvider handle it with getBaseUrl()
   importedDocumentIds,
 }: ImageRightBrowserProps) {
   const [viewMode, setViewMode] = useState<ViewMode>(defaultViewMode);

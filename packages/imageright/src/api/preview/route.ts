@@ -9,8 +9,11 @@ export const getPreview = async (params: { documentId: number, pageIds: number }
 			documentId: params.documentId.toString(),
 			pageIds: params.pageIds.toString(),
 		}).toString();
+	
+	const devToken = import.meta.env.VITE_DEV_AUTH_TOKEN;
 	const response = await fetch(url, {
 		credentials: 'include', // Include cookies for authentication
+		headers: devToken ? { 'Authorization': `Bearer ${devToken}` } : {},
 	});
 	if (!response.ok) {
 		throw new Error(`HTTP error! status: ${response.status}`);

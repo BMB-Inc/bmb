@@ -68,12 +68,16 @@ export const fetcher = async (url: string, baseUrl?: string, options?: RequestIn
   // Create the fetch promise
   const fetchPromise = (async () => {
     try {
+      // In dev mode, use token from env if available
+      const devToken = import.meta.env.VITE_DEV_AUTH_TOKEN;
+      
       // Merge default options with provided options, ensuring credentials are included
       const fetchOptions: RequestInit = {
         credentials: 'include', // Always include cookies for authentication
         ...options,
         headers: {
           'Content-Type': 'application/json',
+          ...(devToken ? { 'Authorization': `Bearer ${devToken}` } : {}),
           ...(options?.headers || {}),
         },
       };

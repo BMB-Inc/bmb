@@ -14,5 +14,13 @@ export default defineConfig({
       '@tabler/icons-react': '@tabler/icons-react/dist/esm/icons/index.mjs',
     },
   },
-  // Proxy disabled - use CORS browser extension for development
+  server: {
+    port: 5174, // Use safe port (6666 is blocked by browsers as "dangerous port")
+    strictPort: true, // Fail if port is already in use
+    // Allow access from staging domain through nginx proxy
+    hmr: {
+      clientPort: 443, // Use HTTPS port for HMR when accessed via staging
+    }
+  },
+  base: '/dev/', // Base path when served through nginx at staging.bmbinc.com/dev
 })

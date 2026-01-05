@@ -5,6 +5,7 @@ import DocumentPages from './DocumentPages';
 import EmailPreview from './EmailPreview';
 import SpreadsheetPreview from './SpreadsheetPreview';
 import WordDocPreview from './WordDocPreview';
+import PdfPreview from './PdfPreview';
 import { useSelectedPages } from '@hooks/useSelectedPages';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
 import { usePages } from '@hooks/usePages';
@@ -183,6 +184,10 @@ export default function PreviewPane({ expandedDocumentId, folderId, allowedExten
                   </Text>
                 </Stack>
               </Center>
+            ) : previewType === 'pdf' && previewData ? (
+              <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+                <PdfPreview data={previewData} />
+              </div>
             ) : previewType === 'email' && previewData ? (
               <div style={{ position: 'absolute', inset: 0, overflow: 'auto' }}>
                 <EmailPreview data={previewData} extension={previewExtension || 'eml'} />
@@ -213,13 +218,7 @@ export default function PreviewPane({ expandedDocumentId, folderId, allowedExten
                 </Stack>
               </Center>
             ) : previewUrl ? (
-              previewType === 'pdf' ? (
-                <object
-                  data={previewUrl}
-                  type="application/pdf"
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
-                />
-              ) : previewType === 'image' ? (
+              previewType === 'image' ? (
                 <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'auto' }}>
                   <img
                     src={previewUrl}

@@ -8,12 +8,17 @@ import '@mantine/dates/styles.css';
 import { SelectedPagesProvider } from '@hooks/useSelectedPages.tsx';
 import { SelectedDocumentsProvider } from '@hooks/useSelectedDocuments.tsx';
 import { NuqsAdapter } from 'nuqs/adapters/react';
+import { AuthProvider } from '@bmb-inc/auth-context';
 
 const queryClient = new QueryClient()
 
+// Use relative URL to work on staging.bmbinc.com/dev
+const AUTH_URL = '/api/auth';
+const REDIRECT_URL = window.location.origin + window.location.pathname;
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <AuthProvider authUrl={AUTH_URL} redirectUrl={REDIRECT_URL}>
     <QueryClientProvider client={queryClient}>
       <MantineProvider>
         <NuqsAdapter>
@@ -25,5 +30,6 @@ createRoot(document.getElementById('root')!).render(
         </NuqsAdapter>
       </MantineProvider>
     </QueryClientProvider>
+    </AuthProvider>
   </StrictMode>,
 )

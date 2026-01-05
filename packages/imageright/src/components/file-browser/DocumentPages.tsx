@@ -346,8 +346,8 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
 
                     const buffer = await response.arrayBuffer();
                     
-                    // For email, spreadsheet, and Word files, pass raw data instead of blob URL
-                    if (isEmailType(ext) || isSpreadsheetType(ext) || isWordDocType(ext)) {
+                    // For PDF, email, spreadsheet, and Word files, pass raw data instead of blob URL
+                    if (isPdf || isEmailType(ext) || isSpreadsheetType(ext) || isWordDocType(ext)) {
                       onPreviewDataChange?.(buffer, ext);
                       onPreviewUrlChange?.(null, ext);
                     } else {

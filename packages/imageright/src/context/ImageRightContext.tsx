@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode } from 'react';
-import { DEFAULT_BASE_URL } from '../api/constants';
+import { DEFAULT_BASE_URL, getBaseUrl } from '../api/constants';
 
 export interface ImageRightConfig {
   baseUrl: string;
@@ -14,9 +14,12 @@ export interface ImageRightProviderProps {
   children: ReactNode;
 }
 
-export function ImageRightProvider({ baseUrl = DEFAULT_BASE_URL, children }: ImageRightProviderProps) {
+export function ImageRightProvider({ baseUrl, children }: ImageRightProviderProps) {
+  // Use getBaseUrl() to automatically select proxy URL in dev, staging in prod
+  const effectiveBaseUrl = getBaseUrl(baseUrl);
+  
   return (
-    <ImageRightContext.Provider value={{ baseUrl }}>
+    <ImageRightContext.Provider value={{ baseUrl: effectiveBaseUrl }}>
       {children}
     </ImageRightContext.Provider>
   );
