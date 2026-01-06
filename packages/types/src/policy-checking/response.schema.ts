@@ -66,6 +66,11 @@ export const exportPolicyCheckResponseSchema = z.object({
   filename: z.string().min(1).optional(),
 });
 
+export const exportPolicyCheckResponsePreviewSchema = z.object({
+  responseId: z.string(),
+  filename: z.string().min(1).optional(),
+});
+
 export const policyCheckResponseExportSchema = z.object({
   id: z.string(),
   requestId: z.string(),
@@ -145,6 +150,9 @@ export type PolicyCheckParsedResult = z.infer<typeof policyCheckParsedResultSche
 export type PolicyCheckComparisonRow = z.infer<typeof comparisonRowSchema>;
 export type CheckResponseResult = z.infer<typeof checkResponseResultSchema>;
 export type ExportPolicyCheckResponse = z.infer<typeof exportPolicyCheckResponseSchema>;
+export type ExportPolicyCheckResponsePreview = z.infer<
+  typeof exportPolicyCheckResponsePreviewSchema
+>;
 export type PolicyCheckDocumentMetadata = z.infer<typeof policyCheckDocumentMetadataSchema>;
 export type PolicyCheckEmailSummary = z.infer<typeof policyCheckEmailSummarySchema>;
 export type PolicyCheckResponseDetail = z.infer<typeof policyCheckResponseDetailSchema>;
