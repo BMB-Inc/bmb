@@ -36,6 +36,24 @@ export const policyCheckWorkInProgressRecentActivitySchema = z.object({
   lastActivityAt: z.coerce.date(),
   documentCount: z.number().int(),
   totalSize: z.number().int(),
+  activityType: z.enum(['import', 'request']),
+  requestId: z.string().nullable(),
+  requestStatus: z.enum(['pending', 'sent', 'responded', 'failed']).nullable(),
+  recentImport: z
+    .object({
+      id: z.string(),
+      filename: z.string(),
+      documentId: z.number().int().nullable(),
+      createdAt: z.coerce.date(),
+    })
+    .nullable(),
+  recentRequest: z
+    .object({
+      id: z.string(),
+      status: z.enum(['pending', 'sent', 'responded', 'failed']),
+      updatedAt: z.coerce.date(),
+    })
+    .nullable(),
 });
 
 export const policyCheckWorkInProgressOverviewSchema = z.object({
@@ -45,6 +63,28 @@ export const policyCheckWorkInProgressOverviewSchema = z.object({
   oldestImportAt: z.coerce.date().nullable(),
   newestImportAt: z.coerce.date().nullable(),
   recentActivity: z.array(policyCheckWorkInProgressRecentActivitySchema),
+});
+
+export const policyCheckWorkInProgressOverviewQuerySchema = z.object({
+  all: z
+    .boolean()
+    .optional()
+    .describe('Include all users when true; otherwise scoped to the requester.'),
+  policyId: z.number().int().optional().describe('Filter to a specific policy id.'),
+  clientId: z.number().int().optional().describe('Filter to a specific client id.'),
+  folderId: z.number().int().optional().describe('Filter to a specific folder id.'),
+  window: z
+    .string()
+    .min(1)
+    .optional()
+    .describe('Time window such as 30d, 7d, or 1mo for import recency.'),
+  recentLimit: z
+    .number()
+    .int()
+    .min(1)
+    .max(25)
+    .optional()
+    .describe('Max recent activity entries to include.'),
 });
 
 export type PolicyCheckWorkInProgressImport = z.infer<
@@ -59,4 +99,7 @@ export type PolicyCheckWorkInProgressRecentActivity = z.infer<
 >;
 export type PolicyCheckWorkInProgressOverview = z.infer<
   typeof policyCheckWorkInProgressOverviewSchema
+>;
+export type PolicyCheckWorkInProgressOverviewQuery = z.infer<
+  typeof policyCheckWorkInProgressOverviewQuerySchema
 >;
