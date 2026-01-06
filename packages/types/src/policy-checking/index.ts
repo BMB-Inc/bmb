@@ -4,3 +4,4 @@ export * from './email.schema';
 export * from './email-template.schema';
 export * from './email-template-token.schema';
 export * from './response.schema';
+export * from './work-in-progress.schema';
