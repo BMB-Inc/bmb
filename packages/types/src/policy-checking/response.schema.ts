@@ -131,6 +131,7 @@ export const policyCheckRequestWithDetailsSchema = z.object({
   documents: z.array(policyCheckDocumentMetadataSchema),
   emails: z.array(policyCheckEmailSummarySchema),
   responses: z.array(policyCheckResponseDetailSchema),
+  requestBody: z.string().nullable().optional(),
   email: z
     .object({
       conversationId: z.string().nullable(),
