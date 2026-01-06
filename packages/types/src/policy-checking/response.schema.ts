@@ -108,6 +108,7 @@ export const policyCheckRequestSummarySchema = z.object({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   documents: z.array(policyCheckDocumentMetadataSchema),
+  requestBody: z.string().nullable().optional(),
   email: z
     .object({
       conversationId: z.string().nullable(),
