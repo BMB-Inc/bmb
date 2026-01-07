@@ -1,11 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
 import { getTasks, findTasks, getFileTasks } from "@api/index";
 import {
-  type GetTasksDto,
+  type GetTaskHistoryDto,
   type FindTasksQueryDto,
   type FindTasksBodyDto,
   type GetFileTasksDto,
   type ImagerightTask,
+  type ImagerightTaskHistory,
   type ImagerightTaskResponse,
 } from "@bmb-inc/types";
 import { useImageRightConfig } from "../context/ImageRightContext";
@@ -13,9 +14,9 @@ import { useImageRightConfig } from "../context/ImageRightContext";
 /**
  * Hook to fetch tasks with pagination and filtering
  */
-export const useTasks = (params?: GetTasksDto) => {
+export const useTasks = (params?: GetTaskHistoryDto) => {
   const { baseUrl } = useImageRightConfig();
-  const [data, setData] = useState<ImagerightTaskResponse | undefined>(undefined);
+  const [data, setData] = useState<ImagerightTaskHistory[] | undefined>(undefined);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -34,7 +35,7 @@ export const useTasks = (params?: GetTasksDto) => {
     getTasks(params, baseUrl)
       .then((res) => {
         if (!cancelled) {
-          setData(res as ImagerightTaskResponse);
+          setData(res as ImagerightTaskHistory[]);
         }
       })
       .catch((err: unknown) => {
@@ -151,7 +152,6 @@ export const useFileTasks = (params?: GetFileTasksDto) => {
 
   return { data, isLoading, error } as const;
 };
-
 
 
 

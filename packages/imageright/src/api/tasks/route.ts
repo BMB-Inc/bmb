@@ -1,10 +1,10 @@
 import { fetcher } from '@api/fetcher';
-import { FindTasksQueryDto, GetFileTasksDto, GetTasksDto } from '@bmb-inc/types';
+import { FindTasksQueryDto, GetFileTasksDto, GetTaskHistoryDto } from '@bmb-inc/types';
 
 /**
- * Get tasks with filtering and pagination
+ * Get task history with filtering and pagination
  */
-export const getTasks = async (params?: GetTasksDto, baseUrl?: string) => {
+export const getTasks = async (params?: GetTaskHistoryDto, baseUrl?: string) => {
 	const urlParams = new URLSearchParams();
 	if (params) {
 		for (const [key, value] of Object.entries(params)) {
