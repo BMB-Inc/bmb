@@ -169,7 +169,7 @@ import { FileTreeBrowser } from '@bmb-inc/imageright';
 
 ### TaskWorkflowViewer
 
-View and manage ImageRight tasks and workflows.
+View and manage ImageRight tasks and workflows. Task data includes history (active + completed).
 
 ```tsx
 import { TaskWorkflowViewer } from '@bmb-inc/imageright';
