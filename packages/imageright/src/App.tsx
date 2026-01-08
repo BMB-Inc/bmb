@@ -3,6 +3,7 @@ import { Group, Stack, Title } from "@mantine/core";
 import { DocumentTypes, FileTypes, FolderTypes } from "@bmb-inc/types"; 
 import { TaskWorkflowViewer } from "@components/task-workflow";
 import { useSelectedPages } from "./hooks/useSelectedPages";
+import ImageRightBrowser2 from "@components/imageright-browser2/ImageRightBrowser2";
 
 const FOLDER_TYPES = [
   FolderTypes.policyTerm,
@@ -65,10 +66,9 @@ function App() {
       <Title order={1} ta="center" mb="xl">
         ImageRight
       </Title>
-      <ImageRightBrowser
+      <ImageRightBrowser2
         // documentTypes={DOCUMENT_TYPES}
         // folderTypes={FOLDER_TYPES}
-        defaultViewMode="tree"
         // allowedExtensions={[FileTypes.DOC, FileTypes.DOCX]}
         />
     </Stack>

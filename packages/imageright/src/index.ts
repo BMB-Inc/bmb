@@ -6,6 +6,10 @@ export * from './context';
 export { ImageRightBrowser } from './components/ImageRightBrowser';
 export type { ImageRightBrowserProps, ViewMode } from './components/ImageRightBrowser';
 
+// v2 browser (cleaner composition root; incremental refactor target)
+export { ImageRightBrowser2 } from './components/imageright-browser2/ImageRightBrowser2';
+export type { ImageRightBrowser2Props, ActivePage } from './components/imageright-browser2/types';
+
 // Individual view components (table-only or tree-only, without toggle)
 export { FolderFileBrowser, ImageRightFileBrowser } from './components/file-browser/ImagerightFileBrowser';
 export { FileTreeBrowser, TreeLoadingSkeleton } from './components/file-tree';

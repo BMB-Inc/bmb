@@ -1,5 +1,5 @@
 import { Stack, Divider, Title, Text, Loader, Center } from '@mantine/core';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import EmailPreview from './EmailPreview';
 import SpreadsheetPreview from './SpreadsheetPreview';
 import WordDocPreview from './WordDocPreview';
@@ -98,21 +98,19 @@ export default function PreviewPane({ expandedDocumentId, folderId, allowedExten
   void previewContentType; // kept for debugging/inspection if needed
   const [previewUnavailable, setPreviewUnavailable] = useState<boolean>(false);
   const [previewLoading, setPreviewLoading] = useState<boolean>(false);
-  const previousUrlRef = useRef<string | null>(null);
-  const loadSeqRef = useRef<number>(0);
   const { baseUrl } = useImageRightConfig();
 
   const documentId = expandedDocumentId ? Number(expandedDocumentId) : null;
 
+  // Revoke object URLs automatically when they change/unmount (no refs).
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
   // Reset preview state when the document changes.
   useEffect(() => {
-    // cleanup blob URL
-    if (previousUrlRef.current) {
-      URL.revokeObjectURL(previousUrlRef.current);
-      previousUrlRef.current = null;
-    }
-    // bump sequence to invalidate any in-flight loads
-    loadSeqRef.current += 1;
     setPreviewUrl(null);
     setPreviewData(null);
     setPreviewExtension(null);
@@ -123,6 +121,8 @@ export default function PreviewPane({ expandedDocumentId, folderId, allowedExten
 
   // Load preview bytes/url when active page changes.
   useEffect(() => {
+    const controller = new AbortController();
+
     const run = async () => {
       if (!documentId) return;
       if (!activePage) return;
@@ -133,7 +133,6 @@ export default function PreviewPane({ expandedDocumentId, folderId, allowedExten
       const isPdf = String(ext ?? '').toLowerCase() === 'pdf';
       const pageId = activePage.pageId;
 
-      const loadSeq = (loadSeqRef.current += 1);
       setPreviewLoading(true);
       try {
         let response: Response;
@@ -142,27 +141,18 @@ export default function PreviewPane({ expandedDocumentId, folderId, allowedExten
         // Per API docs, /images is the endpoint intended for displaying an individual page in the UI
         // and requires BOTH pageId and imageId. Use it for *all* single-page previews (including PDFs).
         if (imageId != null) {
-          response = await getImages(pageId, imageId, undefined, baseUrl);
+          response = await getImages(pageId, imageId, undefined, baseUrl, controller.signal);
           mimeType = getMimeType(ext);
         } else if (isPdf) {
           // Fallback: some PDF page records may not expose imageId; try combined-pdf for that single page.
-          response = await getPreview({ documentId, pageIds: pageId }, baseUrl);
+          response = await getPreview({ documentId, pageIds: pageId }, baseUrl, controller.signal);
           mimeType = 'application/pdf';
         } else {
           throw new Error(`Missing imageId for pageId=${pageId} ext=${String(ext ?? '')}`);
         }
 
         const buffer = await response.arrayBuffer();
-        // Only apply results if this is still the latest request
-        if (loadSeq !== loadSeqRef.current) return;
-
         const responseContentType = response.headers.get('content-type');
-
-        // Cleanup any previous blob URL before setting new state
-        if (previousUrlRef.current) {
-          URL.revokeObjectURL(previousUrlRef.current);
-          previousUrlRef.current = null;
-        }
 
         // Determine kind from bytes first (backend may return incorrect content-type).
         const kind = detectKindFromBytes(buffer);
@@ -178,28 +168,30 @@ export default function PreviewPane({ expandedDocumentId, folderId, allowedExten
         } else if (kind === 'image' || isResponseImage) {
           const blob = new Blob([buffer], { type: responseContentType || mimeType });
           const url = URL.createObjectURL(blob);
-          previousUrlRef.current = url;
           setPreviewUrl(url);
           setPreviewData(null);
         } else {
           // Unknown/binary - offer download
           const blob = new Blob([buffer], { type: responseContentType || mimeType });
           const url = URL.createObjectURL(blob);
-          previousUrlRef.current = url;
           setPreviewUrl(url);
           setPreviewData(null);
         }
 
         setPreviewUnavailable(false);
       } catch (e) {
+        if ((e as any)?.name === 'AbortError') return;
         console.error('Failed to fetch preview:', e);
-        if (loadSeq === loadSeqRef.current) setPreviewUnavailable(true);
+        setPreviewUnavailable(true);
       } finally {
-        if (loadSeq === loadSeqRef.current) setPreviewLoading(false);
+        setPreviewLoading(false);
       }
     };
 
     run();
+    return () => {
+      controller.abort();
+    };
   }, [documentId, activePage, baseUrl]);
 
   const previewType = (() => {
