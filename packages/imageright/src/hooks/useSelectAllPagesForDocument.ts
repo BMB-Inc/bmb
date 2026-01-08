@@ -25,7 +25,7 @@ const filterPagesByExtension = (pages: any[], allowedExtensions?: string[]): any
  */
 export function useSelectAllPagesForDocument(allowedExtensions?: string[]) {
   const { baseUrl } = useImageRightConfig();
-  const { selectMany } = useSelectedPages();
+  const { selectMany, deselectPagesForDocument } = useSelectedPages();
 
   const selectAllPagesForDocument = useCallback(async (documentId: number, folderId?: number | null) => {
     try {
@@ -58,6 +58,6 @@ export function useSelectAllPagesForDocument(allowedExtensions?: string[]) {
     }
   }, [baseUrl, selectMany, allowedExtensions]);
 
-  return { selectAllPagesForDocument };
+  return { selectAllPagesForDocument, deselectPagesForDocument };
 }
 

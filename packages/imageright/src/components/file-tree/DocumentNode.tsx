@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { Group, Text, Checkbox, Loader } from '@mantine/core';
 import { IconFileText, IconChevronRight, IconChevronDown } from '@tabler/icons-react';
 import { usePages } from '@hooks/usePages';
@@ -7,6 +7,7 @@ import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
 import { useSelectAllPagesForDocument } from '@hooks/useSelectAllPagesForDocument';
 import PageRow from '../file-browser/PageRow';
 import classes from '../../modules/file-tree.module.css';
+import dayjs from 'dayjs';
 
 type DocumentNodeProps = {
   doc: any;
@@ -36,7 +37,6 @@ const filterPagesByExtension = (pages: any[], allowedExtensions?: string[]): any
 
 export function DocumentNode({
   doc,
-  clientId,
   folderId,
   selectedDocumentId,
   visibleDocumentIds,
@@ -65,14 +65,45 @@ export function DocumentNode({
     setLastSelectedId,
   } = useSelectedDocuments();
   
-  const { selectAllPagesForDocument, deselectPagesForDocument } = useSelectAllPagesForDocument(allowedExtensions);
-  const { isSelected: isPageSelected, toggleSelected: togglePageSelected, handleSelectWithModifiers: handlePageSelectWithModifiers, setLastSelectedId: setLastSelectedPageId } = useSelectedPages();
+  const { selectAllPagesForDocument } = useSelectAllPagesForDocument(allowedExtensions);
+  const {
+    isSelected: isPageSelected,
+    toggleSelected: togglePageSelected,
+    handleSelectWithModifiers: handlePageSelectWithModifiers,
+    setLastSelectedId: setLastSelectedPageId,
+    deselectPagesForDocument,
+  } = useSelectedPages();
 
   const isImported = importedDocumentIds?.includes(String(doc.id)) ?? false;
   const isSelected = selectedDocumentId === doc.id;
   
-  const docName = doc.description || doc.documentTypeDescription;
-  const docDisplayName = doc.documentTypeDescription && doc.documentTypeDescription !== docName
+  // Track which document we last auto-selected for
+  const lastAutoSelectedDocRef = useRef<number | null>(null);
+  
+  // Auto-select first page when document is selected and pages load
+  useEffect(() => {
+    // Only auto-select if:
+    // 1. Document is selected (for preview)
+    // 2. Pages have loaded
+    // 3. We haven't already auto-selected for THIS specific document
+    if (isSelected && !pagesLoading && pages.length > 0 && lastAutoSelectedDocRef.current !== doc.id) {
+      const firstPage = pages[0] as any;
+      if (firstPage?.id) {
+        lastAutoSelectedDocRef.current = doc.id;
+        onPageClick?.(firstPage.id);
+      }
+    }
+  }, [isSelected, pagesLoading, pages, doc.id, onPageClick]);
+  
+  // Reset auto-select tracking when document is deselected
+  useEffect(() => {
+    if (!isSelected) {
+      lastAutoSelectedDocRef.current = null;
+    }
+  }, [isSelected]);
+  
+  const docName = `${dayjs(doc.dateLastModified).format('MM/DD/YYYY')} ${doc.documentName} - ${doc.description} (${doc.pageCount} pages)`;
+    const docDisplayName = doc.documentTypeDescription && doc.documentTypeDescription !== docName
     ? `${docName} (${doc.documentTypeDescription})`
     : docName;
 
@@ -92,8 +123,17 @@ export function DocumentNode({
     return style;
   };
 
-  // Get list of visible page IDs for shift-select range
-  const visiblePageIds = useMemo(() => pages.map((p: any) => p.id), [pages]);
+  // Visible pages (with metadata) for shift-select range
+  const visiblePagesWithMetadata = useMemo(() => {
+    return pages.map((p: any) => ({
+      id: p.id,
+      documentId: doc.id,
+      folderId: folderId ?? null,
+      imageId: p?.latestImages?.imageMetadata?.[0]?.id ?? null,
+      contentType: p?.latestImages?.imageMetadata?.[0]?.contentType ?? null,
+      extension: p?.latestImages?.imageMetadata?.[0]?.extension ?? null,
+    }));
+  }, [pages, doc.id, folderId]);
 
   return (
     <div>
@@ -197,13 +237,15 @@ export function DocumentNode({
               const imageId = page?.latestImages?.imageMetadata?.[0]?.id ?? null;
               const contentType = page?.latestImages?.imageMetadata?.[0]?.contentType ?? null;
               const metadata = { documentId: doc.id, folderId: folderId ?? null, imageId, contentType, extension: ext };
-              const label = ext ? `${pageNumber}. ${baseLabel} (${String(ext).toUpperCase()})` : `${pageNumber}. ${baseLabel}`;
+              const label = `${pageNumber}. ${baseLabel}`;
               
               return (
                 <PageRow
                   key={page.id}
                   label={label}
-                  selected={isPageSelected(page.id) || activePageId === page.id}
+                  extension={ext}
+                  active={activePageId === page.id}
+                  selected={isPageSelected(page.id)}
                   checked={isPageSelected(page.id)}
                   onCheckedChange={(checked) => {
                     togglePageSelected(page.id, metadata, checked);
@@ -213,11 +255,12 @@ export function DocumentNode({
                     const hasModifier = shiftKey || ctrlKey || metaKey;
                     
                     if (hasModifier) {
-                      handlePageSelectWithModifiers(page.id, visiblePageIds, {
-                        shiftKey,
-                        ctrlKey,
-                        metaKey,
-                      }, metadata);
+                      handlePageSelectWithModifiers(
+                        page.id,
+                        metadata,
+                        visiblePagesWithMetadata,
+                        { shiftKey, ctrlKey, metaKey }
+                      );
                       setLastSelectedPageId(page.id);
                     } else {
                       // Single click - ensure document is selected (don't toggle off) and trigger page preview

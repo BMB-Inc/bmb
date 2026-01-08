@@ -88,7 +88,7 @@ const isWordDocType = (ext: string | null): boolean => {
   return ext.toLowerCase() === 'docx';
 };
 
-export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPreviewDataChange, onPreviewUnavailableChange, onPreviewLoadingChange, hideHeader, onPageCountChange, allowedExtensions, activePageId: externalActivePageId, onActivePageIdChange }: DocumentPagesProps) {
+export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPreviewDataChange, onPreviewUnavailableChange, onPreviewLoadingChange, hideHeader, onPageCountChange, allowedExtensions, activePageId: externalActivePageId }: DocumentPagesProps) {
   const { baseUrl } = useImageRightConfig();
   const { data: rawPages = [], isLoading } = usePages({ documentId });
 
@@ -109,15 +109,16 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
   const previousUrlRef = useRef<string | null>(null);
   const [internalActivePageId, setInternalActivePageId] = useState<number | null>(null);
   
-  // Use external activePageId when provided (and not null), otherwise use internal state
-  const activePageId = externalActivePageId ?? internalActivePageId;
+  // Use external activePageId when the prop is provided (even if null), otherwise use internal state
+  // This allows parent to control the active page when DocumentPages is hidden
+  const activePageId = externalActivePageId !== undefined ? externalActivePageId : internalActivePageId;
   const setActivePageId = setInternalActivePageId;
 
   const isChecked = useCallback((id: number) => isSelected(id), [isSelected]);
   const toggleChecked = useCallback(
     (
       id: number,
-      metadata: { documentId: number; imageId: number | null; contentType: number | null; extension: string | null },
+      metadata: { documentId: number; folderId: number | null; imageId: number | null; contentType: number | null; extension: string | null },
       value?: boolean,
     ) => {
       const wasSelected = isSelected(id);
@@ -170,21 +171,20 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
     }
   }, [pages, onPageCountChange]);
 
-  // Auto-select first page when document loads (only when not externally controlled)
+  // Auto-select first page when document loads (only when DocumentPages is visible and not externally controlled)
+  // When hidden (used by PreviewPane), we skip auto-select and let the parent control activePageId
   useEffect(() => {
-    // Skip auto-select if parent is controlling the active page
-    if (externalActivePageId !== undefined && externalActivePageId !== null) return;
+    // Skip auto-select if this component is hidden (parent is controlling via activePageId prop)
+    if (externalActivePageId !== undefined) return;
     
     if (!isLoading && Array.isArray(pages) && pages.length > 0 && internalActivePageId === null) {
       const firstPage = pages[0] as any;
       if (firstPage?.id) {
         setInternalActivePageId(firstPage.id);
         setLastSelectedId(firstPage.id);
-        // Notify parent so it can update highlighting
-        onActivePageIdChange?.(firstPage.id);
       }
     }
-  }, [isLoading, pages, internalActivePageId, externalActivePageId, setLastSelectedId, onActivePageIdChange]);
+  }, [isLoading, pages, internalActivePageId, externalActivePageId, setLastSelectedId]);
 
   // Load preview whenever activePageId changes
   useEffect(() => {
@@ -308,12 +308,14 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
           const imageId = p?.latestImages?.imageMetadata?.[0]?.id ?? null;
           const contentType = p?.latestImages?.imageMetadata?.[0]?.contentType ?? null;
           const metadata = { documentId, folderId: folderId ?? null, imageId, contentType, extension: ext };
-          const label = ext ? `${pageNumber}. ${baseLabel} (${String(ext).toUpperCase()})` : `${pageNumber}. ${baseLabel}`;
+          const label = `${pageNumber}. ${baseLabel}`;
           return (
             <PageRow
               key={p.id}
               label={label}
-              selected={activePageId === p.id || isChecked(p.id)}
+              extension={ext}
+              active={activePageId === p.id}
+              selected={isChecked(p.id)}
               checked={isChecked(p.id)}
               onCheckedChange={(v) => toggleChecked(p.id, metadata, v)}
               onSelect={async (event) => {

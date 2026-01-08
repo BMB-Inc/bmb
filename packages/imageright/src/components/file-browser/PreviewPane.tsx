@@ -100,23 +100,6 @@ export default function PreviewPane({ expandedDocumentId, folderId, allowedExten
               <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
                 <WordDocPreview data={previewData} extension={previewExtension || 'docx'} />
               </div>
-            ) : previewType === 'word-legacy' && previewUrl ? (
-              <Center style={{ position: 'absolute', inset: 0 }}>
-                <Stack align="center" gap="sm">
-                  <Text c="dimmed" size="sm">
-                    Preview not available for legacy .DOC files.
-                  </Text>
-                  <Text c="dimmed" size="xs">
-                    <a
-                      href={previewUrl}
-                      download
-                      style={{ color: 'var(--mantine-color-blue-6)' }}
-                    >
-                      Download file
-                    </a>
-                  </Text>
-                </Stack>
-              </Center>
             ) : previewUrl ? (
               previewType === 'image' ? (
                 <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'auto' }}>

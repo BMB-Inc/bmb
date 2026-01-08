@@ -103,6 +103,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
   };
 
   const handleBackToClients = () => {
+    setActivePageId(null);
     navigateToClients();
   };
 
@@ -111,7 +112,10 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
     if (selectedDocumentId !== docId) {
       setActivePageId(null);
     }
-    selectDocument(selectedDocumentId === docId ? null : docId, parentFolderId);
+    // IMPORTANT: selecting a document for preview should not "toggle off" on repeated clicks.
+    // Toggling causes races where the document gets deselected while its pages are loading,
+    // making page clicks appear non-functional.
+    selectDocument(docId, parentFolderId);
   };
 
 
@@ -136,6 +140,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
             onClientRootClick={() => {
               collapseAll();
               selectDocument(null);
+              setActivePageId(null);
             }}
           />
         )}
