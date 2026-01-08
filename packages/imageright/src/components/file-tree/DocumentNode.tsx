@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Group, Text, Checkbox, Loader } from '@mantine/core';
 import { IconFileText, IconChevronRight, IconChevronDown } from '@tabler/icons-react';
 import { usePages } from '@hooks/usePages';
@@ -16,8 +16,8 @@ type DocumentNodeProps = {
   selectedDocumentId: number | null;
   visibleDocumentIds: number[];
   onDocumentSelect?: (documentId: number, folderId: number) => void;
-  onPageClick?: (pageId: number) => void;
-  activePageId?: number | null;
+  onPageClick?: (page: { documentId: number; pageId: number; imageId: number | null; extension: string | null } | null) => void;
+  activePage?: { documentId: number; pageId: number; imageId: number | null; extension: string | null } | null;
   importedDocumentIds?: string[];
   allowedExtensions?: string[];
 };
@@ -29,11 +29,17 @@ const filterPagesByExtension = (pages: any[], allowedExtensions?: string[]): any
   }
   const normalizedExtensions = allowedExtensions.map(ext => ext.toLowerCase());
   return pages.filter((p: any) => {
-    const ext = p?.latestImages?.imageMetadata?.[0]?.extension;
+    const ext =
+      p?.extension ??
+      p?.fileType ??
+      p?.latestImages?.imageMetadata?.[0]?.extension;
     if (!ext) return false;
     return normalizedExtensions.includes(ext.toLowerCase());
   });
 };
+
+const getPageId = (p: any): number | null =>
+  typeof p?.id === 'number' ? p.id : typeof p?.pageId === 'number' ? p.pageId : null;
 
 export function DocumentNode({
   doc,
@@ -42,7 +48,7 @@ export function DocumentNode({
   visibleDocumentIds,
   onDocumentSelect,
   onPageClick,
-  activePageId,
+  activePage,
   importedDocumentIds,
   allowedExtensions,
 }: DocumentNodeProps) {
@@ -54,7 +60,15 @@ export function DocumentNode({
 
   // Filter pages by allowed extensions
   const pages = useMemo(
-    () => filterPagesByExtension(rawPages, allowedExtensions),
+    () => {
+      const filtered = filterPagesByExtension(rawPages, allowedExtensions);
+      // Deterministic ordering
+      return [...filtered].sort((a: any, b: any) => {
+        const an = (typeof a?.pageNumber === 'number' && a.pageNumber) || (typeof a?.pagenumber === 'number' && a.pagenumber) || 0;
+        const bn = (typeof b?.pageNumber === 'number' && b.pageNumber) || (typeof b?.pagenumber === 'number' && b.pagenumber) || 0;
+        return an - bn;
+      });
+    },
     [rawPages, allowedExtensions]
   );
 
@@ -76,31 +90,26 @@ export function DocumentNode({
 
   const isImported = importedDocumentIds?.includes(String(doc.id)) ?? false;
   const isSelected = selectedDocumentId === doc.id;
-  
-  // Track which document we last auto-selected for
-  const lastAutoSelectedDocRef = useRef<number | null>(null);
-  
-  // Auto-select first page when document is selected and pages load
+
+  // Auto-preview first page when a document is expanded and selected.
+  // Deterministic (sorted pages) and no refs: if there is no activePage for this document, set it to the first page.
   useEffect(() => {
-    // Only auto-select if:
-    // 1. Document is selected (for preview)
-    // 2. Pages have loaded
-    // 3. We haven't already auto-selected for THIS specific document
-    if (isSelected && !pagesLoading && pages.length > 0 && lastAutoSelectedDocRef.current !== doc.id) {
-      const firstPage = pages[0] as any;
-      if (firstPage?.id) {
-        lastAutoSelectedDocRef.current = doc.id;
-        onPageClick?.(firstPage.id);
-      }
-    }
-  }, [isSelected, pagesLoading, pages, doc.id, onPageClick]);
+    if (!isExpanded) return;
+    if (!isSelected) return;
+    if (pagesLoading) return;
+    if (!pages || pages.length === 0) return;
+    if (activePage?.documentId === doc.id) return;
+
+    const first = pages[0] as any;
+    const firstPageId = getPageId(first);
+    if (firstPageId == null) return;
+
+    const firstExt = first?.extension ?? first?.fileType ?? first?.latestImages?.imageMetadata?.[0]?.extension ?? null;
+    const firstImageId = first?.imageId ?? first?.latestImages?.imageMetadata?.[0]?.id ?? null;
+    onPageClick?.({ documentId: doc.id, pageId: firstPageId, imageId: firstImageId, extension: firstExt });
+  }, [isExpanded, isSelected, pagesLoading, pages, activePage, doc.id, onPageClick]);
   
-  // Reset auto-select tracking when document is deselected
-  useEffect(() => {
-    if (!isSelected) {
-      lastAutoSelectedDocRef.current = null;
-    }
-  }, [isSelected]);
+  // NOTE: PreviewPane owns "auto-select first page" now (single source of truth).
   
   const docName = `${dayjs(doc.dateLastModified).format('MM/DD/YYYY')} ${doc.documentName} - ${doc.description} (${doc.pageCount} pages)`;
     const docDisplayName = doc.documentTypeDescription && doc.documentTypeDescription !== docName
@@ -126,12 +135,12 @@ export function DocumentNode({
   // Visible pages (with metadata) for shift-select range
   const visiblePagesWithMetadata = useMemo(() => {
     return pages.map((p: any) => ({
-      id: p.id,
+      id: getPageId(p) ?? p.id,
       documentId: doc.id,
       folderId: folderId ?? null,
-      imageId: p?.latestImages?.imageMetadata?.[0]?.id ?? null,
-      contentType: p?.latestImages?.imageMetadata?.[0]?.contentType ?? null,
-      extension: p?.latestImages?.imageMetadata?.[0]?.extension ?? null,
+      imageId: p?.imageId ?? p?.latestImages?.imageMetadata?.[0]?.id ?? null,
+      contentType: p?.contentType ?? p?.latestImages?.imageMetadata?.[0]?.contentType ?? null,
+      extension: p?.extension ?? p?.fileType ?? p?.latestImages?.imageMetadata?.[0]?.extension ?? null,
     }));
   }, [pages, doc.id, folderId]);
 
@@ -231,24 +240,26 @@ export function DocumentNode({
             </Group>
           ) : pages.length > 0 ? (
             pages.map((page: any, index: number) => {
+              const pageId = getPageId(page);
+              if (pageId == null) return null;
               const pageNumber = index + 1;
               const baseLabel = page.description || `Page ${page.pagenumber ?? ''}`;
-              const ext = page?.latestImages?.imageMetadata?.[0]?.extension ?? null;
-              const imageId = page?.latestImages?.imageMetadata?.[0]?.id ?? null;
-              const contentType = page?.latestImages?.imageMetadata?.[0]?.contentType ?? null;
+              const ext = page?.extension ?? page?.fileType ?? page?.latestImages?.imageMetadata?.[0]?.extension ?? null;
+              const imageId = page?.imageId ?? page?.latestImages?.imageMetadata?.[0]?.id ?? null;
+              const contentType = page?.contentType ?? page?.latestImages?.imageMetadata?.[0]?.contentType ?? null;
               const metadata = { documentId: doc.id, folderId: folderId ?? null, imageId, contentType, extension: ext };
               const label = `${pageNumber}. ${baseLabel}`;
               
               return (
                 <PageRow
-                  key={page.id}
+                  key={pageId}
                   label={label}
                   extension={ext}
-                  active={activePageId === page.id}
-                  selected={isPageSelected(page.id)}
-                  checked={isPageSelected(page.id)}
+                  active={activePage?.documentId === doc.id && activePage?.pageId === pageId}
+                  selected={isPageSelected(pageId)}
+                  checked={isPageSelected(pageId)}
                   onCheckedChange={(checked) => {
-                    togglePageSelected(page.id, metadata, checked);
+                    togglePageSelected(pageId, metadata, checked);
                   }}
                   onSelect={(event) => {
                     const { shiftKey, ctrlKey, metaKey } = event;
@@ -256,31 +267,31 @@ export function DocumentNode({
                     
                     if (hasModifier) {
                       handlePageSelectWithModifiers(
-                        page.id,
+                        pageId,
                         metadata,
                         visiblePagesWithMetadata,
                         { shiftKey, ctrlKey, metaKey }
                       );
-                      setLastSelectedPageId(page.id);
+                      setLastSelectedPageId(pageId);
                     } else {
                       // Single click - ensure document is selected (don't toggle off) and trigger page preview
                       if (selectedDocumentId !== doc.id) {
                         onDocumentSelect?.(doc.id, folderId);
                       }
-                      onPageClick?.(page.id);
-                      setLastSelectedPageId(page.id);
+                      onPageClick?.({ documentId: doc.id, pageId, imageId, extension: ext });
+                      setLastSelectedPageId(pageId);
                     }
                   }}
                   onDoubleClick={() => {
                     // Double click - toggle page selection (unselect if already selected)
-                    const currentlySelected = isPageSelected(page.id);
-                    togglePageSelected(page.id, metadata, !currentlySelected);
+                    const currentlySelected = isPageSelected(pageId);
+                    togglePageSelected(pageId, metadata, !currentlySelected);
                     // Ensure document stays selected
                     if (selectedDocumentId !== doc.id) {
                       onDocumentSelect?.(doc.id, folderId);
                     }
-                    onPageClick?.(page.id);
-                    setLastSelectedPageId(page.id);
+                    onPageClick?.({ documentId: doc.id, pageId, imageId, extension: ext });
+                    setLastSelectedPageId(pageId);
                   }}
                 />
               );

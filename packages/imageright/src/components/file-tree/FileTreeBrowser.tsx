@@ -30,7 +30,14 @@ type FileTreeBrowserProps = {
 export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions, importedDocumentIds }: FileTreeBrowserProps) {
   const { data: clients = [], isLoading: clientsLoading } = useClients();
   const [documentSearch, setDocumentSearch] = useState('');
-  const [activePageId, setActivePageId] = useState<number | null>(null);
+  type ActivePage = {
+    documentId: number;
+    pageId: number;
+    imageId: number | null;
+    extension: string | null;
+  };
+
+  const [activePage, setActivePage] = useState<ActivePage | null>(null);
   
   // URL-persisted navigation state
   const {
@@ -103,14 +110,14 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
   };
 
   const handleBackToClients = () => {
-    setActivePageId(null);
+    setActivePage(null);
     navigateToClients();
   };
 
   const handleDocumentSelect = (docId: number, parentFolderId: number) => {
     // Clear activePageId when selecting a different document
     if (selectedDocumentId !== docId) {
-      setActivePageId(null);
+      setActivePage(null);
     }
     // IMPORTANT: selecting a document for preview should not "toggle off" on repeated clicks.
     // Toggling causes races where the document gets deselected while its pages are loading,
@@ -140,7 +147,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
             onClientRootClick={() => {
               collapseAll();
               selectDocument(null);
-              setActivePageId(null);
+              setActivePage(null);
             }}
           />
         )}
@@ -227,10 +234,6 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
                           px={8}
                           className={classes.folderRow}
                           onClick={() => {
-                            const isCurrentlyExpanded = expandedRootFolders.has(folder.id);
-                            if (!isCurrentlyExpanded) {
-                              console.log('Opening folder:', folder);
-                            }
                             toggleRootFolder(folder.id);
                           }}
                         >
@@ -266,8 +269,8 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
                             documentSearch={documentSearch}
                             selectedDocumentId={selectedDocumentId}
                             onDocumentSelect={handleDocumentSelect}
-                            onPageClick={setActivePageId}
-                            activePageId={activePageId}
+                            onPageClick={setActivePage}
+                            activePage={activePage}
                             importedDocumentIds={importedDocumentIds}
                             allowedExtensions={allowedExtensions}
                           />
@@ -292,8 +295,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
               expandedDocumentId={selectedDocumentId?.toString() ?? null} 
               folderId={selectedFolderId} 
               allowedExtensions={allowedExtensions}
-              activePageId={activePageId}
-              onActivePageIdChange={setActivePageId}
+              activePage={activePage}
             />
           </div>
         )}
@@ -312,7 +314,7 @@ function RootFolderChildren({
   selectedDocumentId,
   onDocumentSelect,
   onPageClick,
-  activePageId,
+  activePage,
   importedDocumentIds,
   allowedExtensions,
 }: {
@@ -323,8 +325,8 @@ function RootFolderChildren({
   documentSearch?: string;
   selectedDocumentId: number | null;
   onDocumentSelect: (documentId: number, folderId: number) => void;
-  onPageClick: (pageId: number) => void;
-  activePageId: number | null;
+  onPageClick: (page: { documentId: number; pageId: number; imageId: number | null; extension: string | null } | null) => void;
+  activePage: { documentId: number; pageId: number; imageId: number | null; extension: string | null } | null;
   importedDocumentIds?: string[];
   allowedExtensions?: string[];
 }) {
@@ -373,10 +375,7 @@ function RootFolderChildren({
       const next = new Set(prev);
       const isCurrentlyExpanded = next.has(id);
       if (!isCurrentlyExpanded) {
-        const folder = childFolders.find((f: any) => f.id === id);
-        if (folder) {
-          console.log('Opening folder:', folder);
-        }
+        void childFolders.find((f: any) => f.id === id);
         next.add(id);
       } else {
         next.delete(id);
@@ -426,7 +425,7 @@ function RootFolderChildren({
               selectedDocumentId={selectedDocumentId}
               onDocumentSelect={onDocumentSelect}
               onPageClick={onPageClick}
-              activePageId={activePageId}
+              activePage={activePage}
               importedDocumentIds={importedDocumentIds}
               allowedExtensions={allowedExtensions}
             />
@@ -443,7 +442,7 @@ function RootFolderChildren({
               visibleDocumentIds={visibleDocumentIds}
               onDocumentSelect={onDocumentSelect}
               onPageClick={onPageClick}
-              activePageId={activePageId}
+              activePage={activePage}
               importedDocumentIds={importedDocumentIds}
               allowedExtensions={allowedExtensions}
             />

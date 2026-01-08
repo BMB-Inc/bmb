@@ -88,6 +88,12 @@ const isWordDocType = (ext: string | null): boolean => {
   return ext.toLowerCase() === 'docx';
 };
 
+// TIFF generally can't be rendered by <img> in browsers; we decode client-side
+const isTiffType = (ext: string | null): boolean => {
+  if (!ext) return false;
+  return ['tif', 'tiff'].includes(ext.toLowerCase());
+};
+
 export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPreviewDataChange, onPreviewUnavailableChange, onPreviewLoadingChange, hideHeader, onPageCountChange, allowedExtensions, activePageId: externalActivePageId }: DocumentPagesProps) {
   const { baseUrl } = useImageRightConfig();
   const { data: rawPages = [], isLoading } = usePages({ documentId });
@@ -214,8 +220,8 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
 
             const buffer = await response.arrayBuffer();
             
-            // For PDF, email, spreadsheet, and Word files, pass raw data instead of blob URL
-            if (isPdf || isEmailType(ext) || isSpreadsheetType(ext) || isWordDocType(ext)) {
+            // For PDF, email, spreadsheet, Word, and TIFF files, pass raw data instead of blob URL
+            if (isPdf || isEmailType(ext) || isSpreadsheetType(ext) || isWordDocType(ext) || isTiffType(ext)) {
               onPreviewDataChange?.(buffer, ext);
               onPreviewUrlChange?.(null, ext);
             } else {
@@ -370,8 +376,8 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
 
                     const buffer = await response.arrayBuffer();
                     
-                    // For PDF, email, spreadsheet, and Word files, pass raw data instead of blob URL
-                    if (isPdf || isEmailType(ext) || isSpreadsheetType(ext) || isWordDocType(ext)) {
+                    // For PDF, email, spreadsheet, Word, and TIFF files, pass raw data instead of blob URL
+                    if (isPdf || isEmailType(ext) || isSpreadsheetType(ext) || isWordDocType(ext) || isTiffType(ext)) {
                       onPreviewDataChange?.(buffer, ext);
                       onPreviewUrlChange?.(null, ext);
                     } else {

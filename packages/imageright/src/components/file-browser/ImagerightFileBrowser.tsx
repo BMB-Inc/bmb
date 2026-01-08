@@ -172,11 +172,6 @@ export const FolderFileBrowser = ({ folderTypes, documentTypes, allowedExtension
                 expandedDocumentId={expandedDocumentId}
                 folderId={expandedFolderId ? Number(expandedFolderId) : null}
                 navigateIntoFolder={(id, name) => {
-                  const folderIdNum = Number(id);
-                  const folder = folders.find((f: any) => f.id === folderIdNum);
-                  if (folder) {
-                    console.log('Opening folder:', folder);
-                  }
                   navigateIntoFolder(id.toString(), name);
                 }}
                 navigateToDocument={(id) => navigateToDocument(id.toString())}

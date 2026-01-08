@@ -60,9 +60,6 @@ const DOCUMENT_TYPES = [
 const FILE_TYPES = [FileTypes.PDF, FileTypes.JPG, FileTypes.PNG, FileTypes.DOC, FileTypes.DOCX, FileTypes.XLS, FileTypes.XLSX, FileTypes.MSG, FileTypes.EML];
 
 function App() {
-  const { selectedPages, selectedPagesByDocument } = useSelectedPages();
-  console.log('selectedPages:', selectedPages);
-  console.log('selectedPagesByDocument:', selectedPagesByDocument);
   return (
     <Stack m="lg">
       <Title order={1} ta="center" mb="xl">

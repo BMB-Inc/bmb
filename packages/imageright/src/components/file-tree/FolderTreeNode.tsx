@@ -24,8 +24,8 @@ type FolderTreeNodeProps = {
   documentSearch?: string;
   selectedDocumentId?: number | null;
   onDocumentSelect?: (documentId: number, folderId: number) => void;
-  onPageClick?: (pageId: number) => void;
-  activePageId?: number | null;
+  onPageClick?: (page: { documentId: number; pageId: number; imageId: number | null; extension: string | null } | null) => void;
+  activePage?: { documentId: number; pageId: number; imageId: number | null; extension: string | null } | null;
   /** Document IDs that have already been imported (will be displayed greyed out) */
   importedDocumentIds?: string[];
   /** File extensions to filter pages by (e.g., ['pdf', 'jpg']) */
@@ -46,10 +46,11 @@ export function FolderTreeNode({
   selectedDocumentId,
   onDocumentSelect,
   onPageClick,
-  activePageId,
+  activePage,
   importedDocumentIds,
   allowedExtensions,
 }: FolderTreeNodeProps) {
+  void folderType; // kept for API consistency / future UI (folder type badges)
   // Only fetch children when expanded
   const { data: rawChildFolders = [], isLoading: foldersLoading } = useFolders(
     isExpanded
@@ -99,10 +100,6 @@ export function FolderTreeNode({
         className={classes.folderRow}
         style={{ paddingLeft: depth * 20 + 6 }}
         onClick={() => {
-          if (!isExpanded) {
-            // Log folder data when opening
-            console.log('Opening folder:', { folderId, folderName, folderType, clientId });
-          }
           onToggle();
         }}
       >
@@ -158,14 +155,14 @@ export function FolderTreeNode({
                   folderId={folder.id}
                   folderName={childFolderDisplayName}
                   folderType={folder.folderTypeName || folder.folderTypeDescription || 'Folder'}
-                  depth={0}
+                  depth={depth + 1}
                   folderTypes={folderTypes}
                   documentTypes={documentTypes}
                   documentSearch={documentSearch}
                   selectedDocumentId={selectedDocumentId}
                   onDocumentSelect={onDocumentSelect}
                   onPageClick={onPageClick}
-                  activePageId={activePageId}
+                  activePage={activePage}
                   importedDocumentIds={importedDocumentIds}
                   allowedExtensions={allowedExtensions}
                 />
@@ -182,7 +179,7 @@ export function FolderTreeNode({
                   visibleDocumentIds={visibleDocumentIds}
                   onDocumentSelect={onDocumentSelect}
                   onPageClick={onPageClick}
-                  activePageId={activePageId}
+                  activePage={activePage}
                   importedDocumentIds={importedDocumentIds}
                   allowedExtensions={allowedExtensions}
                 />
@@ -214,6 +211,8 @@ function RecursiveFolderNode({
   documentSearch,
   selectedDocumentId,
   onDocumentSelect,
+  onPageClick,
+  activePage,
   importedDocumentIds,
   allowedExtensions,
 }: Omit<FolderTreeNodeProps, 'isExpanded' | 'onToggle'>) {
@@ -228,10 +227,6 @@ function RecursiveFolderNode({
       depth={depth}
       isExpanded={isExpanded}
       onToggle={() => {
-        if (!isExpanded) {
-          // Log folder data when opening
-          console.log('Opening folder:', { folderId, folderName, folderType, clientId });
-        }
         setIsExpanded((prev) => !prev);
       }}
       folderTypes={folderTypes}
@@ -239,6 +234,8 @@ function RecursiveFolderNode({
       documentSearch={documentSearch}
       selectedDocumentId={selectedDocumentId}
       onDocumentSelect={onDocumentSelect}
+      onPageClick={onPageClick}
+      activePage={activePage}
       importedDocumentIds={importedDocumentIds}
       allowedExtensions={allowedExtensions}
     />

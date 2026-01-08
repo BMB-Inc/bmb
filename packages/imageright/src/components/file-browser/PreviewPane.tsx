@@ -1,10 +1,13 @@
 import { Stack, Divider, Title, Text, Loader, Center } from '@mantine/core';
-import { useState } from 'react';
-import DocumentPages from './DocumentPages';
+import { useEffect, useRef, useState } from 'react';
 import EmailPreview from './EmailPreview';
 import SpreadsheetPreview from './SpreadsheetPreview';
 import WordDocPreview from './WordDocPreview';
 import PdfPreview from './PdfPreview';
+import TiffPreview from './TiffPreview';
+import { getPreview } from '@api/preview/route';
+import { getImages } from '@api/images/route';
+import { useImageRightConfig } from '../../context/ImageRightContext';
 
 type PreviewPaneProps = {
   expandedDocumentId: string | null | undefined;
@@ -12,18 +15,17 @@ type PreviewPaneProps = {
   folderId?: number | null;
   /** File extensions to filter pages by (e.g., ['pdf', 'jpg']) */
   allowedExtensions?: string[];
-  /** Active page ID to preview (controlled externally) */
-  activePageId?: number | null;
-  /** Callback when active page changes (e.g., when first page is auto-selected) */
-  onActivePageIdChange?: (pageId: number | null) => void;
+  /** Active page to preview (set by tree click/auto-select) */
+  activePage?: { documentId: number; pageId: number; imageId: number | null; extension: string | null } | null;
 };
 
 // Helper to determine preview type from extension
-const getPreviewType = (ext: string | null): 'pdf' | 'image' | 'email' | 'spreadsheet' | 'word' | 'word-legacy' | 'other' => {
+const getPreviewType = (ext: string | null): 'pdf' | 'tiff' | 'image' | 'email' | 'spreadsheet' | 'word' | 'word-legacy' | 'other' => {
   if (!ext) return 'other';
   const extension = ext.toLowerCase();
   if (extension === 'pdf') return 'pdf';
-  if (['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'tif', 'tiff'].includes(extension)) return 'image';
+  if (['tif', 'tiff'].includes(extension)) return 'tiff';
+  if (['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp'].includes(extension)) return 'image';
   if (['msg', 'eml'].includes(extension)) return 'email';
   if (['xls', 'xlsx', 'xlsm', 'xlsb', 'csv'].includes(extension)) return 'spreadsheet';
   if (extension === 'docx') return 'word';
@@ -31,14 +33,185 @@ const getPreviewType = (ext: string | null): 'pdf' | 'image' | 'email' | 'spread
   return 'other';
 };
 
-export default function PreviewPane({ expandedDocumentId, folderId, allowedExtensions, activePageId, onActivePageIdChange }: PreviewPaneProps) {
+const getMimeType = (ext: string | null): string => {
+  if (!ext) return 'application/octet-stream';
+  const extension = ext.toLowerCase();
+  const mimeTypes: Record<string, string> = {
+    pdf: 'application/pdf',
+    png: 'image/png',
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    gif: 'image/gif',
+    bmp: 'image/bmp',
+    tif: 'image/tiff',
+    tiff: 'image/tiff',
+    webp: 'image/webp',
+    msg: 'application/vnd.ms-outlook',
+    eml: 'message/rfc822',
+    doc: 'application/msword',
+    docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    xls: 'application/vnd.ms-excel',
+    xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    xlsm: 'application/vnd.ms-excel.sheet.macroEnabled.12',
+    csv: 'text/csv',
+    txt: 'text/plain',
+  };
+  return mimeTypes[extension] || 'application/octet-stream';
+};
+
+const isEmailType = (ext: string | null): boolean => !!ext && ['msg', 'eml'].includes(ext.toLowerCase());
+const isSpreadsheetType = (ext: string | null): boolean => !!ext && ['xls', 'xlsx', 'xlsm', 'xlsb', 'csv'].includes(ext.toLowerCase());
+const isWordDocType = (ext: string | null): boolean => !!ext && ext.toLowerCase() === 'docx';
+
+type DetectedKind = 'pdf' | 'tiff' | 'image' | 'other';
+
+function detectKindFromBytes(buffer: ArrayBuffer): DetectedKind {
+  const b = new Uint8Array(buffer);
+  // PDF: %PDF
+  if (b.length >= 4 && b[0] === 0x25 && b[1] === 0x50 && b[2] === 0x44 && b[3] === 0x46) return 'pdf';
+  // TIFF: "II*\0" or "MM\0*"
+  if (b.length >= 4) {
+    const isII = b[0] === 0x49 && b[1] === 0x49 && b[2] === 0x2a && b[3] === 0x00;
+    const isMM = b[0] === 0x4d && b[1] === 0x4d && b[2] === 0x00 && b[3] === 0x2a;
+    if (isII || isMM) return 'tiff';
+  }
+  // PNG
+  if (b.length >= 8 && b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) return 'image';
+  // JPEG
+  if (b.length >= 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'image';
+  // GIF
+  if (b.length >= 6 && b[0] === 0x47 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x38) return 'image';
+  // BMP
+  if (b.length >= 2 && b[0] === 0x42 && b[1] === 0x4d) return 'image';
+  // WEBP: RIFF....WEBP
+  if (b.length >= 12 && b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 && b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50) return 'image';
+  return 'other';
+}
+
+export default function PreviewPane({ expandedDocumentId, folderId, allowedExtensions, activePage }: PreviewPaneProps) {
+  void folderId; // reserved for future (page metadata / downloads); keeps prop stable
+  void allowedExtensions; // filtering is applied in the tree page list; preview loads active page only
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewData, setPreviewData] = useState<ArrayBuffer | null>(null);
   const [previewExtension, setPreviewExtension] = useState<string | null>(null);
+  const [previewContentType, setPreviewContentType] = useState<string | null>(null);
+  void previewContentType; // kept for debugging/inspection if needed
   const [previewUnavailable, setPreviewUnavailable] = useState<boolean>(false);
   const [previewLoading, setPreviewLoading] = useState<boolean>(false);
+  const previousUrlRef = useRef<string | null>(null);
+  const loadSeqRef = useRef<number>(0);
+  const { baseUrl } = useImageRightConfig();
 
-  const previewType = getPreviewType(previewExtension);
+  const documentId = expandedDocumentId ? Number(expandedDocumentId) : null;
+
+  // Reset preview state when the document changes.
+  useEffect(() => {
+    // cleanup blob URL
+    if (previousUrlRef.current) {
+      URL.revokeObjectURL(previousUrlRef.current);
+      previousUrlRef.current = null;
+    }
+    // bump sequence to invalidate any in-flight loads
+    loadSeqRef.current += 1;
+    setPreviewUrl(null);
+    setPreviewData(null);
+    setPreviewExtension(null);
+    setPreviewContentType(null);
+    setPreviewUnavailable(false);
+    setPreviewLoading(false);
+  }, [documentId]);
+
+  // Load preview bytes/url when active page changes.
+  useEffect(() => {
+    const run = async () => {
+      if (!documentId) return;
+      if (!activePage) return;
+      if (activePage.documentId !== documentId) return;
+
+      const ext = activePage.extension ?? null;
+      const imageId = activePage.imageId ?? null;
+      const isPdf = String(ext ?? '').toLowerCase() === 'pdf';
+      const pageId = activePage.pageId;
+
+      const loadSeq = (loadSeqRef.current += 1);
+      setPreviewLoading(true);
+      try {
+        let response: Response;
+        let mimeType: string;
+
+        // Per API docs, /images is the endpoint intended for displaying an individual page in the UI
+        // and requires BOTH pageId and imageId. Use it for *all* single-page previews (including PDFs).
+        if (imageId != null) {
+          response = await getImages(pageId, imageId, undefined, baseUrl);
+          mimeType = getMimeType(ext);
+        } else if (isPdf) {
+          // Fallback: some PDF page records may not expose imageId; try combined-pdf for that single page.
+          response = await getPreview({ documentId, pageIds: pageId }, baseUrl);
+          mimeType = 'application/pdf';
+        } else {
+          throw new Error(`Missing imageId for pageId=${pageId} ext=${String(ext ?? '')}`);
+        }
+
+        const buffer = await response.arrayBuffer();
+        // Only apply results if this is still the latest request
+        if (loadSeq !== loadSeqRef.current) return;
+
+        const responseContentType = response.headers.get('content-type');
+
+        // Cleanup any previous blob URL before setting new state
+        if (previousUrlRef.current) {
+          URL.revokeObjectURL(previousUrlRef.current);
+          previousUrlRef.current = null;
+        }
+
+        // Determine kind from bytes first (backend may return incorrect content-type).
+        const kind = detectKindFromBytes(buffer);
+        const ct = (responseContentType || mimeType || '').toLowerCase();
+        const isResponseImage = ct.startsWith('image/');
+
+        setPreviewExtension(ext);
+        setPreviewContentType(responseContentType || mimeType || null);
+
+        if (kind === 'pdf' || isEmailType(ext) || isSpreadsheetType(ext) || isWordDocType(ext) || kind === 'tiff') {
+          setPreviewData(buffer);
+          setPreviewUrl(null);
+        } else if (kind === 'image' || isResponseImage) {
+          const blob = new Blob([buffer], { type: responseContentType || mimeType });
+          const url = URL.createObjectURL(blob);
+          previousUrlRef.current = url;
+          setPreviewUrl(url);
+          setPreviewData(null);
+        } else {
+          // Unknown/binary - offer download
+          const blob = new Blob([buffer], { type: responseContentType || mimeType });
+          const url = URL.createObjectURL(blob);
+          previousUrlRef.current = url;
+          setPreviewUrl(url);
+          setPreviewData(null);
+        }
+
+        setPreviewUnavailable(false);
+      } catch (e) {
+        console.error('Failed to fetch preview:', e);
+        if (loadSeq === loadSeqRef.current) setPreviewUnavailable(true);
+      } finally {
+        if (loadSeq === loadSeqRef.current) setPreviewLoading(false);
+      }
+    };
+
+    run();
+  }, [documentId, activePage, baseUrl]);
+
+  const previewType = (() => {
+    // If bytes are present, prefer signature-based detection over headers/extension.
+    if (previewData) {
+      const kind = detectKindFromBytes(previewData);
+      if (kind === 'pdf') return 'pdf';
+      if (kind === 'tiff') return 'tiff';
+    }
+    if (previewUrl) return 'image';
+    return getPreviewType(previewExtension);
+  })();
   return (
     <div
       style={{
@@ -49,29 +222,6 @@ export default function PreviewPane({ expandedDocumentId, folderId, allowedExten
         minWidth: 0,
       }}
     >
-      {/* Hidden DocumentPages - handles preview loading only */}
-      <div style={{ display: 'none' }}>
-        {expandedDocumentId && (
-          <DocumentPages
-            documentId={Number(expandedDocumentId)}
-            folderId={folderId}
-            onPreviewUrlChange={(url, ext) => {
-              setPreviewUrl(url);
-              setPreviewExtension(ext ?? null);
-            }}
-            onPreviewDataChange={(data, ext) => {
-              setPreviewData(data);
-              if (ext) setPreviewExtension(ext);
-            }}
-            onPreviewUnavailableChange={(u) => setPreviewUnavailable(u)}
-            onPreviewLoadingChange={(loading) => setPreviewLoading(loading)}
-            hideHeader
-            allowedExtensions={allowedExtensions}
-            activePageId={activePageId}
-            onActivePageIdChange={onActivePageIdChange}
-          />
-        )}
-      </div>
       <Stack gap={6} style={{ flex: 1, minHeight: 0, minWidth: 0 }}>
         <Divider labelPosition="left" label={<Title order={6}>Preview</Title>} />
         <div style={{ flex: 1, minHeight: 0, minWidth: 0, overflow: 'hidden', position: 'relative' }}>
@@ -87,6 +237,10 @@ export default function PreviewPane({ expandedDocumentId, folderId, allowedExten
             ) : previewType === 'pdf' && previewData ? (
               <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
                 <PdfPreview data={previewData} />
+              </div>
+            ) : previewType === 'tiff' && previewData ? (
+              <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
+                <TiffPreview data={previewData} />
               </div>
             ) : previewType === 'email' && previewData ? (
               <div style={{ position: 'absolute', inset: 0, overflow: 'auto' }}>

@@ -460,6 +460,7 @@ __metadata:
     rollup-plugin-postcss: "npm:^4.0.2"
     typescript: "npm:~5.8.3"
     typescript-eslint: "npm:^8.43.0"
+    utif: "npm:^3.1.0"
     vite: "npm:^7.1.6"
     xlsx: "npm:^0.18.5"
     zod: "npm:^4.1.12"
@@ -5980,7 +5981,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pako@npm:~1.0.2":
+"pako@npm:^1.0.5, pako@npm:~1.0.2":
   version: 1.0.11
   resolution: "pako@npm:1.0.11"
   checksum: 10c0/86dd99d8b34c3930345b8bbeb5e1cd8a05f608eeb40967b293f72fe469d0e9c88b783a8777e4cc7dc7c91ce54c5e93d88ff4b4f060e6ff18408fd21030d9ffbe
@@ -8068,6 +8069,15 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10c0/161599bf921cfaa41c85d2b01c871975ee99260f3e874c2d41c05890d41170297bdcf314bc5185e7a700de2034ac5b888e3efc8e9f35724f4918f53538d717c9
+  languageName: node
+  linkType: hard
+
+"utif@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "utif@npm:3.1.0"
+  dependencies:
+    pako: "npm:^1.0.5"
+  checksum: 10c0/943b58dd7933d6713037fad8c05345dda4780edc023191037cea18e449ebdce229888565fe31e1e50176cb2b9e9dd51c35f4923d0a7f135ce5d65570a0a32e4d
   languageName: node
   linkType: hard
 
