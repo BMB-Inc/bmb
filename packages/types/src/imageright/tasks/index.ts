@@ -4,5 +4,6 @@ export * from './task-history.schema';
 export * from './get-task-history.dto';
 export * from './get-tasks.dto';
 export * from './find-tasks.dto';
+export * from './find-tasks-batch.dto';
 export * from './find-task-work-summary.dto';
 export * from './get-file-tasks.dto';
