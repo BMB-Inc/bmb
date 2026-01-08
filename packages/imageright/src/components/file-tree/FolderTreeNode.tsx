@@ -1,13 +1,11 @@
 import { useState, useMemo } from 'react';
-import { Group, Text, Loader, Checkbox } from '@mantine/core';
-import { IconFolder, IconFolderOpen, IconChevronRight, IconChevronDown, IconFileText } from '@tabler/icons-react';
+import { Group, Text, Loader } from '@mantine/core';
+import { IconFolder, IconFolderOpen, IconChevronRight, IconChevronDown } from '@tabler/icons-react';
 import { useFolders } from '@hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
 import { useFilteredDocumentsByExtension } from '@hooks/useFilteredDocumentsByExtension';
 import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
-import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
-import { useSelectAllPagesForDocument } from '@hooks/useSelectAllPagesForDocument';
-import { useSelectedPages } from '@hooks/useSelectedPages';
+import { DocumentNode } from './DocumentNode';
 import { FolderItemCount } from './FolderItemCount';
 import { treeStyles } from './styles';
 import classes from '../../modules/file-tree.module.css';
@@ -26,6 +24,8 @@ type FolderTreeNodeProps = {
   documentSearch?: string;
   selectedDocumentId?: number | null;
   onDocumentSelect?: (documentId: number, folderId: number) => void;
+  onPageClick?: (pageId: number) => void;
+  activePageId?: number | null;
   /** Document IDs that have already been imported (will be displayed greyed out) */
   importedDocumentIds?: string[];
   /** File extensions to filter pages by (e.g., ['pdf', 'jpg']) */
@@ -45,6 +45,8 @@ export function FolderTreeNode({
   documentSearch,
   selectedDocumentId,
   onDocumentSelect,
+  onPageClick,
+  activePageId,
   importedDocumentIds,
   allowedExtensions,
 }: FolderTreeNodeProps) {
@@ -84,15 +86,6 @@ export function FolderTreeNode({
 
   // Get list of visible document IDs for shift-select range
   const visibleDocumentIds = useMemo(() => documents.map((d: any) => d.id), [documents]);
-
-  const { 
-    isSelected: isDocumentSelected, 
-    toggleSelected: toggleDocumentSelected,
-    handleSelectWithModifiers,
-    setLastSelectedId,
-  } = useSelectedDocuments();
-  const { selectAllPagesForDocument } = useSelectAllPagesForDocument(allowedExtensions);
-  const { deselectPagesForDocument } = useSelectedPages();
 
   const isLoading = foldersLoading || documentsLoading || isFiltering;
 
@@ -171,110 +164,29 @@ export function FolderTreeNode({
                   documentSearch={documentSearch}
                   selectedDocumentId={selectedDocumentId}
                   onDocumentSelect={onDocumentSelect}
+                  onPageClick={onPageClick}
+                  activePageId={activePageId}
                   importedDocumentIds={importedDocumentIds}
                   allowedExtensions={allowedExtensions}
                 />
               )})}
 
               {/* Documents */}
-              {documents.map((doc: any) => {
-                const docName = doc.description || doc.documentTypeDescription || 'Document';
-                const docDisplayName = doc.documentTypeDescription && doc.documentTypeDescription !== docName
-                  ? `${docName} (${doc.documentTypeDescription})`
-                  : docName;
-                const isImported = importedDocumentIds?.includes(String(doc.id)) ?? false;
-                const isSelected = selectedDocumentId === doc.id;
-                
-                // Determine the appropriate style based on imported and selected state
-                // Use CSS class for base styling (includes hover) and inline styles for selected/imported states
-                const getDocumentStyle = () => {
-                  const style: React.CSSProperties = { userSelect: 'none' };
-                  if (isImported) {
-                    style.opacity = 0.5;
-                    if (isSelected) {
-                      style.backgroundColor = 'var(--mantine-color-blue-light)';
-                    } else {
-                      style.backgroundColor = 'var(--mantine-color-gray-1)';
-                    }
-                  } else if (isSelected) {
-                    style.backgroundColor = 'var(--mantine-color-blue-light)';
-                  }
-                  return style;
-                };
-                
-                return (
-                <Group
+              {documents.map((doc: any) => (
+                <DocumentNode
                   key={doc.id}
-                  gap="xs"
-                  py={3}
-                  px={6}
-                  className={classes.documentItem}
-                  style={getDocumentStyle()}
-                  onClick={(e) => {
-                    // Handle shift/ctrl+click for multi-select checkboxes
-                    if (e.shiftKey || e.ctrlKey || e.metaKey) {
-                      handleSelectWithModifiers(doc.id, visibleDocumentIds, {
-                        shiftKey: e.shiftKey,
-                        ctrlKey: e.ctrlKey,
-                        metaKey: e.metaKey,
-                      });
-                      setLastSelectedId(doc.id);
-                    } else {
-                      // Single click - open preview and highlight
-                      onDocumentSelect?.(doc.id, folderId);
-                      setLastSelectedId(doc.id);
-                    }
-                  }}
-                  onDoubleClick={() => {
-                    // Double-click - toggle document selection and select/deselect all pages
-                    const willBeSelected = !isDocumentSelected(doc.id);
-                    toggleDocumentSelected(doc.id, willBeSelected);
-                    if (willBeSelected) {
-                      selectAllPagesForDocument(doc.id, folderId);
-                    } else {
-                      deselectPagesForDocument(doc.id);
-                    }
-                    // Also show the document's pages in preview
-                    onDocumentSelect?.(doc.id, folderId);
-                  }}
-                >
-                  <Checkbox
-                    size="xs"
-                    checked={isDocumentSelected(doc.id)}
-                    onChange={(e) => {
-                      e.stopPropagation();
-                      const isChecked = e.currentTarget.checked;
-                      toggleDocumentSelected(doc.id, isChecked);
-                      setLastSelectedId(doc.id);
-                      if (isChecked) {
-                        selectAllPagesForDocument(doc.id, folderId);
-                        // Also open the document to view its pages
-                        onDocumentSelect?.(doc.id, folderId);
-                      } else {
-                        deselectPagesForDocument(doc.id);
-                      }
-                    }}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                  <IconFileText
-                    size={16}
-                    color={
-                      selectedDocumentId === doc.id
-                        ? 'var(--mantine-color-blue-9)'
-                        : 'var(--mantine-color-blue-7)'
-                    }
-                    style={{ flexShrink: 0 }}
-                  />
-                  <Text truncate style={{ minWidth: 0, flex: 1 }}>
-                    {docDisplayName}
-                  </Text>
-                  {isImported && (
-                    <Text c="dimmed" size="xs" fs="italic" style={{ flexShrink: 0 }}>
-                      Imported Already
-                    </Text>
-                  )}
-                </Group>
-              )})}
+                  doc={doc}
+                  clientId={clientId}
+                  folderId={folderId}
+                  selectedDocumentId={selectedDocumentId ?? null}
+                  visibleDocumentIds={visibleDocumentIds}
+                  onDocumentSelect={onDocumentSelect}
+                  onPageClick={onPageClick}
+                  activePageId={activePageId}
+                  importedDocumentIds={importedDocumentIds}
+                  allowedExtensions={allowedExtensions}
+                />
+              ))}
 
               {/* Empty state */}
               {childFolders.length === 0 && documents.length === 0 && (

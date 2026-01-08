@@ -1,24 +1,22 @@
 import { useMemo, useState, useCallback, useEffect } from 'react';
-import { Card, Stack, Center, Text, Group, Loader, ScrollArea, Checkbox } from '@mantine/core';
-import { IconSearch, IconFolder, IconFolderOpen, IconChevronRight, IconChevronDown, IconFileText } from '@tabler/icons-react';
+import { Card, Stack, Center, Text, Group, Loader, ScrollArea } from '@mantine/core';
+import { IconSearch, IconFolder, IconFolderOpen, IconChevronRight, IconChevronDown } from '@tabler/icons-react';
 import { ClientSearch } from '../client-search/ClientSearch';
 import { DocumentSearch } from '../document-search/DocumentSearch';
 import BreadcrumbNav from '../file-browser/BreadcrumbNav';
 import PreviewPane from '../file-browser/PreviewPane';
 import { TreeLoadingSkeleton } from './TreeLoadingSkeleton';
 import { FolderTreeNode } from './FolderTreeNode';
+import { DocumentNode } from './DocumentNode';
 import { FolderItemCount } from './FolderItemCount';
-import { useClients, useSelectedPages, useFilteredDocumentsByExtension } from '@hooks/index';
+import { useClients, useFilteredDocumentsByExtension } from '@hooks/index';
 import { useFolders, usePolicyFolders } from '@hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
-import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
-import { useSelectAllPagesForDocument } from '@hooks/useSelectAllPagesForDocument';
 import { useTreeNavigation } from '@hooks/useTreeNavigation';
 import { FolderTypes, DocumentTypes, type ImagerightClient } from '@bmb-inc/types';
 import { treeStyles } from './styles';
 import classes from '../../modules/file-tree.module.css';
 import { sortFolders } from '../file-browser/utils/folderSorting';
-import dayjs from 'dayjs';
 
 type FileTreeBrowserProps = {
   folderTypes?: FolderTypes[];
@@ -32,6 +30,7 @@ type FileTreeBrowserProps = {
 export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions, importedDocumentIds }: FileTreeBrowserProps) {
   const { data: clients = [], isLoading: clientsLoading } = useClients();
   const [documentSearch, setDocumentSearch] = useState('');
+  const [activePageId, setActivePageId] = useState<number | null>(null);
   
   // URL-persisted navigation state
   const {
@@ -108,8 +107,13 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
   };
 
   const handleDocumentSelect = (docId: number, parentFolderId: number) => {
+    // Clear activePageId when selecting a different document
+    if (selectedDocumentId !== docId) {
+      setActivePageId(null);
+    }
     selectDocument(selectedDocumentId === docId ? null : docId, parentFolderId);
   };
+
 
   // Client label for breadcrumb
   const clientLabel = selectedClient
@@ -257,6 +261,8 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
                             documentSearch={documentSearch}
                             selectedDocumentId={selectedDocumentId}
                             onDocumentSelect={handleDocumentSelect}
+                            onPageClick={setActivePageId}
+                            activePageId={activePageId}
                             importedDocumentIds={importedDocumentIds}
                             allowedExtensions={allowedExtensions}
                           />
@@ -277,7 +283,13 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
             </ScrollArea>
 
             {/* Preview pane */}
-            <PreviewPane expandedDocumentId={selectedDocumentId?.toString() ?? null} folderId={selectedFolderId} allowedExtensions={allowedExtensions} />
+            <PreviewPane 
+              expandedDocumentId={selectedDocumentId?.toString() ?? null} 
+              folderId={selectedFolderId} 
+              allowedExtensions={allowedExtensions}
+              activePageId={activePageId}
+              onActivePageIdChange={setActivePageId}
+            />
           </div>
         )}
       </Stack>
@@ -294,6 +306,8 @@ function RootFolderChildren({
   documentSearch,
   selectedDocumentId,
   onDocumentSelect,
+  onPageClick,
+  activePageId,
   importedDocumentIds,
   allowedExtensions,
 }: {
@@ -304,6 +318,8 @@ function RootFolderChildren({
   documentSearch?: string;
   selectedDocumentId: number | null;
   onDocumentSelect: (documentId: number, folderId: number) => void;
+  onPageClick: (pageId: number) => void;
+  activePageId: number | null;
   importedDocumentIds?: string[];
   allowedExtensions?: string[];
 }) {
@@ -340,14 +356,6 @@ function RootFolderChildren({
     allowedExtensions
   );
 
-  const { 
-    isSelected: isDocumentSelected, 
-    toggleSelected: toggleDocumentSelected,
-    handleSelectWithModifiers,
-    setLastSelectedId,
-  } = useSelectedDocuments();
-  const { selectAllPagesForDocument } = useSelectAllPagesForDocument(allowedExtensions);
-  const { deselectPagesForDocument } = useSelectedPages();
   const [expandedFolders, setExpandedFolders] = useState<Set<number>>(new Set());
 
   const isLoading = foldersLoading || documentsLoading || isFiltering;
@@ -412,107 +420,29 @@ function RootFolderChildren({
               documentSearch={documentSearch}
               selectedDocumentId={selectedDocumentId}
               onDocumentSelect={onDocumentSelect}
+              onPageClick={onPageClick}
+              activePageId={activePageId}
               importedDocumentIds={importedDocumentIds}
               allowedExtensions={allowedExtensions}
             />
           )})}
 
           {/* Documents */}
-          {orderedDocuments.map((doc: any) => {
-            const docName = `${dayjs(doc.dateLastModified).format('MM/DD/YYYY')} ${doc.documentName} - ${doc.description} (${doc.pageCount} pages)`;
-            const isImported = importedDocumentIds?.includes(String(doc.id)) ?? false;
-            const isSelected = selectedDocumentId === doc.id;
-            
-            // Determine the appropriate style based on imported and selected state
-            // Use CSS class for base styling (includes hover) and inline styles for selected/imported states
-            const getDocumentStyle = () => {
-              const style: React.CSSProperties = { userSelect: 'none' };
-              if (isImported) {
-                style.opacity = 0.5;
-                if (isSelected) {
-                  style.backgroundColor = 'var(--mantine-color-blue-light)';
-                } else {
-                  style.backgroundColor = 'var(--mantine-color-gray-1)';
-                }
-              } else if (isSelected) {
-                style.backgroundColor = 'var(--mantine-color-blue-light)';
-              }
-              return style;
-            };
-            
-            return (
-            <Group
+          {orderedDocuments.map((doc: any) => (
+            <DocumentNode
               key={doc.id}
-              gap="xs"
-              py={3}
-              px={6}
-              className={classes.documentItem}
-              style={getDocumentStyle()}
-              onClick={(e) => {
-                // Handle shift/ctrl+click for multi-select checkboxes
-                if (e.shiftKey || e.ctrlKey || e.metaKey) {
-                  handleSelectWithModifiers(doc.id, visibleDocumentIds, {
-                    shiftKey: e.shiftKey,
-                    ctrlKey: e.ctrlKey,
-                    metaKey: e.metaKey,
-                  });
-                  setLastSelectedId(doc.id);
-                } else {
-                  // Single click - open preview and highlight
-                  onDocumentSelect(doc.id, folderId);
-                  setLastSelectedId(doc.id);
-                }
-              }}
-                  onDoubleClick={() => {
-                    // Double-click - toggle document selection and select/deselect all pages
-                    const willBeSelected = !isDocumentSelected(doc.id);
-                    toggleDocumentSelected(doc.id, willBeSelected);
-                    if (willBeSelected) {
-                      selectAllPagesForDocument(doc.id, folderId);
-                    } else {
-                      deselectPagesForDocument(doc.id);
-                    }
-                    // Also show the document's pages in preview
-                    onDocumentSelect(doc.id, folderId);
-                  }}
-            >
-                    <Checkbox
-                        size="xs"
-                        checked={isDocumentSelected(doc.id)}
-                        onChange={(e) => {
-                          e.stopPropagation();
-                          const isChecked = e.currentTarget.checked;
-                          toggleDocumentSelected(doc.id, isChecked);
-                          setLastSelectedId(doc.id);
-                          if (isChecked) {
-                            selectAllPagesForDocument(doc.id, folderId);
-                            // Also open the document to view its pages
-                            onDocumentSelect(doc.id, folderId);
-                          } else {
-                            deselectPagesForDocument(doc.id);
-                          }
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-              <IconFileText
-                size={16}
-                color={
-                  selectedDocumentId === doc.id
-                    ? 'var(--mantine-color-blue-9)'
-                    : 'var(--mantine-color-blue-7)'
-                }
-                style={{ flexShrink: 0 }}
-              />
-              <Text truncate style={{ minWidth: 0, flex: 1 }}>
-                {docName}
-              </Text>
-              {isImported && (
-                <Text c="dimmed" size="xs" fs="italic" style={{ flexShrink: 0 }}>
-                  Imported Already
-                </Text>
-              )}
-            </Group>
-          )})}
+              doc={doc}
+              clientId={clientId}
+              folderId={folderId}
+              selectedDocumentId={selectedDocumentId}
+              visibleDocumentIds={visibleDocumentIds}
+              onDocumentSelect={onDocumentSelect}
+              onPageClick={onPageClick}
+              activePageId={activePageId}
+              importedDocumentIds={importedDocumentIds}
+              allowedExtensions={allowedExtensions}
+            />
+          ))}
           
 
           {childFolders.length === 0 && documents.length === 0 && (

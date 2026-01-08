@@ -1,27 +1,10 @@
-import { Stack, Divider, Title, Text, Loader, Center, Group, Tooltip, Button } from '@mantine/core';
-import { IconChecks, IconX } from '@tabler/icons-react';
-import { useState, useMemo } from 'react';
+import { Stack, Divider, Title, Text, Loader, Center } from '@mantine/core';
+import { useState } from 'react';
 import DocumentPages from './DocumentPages';
 import EmailPreview from './EmailPreview';
 import SpreadsheetPreview from './SpreadsheetPreview';
 import WordDocPreview from './WordDocPreview';
 import PdfPreview from './PdfPreview';
-import { useSelectedPages } from '@hooks/useSelectedPages';
-import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
-import { usePages } from '@hooks/usePages';
-
-/** Filter pages by allowed extensions */
-const filterPagesByExtension = (pages: any[], allowedExtensions?: string[]): any[] => {
-  if (!allowedExtensions || allowedExtensions.length === 0) {
-    return pages;
-  }
-  const normalizedExtensions = allowedExtensions.map(ext => ext.toLowerCase());
-  return pages.filter((p: any) => {
-    const ext = p?.latestImages?.imageMetadata?.[0]?.extension;
-    if (!ext) return false;
-    return normalizedExtensions.includes(ext.toLowerCase());
-  });
-};
 
 type PreviewPaneProps = {
   expandedDocumentId: string | null | undefined;
@@ -29,6 +12,10 @@ type PreviewPaneProps = {
   folderId?: number | null;
   /** File extensions to filter pages by (e.g., ['pdf', 'jpg']) */
   allowedExtensions?: string[];
+  /** Active page ID to preview (controlled externally) */
+  activePageId?: number | null;
+  /** Callback when active page changes (e.g., when first page is auto-selected) */
+  onActivePageIdChange?: (pageId: number | null) => void;
 };
 
 // Helper to determine preview type from extension
@@ -44,137 +31,50 @@ const getPreviewType = (ext: string | null): 'pdf' | 'image' | 'email' | 'spread
   return 'other';
 };
 
-export default function PreviewPane({ expandedDocumentId, folderId, allowedExtensions }: PreviewPaneProps) {
+export default function PreviewPane({ expandedDocumentId, folderId, allowedExtensions, activePageId, onActivePageIdChange }: PreviewPaneProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewData, setPreviewData] = useState<ArrayBuffer | null>(null);
   const [previewExtension, setPreviewExtension] = useState<string | null>(null);
   const [previewUnavailable, setPreviewUnavailable] = useState<boolean>(false);
   const [previewLoading, setPreviewLoading] = useState<boolean>(false);
-  const [pageCount, setPageCount] = useState<number>(0);
-  const { selectMany, selectedPageIds, deselectPagesForDocument } = useSelectedPages();
-  const { toggleSelected: toggleDocumentSelected } = useSelectedDocuments();
-  const { data: rawPages = [] } = usePages({
-    documentId: expandedDocumentId ? Number(expandedDocumentId) : 0,
-  });
-
-  // Filter pages by allowed extensions (client-side filtering after fetch)
-  const pages = useMemo(
-    () => filterPagesByExtension(rawPages, allowedExtensions),
-    [rawPages, allowedExtensions]
-  );
 
   const previewType = getPreviewType(previewExtension);
-
-  // Check if all filtered pages are selected
-  const allPageIds = Array.isArray(pages) ? pages.map((p: any) => p.id) : [];
-  const allSelected =
-    allPageIds.length > 0 && allPageIds.every((id) => selectedPageIds.includes(id));
-
-  const handleToggleSelectAll = () => {
-    if (!Array.isArray(pages) || pages.length === 0 || !expandedDocumentId) return;
-
-    const docId = Number(expandedDocumentId);
-    
-    if (allSelected) {
-      // Deselect all pages and document
-      deselectPagesForDocument(docId);
-      toggleDocumentSelected(docId, false);
-    } else {
-      // Select all filtered pages and document
-      const allPagesWithMetadata = pages.map((p: any) => ({
-        id: p.id,
-        documentId: docId,
-        folderId: folderId ?? null,
-        imageId: p?.latestImages?.imageMetadata?.[0]?.id ?? null,
-        contentType: p?.latestImages?.imageMetadata?.[0]?.contentType ?? null,
-        extension: p?.latestImages?.imageMetadata?.[0]?.extension ?? null,
-      }));
-      selectMany(allPagesWithMetadata);
-      toggleDocumentSelected(docId, true);
-    }
-  };
   return (
     <div
       style={{
-        display: 'grid',
-        gridTemplateRows: '1fr 2fr',
-        gap: 'var(--mantine-spacing-md)',
+        display: 'flex',
+        flexDirection: 'column',
         height: '100%',
         minHeight: 0,
         minWidth: 0,
       }}
     >
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: 0,
-          height: '100%',
-          minWidth: 0,
-        }}
-      >
-        <Divider
-          labelPosition="left"
-          label={
-            <Group gap="xs">
-              <Title order={6}>Pages{pageCount ? ` (${pageCount})` : ''}</Title>
-              {expandedDocumentId && pageCount > 0 && (
-                <Tooltip
-                  label={allSelected ? 'Deselect all pages' : 'Select all pages'}
-                  openDelay={300}
-                >
-                  <Button
-                    size="xs"
-                    variant="subtle"
-                    onClick={handleToggleSelectAll}
-                    color={allSelected ? 'red' : undefined}
-                    leftSection={allSelected ? <IconX size={14} /> : <IconChecks size={14} />}
-                  >
-                    {allSelected ? 'Deselect all pages' : 'Select all pages'}
-                  </Button>
-                </Tooltip>
-              )}
-            </Group>
-          }
-        />
-        <div style={{ overflowX: 'auto', overflowY: 'auto', minHeight: 0, minWidth: 0, flex: 1 }}>
-          {expandedDocumentId ? (
-            <DocumentPages
-              documentId={Number(expandedDocumentId)}
-              folderId={folderId}
-              onPreviewUrlChange={(url, ext) => {
-                setPreviewUrl(url);
-                setPreviewExtension(ext ?? null);
-              }}
-              onPreviewDataChange={(data, ext) => {
-                setPreviewData(data);
-                if (ext) setPreviewExtension(ext);
-              }}
-              onPreviewUnavailableChange={(u) => setPreviewUnavailable(u)}
-              onPreviewLoadingChange={(loading) => setPreviewLoading(loading)}
-              hideHeader
-              onPageCountChange={(n) => setPageCount(n)}
-              allowedExtensions={allowedExtensions}
-            />
-          ) : (
-            <Text c="dimmed" size="sm">
-              Select a document to view pages
-            </Text>
-          )}
-        </div>
+      {/* Hidden DocumentPages - handles preview loading only */}
+      <div style={{ display: 'none' }}>
+        {expandedDocumentId && (
+          <DocumentPages
+            documentId={Number(expandedDocumentId)}
+            folderId={folderId}
+            onPreviewUrlChange={(url, ext) => {
+              setPreviewUrl(url);
+              setPreviewExtension(ext ?? null);
+            }}
+            onPreviewDataChange={(data, ext) => {
+              setPreviewData(data);
+              if (ext) setPreviewExtension(ext);
+            }}
+            onPreviewUnavailableChange={(u) => setPreviewUnavailable(u)}
+            onPreviewLoadingChange={(loading) => setPreviewLoading(loading)}
+            hideHeader
+            allowedExtensions={allowedExtensions}
+            activePageId={activePageId}
+            onActivePageIdChange={onActivePageIdChange}
+          />
+        )}
       </div>
-      <div
-        style={{
-          minHeight: 0,
-          minWidth: 0,
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <Stack gap={6} style={{ flex: 1, minHeight: 0, minWidth: 0 }}>
-          <Divider labelPosition="left" label={<Title order={6}>Preview</Title>} />
-          <div style={{ flex: 1, minHeight: 0, minWidth: 0, overflow: 'hidden', position: 'relative' }}>
+      <Stack gap={6} style={{ flex: 1, minHeight: 0, minWidth: 0 }}>
+        <Divider labelPosition="left" label={<Title order={6}>Preview</Title>} />
+        <div style={{ flex: 1, minHeight: 0, minWidth: 0, overflow: 'hidden', position: 'relative' }}>
             {previewLoading ? (
               <Center style={{ height: '100%', width: '100%', position: 'absolute', inset: 0 }}>
                 <Stack align="center" gap="sm">
@@ -255,7 +155,6 @@ export default function PreviewPane({ expandedDocumentId, folderId, allowedExten
             )}
           </div>
         </Stack>
-      </div>
     </div>
   );
 }

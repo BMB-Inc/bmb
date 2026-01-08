@@ -64,6 +64,10 @@ type DocumentPagesProps = {
    * If not provided or empty, all extensions are shown.
    */
   allowedExtensions?: string[];
+  /** External control of active page for preview (when provided, overrides internal selection) */
+  activePageId?: number | null;
+  /** Callback when active page changes (e.g., when first page is auto-selected) */
+  onActivePageIdChange?: (pageId: number | null) => void;
 };
 
 // Check if extension is an email type that needs client-side parsing
@@ -84,7 +88,7 @@ const isWordDocType = (ext: string | null): boolean => {
   return ext.toLowerCase() === 'docx';
 };
 
-export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPreviewDataChange, onPreviewUnavailableChange, onPreviewLoadingChange, hideHeader, onPageCountChange, allowedExtensions }: DocumentPagesProps) {
+export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPreviewDataChange, onPreviewUnavailableChange, onPreviewLoadingChange, hideHeader, onPageCountChange, allowedExtensions, activePageId: externalActivePageId, onActivePageIdChange }: DocumentPagesProps) {
   const { baseUrl } = useImageRightConfig();
   const { data: rawPages = [], isLoading } = usePages({ documentId });
 
@@ -103,7 +107,11 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
   } = useSelectedPages();
   const { toggleSelected: toggleDocumentSelected } = useSelectedDocuments();
   const previousUrlRef = useRef<string | null>(null);
-  const [activePageId, setActivePageId] = useState<number | null>(null);
+  const [internalActivePageId, setInternalActivePageId] = useState<number | null>(null);
+  
+  // Use external activePageId when provided (and not null), otherwise use internal state
+  const activePageId = externalActivePageId ?? internalActivePageId;
+  const setActivePageId = setInternalActivePageId;
 
   const isChecked = useCallback((id: number) => isSelected(id), [isSelected]);
   const toggleChecked = useCallback(
@@ -143,7 +151,7 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
     onPreviewUrlChange?.(null, null);
     onPreviewDataChange?.(null, null);
     onPreviewUnavailableChange?.(false);
-    setActivePageId(null);
+    setInternalActivePageId(null);
   }, [documentId]);
 
   useEffect(() => {
@@ -162,19 +170,32 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
     }
   }, [pages, onPageCountChange]);
 
-  // Auto-select the first page when pages load
+  // Auto-select first page when document loads (only when not externally controlled)
   useEffect(() => {
-    if (!isLoading && Array.isArray(pages) && pages.length > 0 && activePageId === null) {
+    // Skip auto-select if parent is controlling the active page
+    if (externalActivePageId !== undefined && externalActivePageId !== null) return;
+    
+    if (!isLoading && Array.isArray(pages) && pages.length > 0 && internalActivePageId === null) {
       const firstPage = pages[0] as any;
       if (firstPage?.id) {
-        // Trigger the same logic as clicking on the first page
-        setActivePageId(firstPage.id);
-        setLastSelectedId(firstPage.id); // Set anchor for shift+click
-        const ext = firstPage?.latestImages?.imageMetadata?.[0]?.extension;
-        const imageId = firstPage?.latestImages?.imageMetadata?.[0]?.id;
+        setInternalActivePageId(firstPage.id);
+        setLastSelectedId(firstPage.id);
+        // Notify parent so it can update highlighting
+        onActivePageIdChange?.(firstPage.id);
+      }
+    }
+  }, [isLoading, pages, internalActivePageId, externalActivePageId, setLastSelectedId, onActivePageIdChange]);
+
+  // Load preview whenever activePageId changes
+  useEffect(() => {
+    if (!isLoading && Array.isArray(pages) && pages.length > 0 && activePageId !== null) {
+      const activePage = pages.find((p: any) => p.id === activePageId);
+      if (activePage) {
+        const ext = activePage?.latestImages?.imageMetadata?.[0]?.extension;
+        const imageId = activePage?.latestImages?.imageMetadata?.[0]?.id;
         const isPdf = String(ext ?? '').toLowerCase() === 'pdf';
 
-        // Load the preview for the first page
+        // Load the preview for the active page
         (async () => {
           try {
             onPreviewLoadingChange?.(true);
@@ -183,18 +204,18 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
 
             if (isPdf) {
               // Use combined-pdf endpoint for PDFs
-              response = await getPreview({ documentId, pageIds: firstPage.id }, baseUrl);
+              response = await getPreview({ documentId, pageIds: activePage.id }, baseUrl);
               mimeType = 'application/pdf';
             } else {
               // Use images endpoint for all other files - pass pageId and imageId
-              response = await getImages(firstPage.id, imageId, undefined, baseUrl);
+              response = await getImages(activePage.id, imageId, undefined, baseUrl);
               mimeType = getMimeType(ext);
             }
 
             const buffer = await response.arrayBuffer();
             
-            // For email, spreadsheet, and Word files, pass raw data instead of blob URL
-            if (isEmailType(ext) || isSpreadsheetType(ext) || isWordDocType(ext)) {
+            // For PDF, email, spreadsheet, and Word files, pass raw data instead of blob URL
+            if (isPdf || isEmailType(ext) || isSpreadsheetType(ext) || isWordDocType(ext)) {
               onPreviewDataChange?.(buffer, ext);
               onPreviewUrlChange?.(null, ext);
             } else {
@@ -217,7 +238,8 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
         })();
       }
     }
-  }, [isLoading, pages, activePageId, documentId, setLastSelectedId, baseUrl]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activePageId, isLoading, pages, documentId, baseUrl]);
 
   if (isLoading) {
     return (
