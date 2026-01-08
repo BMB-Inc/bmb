@@ -13,8 +13,8 @@ import { AuthProvider } from '@bmb-inc/auth-context';
 const queryClient = new QueryClient()
 
 // Use relative URL to work on staging.bmbinc.com/dev
-const AUTH_URL = '/api/auth';
-const REDIRECT_URL = window.location.origin + window.location.pathname;
+const AUTH_URL = 'https://staging.bmbinc.com/api/auth';
+const REDIRECT_URL = window.location.origin + window.location.pathname
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

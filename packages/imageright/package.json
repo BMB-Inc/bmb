@@ -20,8 +20,10 @@
     "dev": "vite",
     "clean": "rm -rf dist",
     "build": "yarn clean && rollup -c",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "build:app": "vite build",
+    "preview": "vite preview",
+    "start": "vite preview --port 3333 --host 0.0.0.0",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@bmb-inc/auth-context": "workspace:*",

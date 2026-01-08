@@ -1,42 +1,135 @@
-# @bmb-inc/imageright
+# ImageRight Browser Component & Application
 
-A React component library for browsing and managing ImageRight documents, folders, and files.
+A React component library and standalone application for browsing and viewing ImageRight documents.
 
 ## Features
 
-- 🌲 **Tree View** - Hierarchical folder and document browsing
-- 📊 **Table View** - Flat list view of documents with sorting and filtering
-- 🔄 **View Toggle** - Switch between tree and table views
-- 🔍 **Search & Filter** - Filter by folder types, document types, and file extensions
-- 🔐 **Authentication** - Automatic cookie-based authentication support
-- 🌐 **Multi-Server** - Configure different API base URLs for different environments
-- 📄 **Page Selection** - Select and manage individual document pages
-- 📋 **Tasks & Workflows** - View and manage ImageRight tasks and workflows
-- ⚡ **Performance** - Built-in request caching and optimizations
+- 📁 Folder and document browsing
+- 📄 Multi-format document viewer (PDF, Excel, Word, Images, Email)
+- 🔐 Integrated authentication via `@bmb-inc/auth-context`
+- 🎨 Modern UI with Mantine components
+- ⚡ Fast with Vite and React Query
 
-## Installation
+## Development
+
+### Prerequisites
+
+- Node.js 18+
+- Yarn
+
+### Local Development
+
+```bash
+# Install dependencies
+yarn install
+
+# Start dev server (localhost:5174)
+yarn dev
+```
+
+### Development with Staging Auth
+
+For development with real authentication through nginx:
+
+```bash
+# Start dev server
+yarn dev
+
+# Access via: https://staging.bmbinc.com/dev
+```
+
+See [DEV-NGINX-SETUP.md](./DEV-NGINX-SETUP.md) for detailed setup instructions.
+
+## Production Deployment
+
+### Quick Deploy
+
+Use the deployment script for easy setup:
+
+```bash
+# Make script executable (first time only)
+chmod +x deploy.sh
+
+# Deploy
+./deploy.sh
+```
+
+### Manual Deployment
+
+```bash
+# 1. Build the application
+yarn build:app
+
+# 2. Start with PM2
+pm2 start ecosystem.config.cjs
+
+# 3. Save PM2 process list
+pm2 save
+
+# 4. Setup PM2 to start on boot (first time only)
+pm2 startup
+```
+
+See [PRODUCTION-SETUP.md](./PRODUCTION-SETUP.md) for detailed production instructions.
+
+## PM2 Management
+
+```bash
+# View status
+pm2 status imageright-app
+
+# View logs
+pm2 logs imageright-app
+
+# Restart
+pm2 restart imageright-app
+
+# Stop
+pm2 stop imageright-app
+
+# Remove from PM2
+pm2 delete imageright-app
+```
+
+## Configuration
+
+### Environment Variables
+
+- Development: `.env` or `.env.local`
+- Production: `.env.production` (create from `.env.production.example`)
+
+Key variables:
+- `VITE_IMAGERIGHT_API_URL`: API endpoint (default: `/api/Imageright`)
+- `VITE_TENANT_ID`: ImageRight tenant ID
+
+### Ports
+
+- **Development**: 5174 (local dev server)
+- **Production**: 3333 (PM2/nginx)
+
+## Using as a Library
+
+This package can also be used as a component library in other applications:
 
 ```bash
 yarn add @bmb-inc/imageright
 ```
 
-## Quick Start
-
 ```tsx
 import { ImageRightBrowser } from '@bmb-inc/imageright';
-import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
+import '@bmb-inc/imageright/styles.css';
 
 function App() {
   return (
     <ImageRightBrowser
-      folderTypes={[FolderTypes.policy, FolderTypes.binding]}
-      documentTypes={[DocumentTypes.policy]}
-      defaultViewMode="tree"
+      baseUrl="/api/Imageright"
+      folderTypes={['Policy']}
     />
   );
 }
 ```
 
+<<<<<<< HEAD
 ## Props
 
 ### ImageRightBrowser
@@ -311,30 +404,66 @@ yarn build
 ```bash
 yarn type-check
 ```
+=======
+## Scripts
+
+- `yarn dev` - Start development server
+- `yarn build` - Build component library
+- `yarn build:app` - Build standalone application
+- `yarn preview` - Preview production build
+- `yarn start` - Start production server (used by PM2)
+- `yarn lint` - Run ESLint
+>>>>>>> f65aa40 (Update dependencies for Rollup and TypeScript; enhance ImageRight component functionality and documentation)
 
 ## Architecture
 
-The package follows a clean architecture:
+- **Frontend**: React + TypeScript + Vite
+- **State Management**: TanStack Query
+- **UI Framework**: Mantine
+- **Authentication**: @bmb-inc/auth-context
+- **Process Manager**: PM2
+- **Reverse Proxy**: Nginx
 
+## Documentation
+
+- [Development Setup](./DEV-NGINX-SETUP.md)
+- [Production Setup](./PRODUCTION-SETUP.md)
+- [Authentication Guide](./DEV-AUTH.md)
+- [Configuration Guide](./DEV-CONFIG.md)
+- [Auth & Base URL](./AUTH-AND-BASEURL.md)
+
+## Troubleshooting
+
+### Port Issues
+
+```bash
+# Check what's using a port
+lsof -i:3333
+lsof -i:5174
+
+# Kill process on port
+kill -9 <PID>
 ```
-ImageRightBrowser (UI Component)
-    ↓
-ImageRightProvider (Context with baseUrl)
-    ↓
-Hooks (useImageRightConfig for baseUrl)
-    ↓
-API Functions (with baseUrl parameter)
-    ↓
-Fetcher (constructs URLs, adds credentials)
-    ↓
-ImageRight API
+
+### Build Issues
+
+```bash
+# Clean build
+yarn clean
+yarn build:app
+```
+
+### PM2 Issues
+
+```bash
+# Check logs
+pm2 logs imageright-app --lines 100
+
+# Full restart
+pm2 delete imageright-app
+pm2 start ecosystem.config.cjs
 ```
 
 ## License
 
-Proprietary - BMB Inc.
-
-## Additional Documentation
-
-- [AUTH-AND-BASEURL.md](./AUTH-AND-BASEURL.md) - Detailed authentication and base URL configuration guide
-- [DEV-CONFIG.md](./DEV-CONFIG.md) - Development environment setup
+MIT

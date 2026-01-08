@@ -1,9 +1,6 @@
-import { useState } from 'react';
-import { Group, SegmentedControl, Stack } from '@mantine/core';
-import { FolderFileBrowser } from './file-browser/ImagerightFileBrowser'; 
 import { FileTreeBrowser } from './file-tree';
 import { FolderTypes, DocumentTypes, FileTypes } from '@bmb-inc/types';
-import { ImageRightProvider, DEFAULT_BASE_URL } from '../context/ImageRightContext';
+import { ImageRightProvider } from '../context/ImageRightContext';
 
 export type ViewMode = 'table' | 'tree';
 
@@ -47,31 +44,9 @@ export function ImageRightBrowser({
   baseUrl, // Don't default here - let ImageRightProvider handle it with getBaseUrl()
   importedDocumentIds,
 }: ImageRightBrowserProps) {
-  const [viewMode, setViewMode] = useState<ViewMode>(defaultViewMode);
-
   return (
     <ImageRightProvider baseUrl={baseUrl}>
-      <Stack gap="sm">
-        {showViewToggle && (
-          <Group justify="flex-end">
-            <SegmentedControl
-              size="xs"
-              value={viewMode}
-              onChange={(value) => setViewMode(value as ViewMode)}
-              data={[
-                { label: 'Tree View', value: 'tree' },
-                { label: 'Table View', value: 'table' },
-              ]}
-            />
-          </Group>
-        )}
-
-        {viewMode === 'table' ? (
-          <FolderFileBrowser folderTypes={folderTypes} documentTypes={documentTypes} allowedExtensions={allowedExtensions} importedDocumentIds={importedDocumentIds} />
-        ) : (
-          <FileTreeBrowser folderTypes={folderTypes} documentTypes={documentTypes} allowedExtensions={allowedExtensions} importedDocumentIds={importedDocumentIds} />
-        )}
-      </Stack>
+      <FileTreeBrowser folderTypes={folderTypes} documentTypes={documentTypes} allowedExtensions={allowedExtensions} importedDocumentIds={importedDocumentIds} />
     </ImageRightProvider>
   );
 }

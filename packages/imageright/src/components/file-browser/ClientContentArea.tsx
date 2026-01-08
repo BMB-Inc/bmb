@@ -22,7 +22,6 @@ export default function ClientContentArea({
   folderId,
   navigateIntoFolder,
   navigateToDocument,
-  clearDocumentSelection,
   allowedExtensions,
   importedDocumentIds,
 }: ClientContentAreaProps) {
@@ -43,7 +42,6 @@ export default function ClientContentArea({
           onFolderOpen={(id, name) => navigateIntoFolder(id.toString(), name)}
           onDocumentOpen={(id) => navigateToDocument(id.toString())}
           selectedDocumentId={expandedDocumentId ? Number(expandedDocumentId) : null}
-          onDocumentClear={clearDocumentSelection}
           folderId={folderId}
           importedDocumentIds={importedDocumentIds}
         />

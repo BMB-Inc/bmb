@@ -10,7 +10,6 @@ type DetailsRowProps = {
   onFolderOpen: (id: number, name: string) => void;
   onClientOpen?: (id: number) => void;
   onDocumentOpen?: (id: number) => void;
-  onDocumentClear?: () => void;
   visibleDocumentIds?: number[];
   /** Parent folder ID for tracking which folder the pages belong to */
   folderId?: number | null;
@@ -18,7 +17,7 @@ type DetailsRowProps = {
   importedDocumentIds?: string[];
 };
 
-export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpen, onDocumentOpen, onDocumentClear, visibleDocumentIds = [], folderId, importedDocumentIds }: DetailsRowProps) {
+export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpen, onDocumentOpen, visibleDocumentIds = [], folderId, importedDocumentIds }: DetailsRowProps) {
   const { 
     isSelected: isDocumentSelected, 
     toggleSelected: toggleDocumentSelected,

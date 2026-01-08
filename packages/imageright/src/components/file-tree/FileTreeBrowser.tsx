@@ -18,6 +18,7 @@ import { FolderTypes, DocumentTypes, type ImagerightClient } from '@bmb-inc/type
 import { treeStyles } from './styles';
 import classes from '../../modules/file-tree.module.css';
 import { sortFolders } from '../file-browser/utils/folderSorting';
+import dayjs from 'dayjs';
 
 type FileTreeBrowserProps = {
   folderTypes?: FolderTypes[];
@@ -371,6 +372,12 @@ function RootFolderChildren({
     });
   };
 
+  const orderedDocuments = useMemo(() => {
+    return [...documents].sort((a: any, b: any) => {
+      return b.lastModified - a.lastModified;
+    });
+  }, [documents]);
+
   return (
     <div style={treeStyles.children}>
       {isLoading && (
@@ -411,11 +418,8 @@ function RootFolderChildren({
           )})}
 
           {/* Documents */}
-          {documents.map((doc: any) => {
-            const docName = doc.description || doc.documentTypeDescription || 'Document';
-            const docDisplayName = doc.documentTypeDescription && doc.documentTypeDescription !== docName
-              ? `${docName} (${doc.documentTypeDescription})`
-              : docName;
+          {orderedDocuments.map((doc: any) => {
+            const docName = `${dayjs(doc.dateLastModified).format('MM/DD/YYYY')} ${doc.documentName} - ${doc.description} (${doc.pageCount} pages)`;
             const isImported = importedDocumentIds?.includes(String(doc.id)) ?? false;
             const isSelected = selectedDocumentId === doc.id;
             
@@ -500,7 +504,7 @@ function RootFolderChildren({
                 style={{ flexShrink: 0 }}
               />
               <Text truncate style={{ minWidth: 0, flex: 1 }}>
-                {docDisplayName}
+                {docName}
               </Text>
               {isImported && (
                 <Text c="dimmed" size="xs" fs="italic" style={{ flexShrink: 0 }}>

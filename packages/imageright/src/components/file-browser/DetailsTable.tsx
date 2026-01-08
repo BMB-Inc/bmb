@@ -13,14 +13,13 @@ type DetailsTableProps = {
   onClientOpen?: (id: number) => void;
   onDocumentOpen?: (id: number) => void;
   selectedDocumentId?: number | null;
-  onDocumentClear?: () => void;
   /** Parent folder ID for tracking which folder the pages belong to */
   folderId?: number | null;
   /** Document IDs that have already been imported (will be displayed greyed out) */
   importedDocumentIds?: string[];
 };
 
-export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen, selectedDocumentId, onDocumentClear, folderId, importedDocumentIds }: DetailsTableProps) {
+export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen, selectedDocumentId, folderId, importedDocumentIds }: DetailsTableProps) {
   type SortKey = 'name' | 'type' | 'modified';
   type SortDirection = 'asc' | 'desc';
   const [sort, setSort] = useState<{ key: SortKey; direction: SortDirection } | null>(null);
@@ -251,7 +250,6 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
             onFolderOpen={onFolderOpen}
             onClientOpen={onClientOpen}
             onDocumentOpen={onDocumentOpen}
-            onDocumentClear={onDocumentClear}
             visibleDocumentIds={visibleDocumentIds}
             folderId={folderId}
             importedDocumentIds={importedDocumentIds}

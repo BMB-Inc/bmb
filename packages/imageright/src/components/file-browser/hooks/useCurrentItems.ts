@@ -51,6 +51,7 @@ export function useCurrentItems({
       return folderItems as import('../types').BrowserItem[];
     }
 
+    console.log('documents:', documents);
     const documentItems = (documents || [])
       .slice()
       .sort((a: any, b: any) => toTs(a?.dateLastModified || a?.dateCreated) < toTs(b?.dateLastModified || b?.dateCreated) ? 1 : -1)
