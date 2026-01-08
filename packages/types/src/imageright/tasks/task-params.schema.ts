@@ -30,7 +30,7 @@ export const taskFilterSchema = z.object({
   tasks: z.array(z.coerce.number().nonnegative()).nonempty().optional(),
   availableDateStart: z.string().optional(),
   availableDateEnd: z.string().optional(),
-  flows: z.array(z.coerce.number().nonnegative()).nonempty().optional(),
+  flows: z.array(z.coerce.number().nonnegative()).optional(),
   excludeFlows: z.boolean().optional(),
   steps: z.array(z.coerce.number().nonnegative()).nonempty().optional(),
   excludeSteps: z.boolean().optional(),
