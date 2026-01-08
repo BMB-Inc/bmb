@@ -1,0 +1,3 @@
+[submodule "BMB-Api"]
+	path = BMB-Api
+	url = https://github.com/BMB-Inc/BMB-Api.git
