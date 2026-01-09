@@ -34,12 +34,14 @@ export type ImageRightBrowserProps = {
 /**
  * Unified ImageRight file browser with toggle between Tree and Table views.
  * Defaults to Tree view.
+ *
+ * @deprecated Use `ImageRightBrowser2` (exported from `@bmb-inc/imageright`) as the long-term replacement.
  */
 export function ImageRightBrowser({
   folderTypes,
   documentTypes,
-  defaultViewMode = 'tree',
-  showViewToggle = true,
+  defaultViewMode: _defaultViewMode = 'tree',
+  showViewToggle: _showViewToggle = true,
   allowedExtensions,
   baseUrl, // Don't default here - let ImageRightProvider handle it with getBaseUrl()
   importedDocumentIds,
