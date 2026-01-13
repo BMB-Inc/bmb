@@ -39,7 +39,6 @@ export enum DocumentTypes {
 
 export const getDocumentsDto = z.object({
   clientId: z.coerce.number(),
-  documentId: z.coerce.number().optional().nullable(),
   folderId: z.coerce.number().optional().nullable(),
   description: z.string().optional().nullable(),
   documentType: z.enum(DocumentTypes).optional().nullable(),
