@@ -3,8 +3,13 @@ import { useEffect } from 'react';
 type UseAutoSelectSingleClientParams = {
   clients: any[] | undefined;
   clientsLoading: boolean;
-  expandedClientId?: string | null;
-  navigateToClient: (id: string) => void;
+  /**
+   * Currently selected/expanded client id (if any). When falsy, and exactly one
+   * client is returned, we auto-select it.
+   */
+  expandedClientId?: string | number | null;
+  /** Navigation/select handler for a client id */
+  navigateToClient: (id: string | number) => void;
 };
 
 export function useAutoSelectSingleClient({
@@ -17,7 +22,7 @@ export function useAutoSelectSingleClient({
     if (!clientsLoading && !expandedClientId && Array.isArray(clients) && clients.length === 1) {
       const only = clients[0] as any;
       if (only?.id != null) {
-        navigateToClient(String(only.id));
+        navigateToClient(only.id);
       }
     }
   }, [clients, clientsLoading, expandedClientId, navigateToClient]);

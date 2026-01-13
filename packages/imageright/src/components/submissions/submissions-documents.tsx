@@ -12,7 +12,7 @@ import { usePolicyFolders, useFolders } from '@hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
 
 export const SubmissionsDocuments = () => {
-  const { data: clients = [], isLoading: clientsLoading } = useClients();
+  const { data: clients = [], isLoading: clientsLoading, error: clientsError } = useClients();
   const {
     clientId: expandedClientId,
     folderId: expandedFolderId,
@@ -163,7 +163,7 @@ export const SubmissionsDocuments = () => {
       <Stack>
         <ClientSearch
           isLoading={clientsLoading}
-          error={undefined}
+          error={clientsError?.message}
         />
 
         {(expandedClientId || hasClients) && breadcrumbItems}

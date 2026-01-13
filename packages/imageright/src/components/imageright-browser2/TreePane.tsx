@@ -8,6 +8,7 @@ import type { DocumentTypes, FolderTypes, ImagerightClient } from '@bmb-inc/type
 import type { ActivePage } from './types';
 import { ClientList } from './ClientList';
 import { RootFolderList } from './RootFolderList';
+import { useAutoSelectSingleClient } from '../file-browser/hooks/useAutoSelectSingleClient';
 
 type TreePaneProps = {
   folderTypes?: FolderTypes[];
@@ -52,7 +53,15 @@ export function TreePane({
   selectDocument,
   onDocumentSelect,
 }: TreePaneProps) {
-  const { data: clients = [], isLoading: clientsLoading } = useClients();
+  const { data: clients = [], isLoading: clientsLoading, error: clientsError } = useClients();
+
+  // Auto-select the client when exactly one search result is found
+  useAutoSelectSingleClient({
+    clients,
+    clientsLoading,
+    expandedClientId: selectedClientId,
+    navigateToClient,
+  });
 
   const selectedClient = clients.find((c: ImagerightClient) => c.id === selectedClientId);
 
@@ -62,7 +71,7 @@ export function TreePane({
 
   return (
     <Stack style={{ height: '100%', minHeight: 0 }}>
-      <ClientSearch isLoading={clientsLoading} error={undefined} />
+      <ClientSearch isLoading={clientsLoading} error={clientsError?.message} />
 
       {selectedClientId && (
         <BreadcrumbNav
@@ -88,7 +97,7 @@ export function TreePane({
       )}
 
       {!selectedClientId && (
-        <ClientList clients={clients} isLoading={clientsLoading} onClientClick={navigateToClient} />
+        <ClientList clients={clients} isLoading={clientsLoading} error={clientsError?.message} onClientClick={navigateToClient} />
       )}
 
       {selectedClientId && (

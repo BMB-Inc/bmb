@@ -69,12 +69,14 @@ export const fetcher = async (url: string, baseUrl?: string, options?: RequestIn
   const fetchPromise = (async () => {
     try {
       // In dev mode, use token from env if available
-      const devToken = import.meta.env.VITE_DEV_AUTH_TOKEN;
+      // NOTE: `import.meta.env` is Vite-specific; other bundlers (e.g. Next/Turbopack)
+      // may define `import.meta` but not `import.meta.env`. Keep this optional.
+      const devToken = (import.meta as any).env?.VITE_DEV_AUTH_TOKEN;
       
       // Merge default options with provided options, ensuring credentials are included
       const fetchOptions: RequestInit = {
-        credentials: 'include', // Always include cookies for authentication
         ...options,
+        credentials: 'include', // Always include cookies for authentication
         headers: {
           'Content-Type': 'application/json',
           ...(devToken ? { 'Authorization': `Bearer ${devToken}` } : {}),

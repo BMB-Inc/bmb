@@ -21,7 +21,7 @@ import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
  
 export const FolderFileBrowser = ({ folderTypes, documentTypes, allowedExtensions, importedDocumentIds }: { folderTypes?: FolderTypes[], documentTypes?: DocumentTypes[], allowedExtensions?: string[], importedDocumentIds?: string[] }) => {  
   // Real data hooks
-  const { data: clients = [], isLoading: clientsLoading } = useClients();
+  const { data: clients = [], isLoading: clientsLoading, error: clientsError } = useClients();
   const [documentSearch, setDocumentSearch] = useState('');
   
   const handleDocumentSearchChange = useCallback((value: string) => {
@@ -131,7 +131,7 @@ export const FolderFileBrowser = ({ folderTypes, documentTypes, allowedExtension
       <Stack>
         <ClientSearch
           isLoading={clientsLoading}
-          error={undefined}
+          error={clientsError?.message}
         />
 
         {(expandedClientId || hasClients) && breadcrumbItems}

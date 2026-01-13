@@ -16,6 +16,11 @@ export type { ImageRightBrowser2Props, ActivePage } from './components/imagerigh
 export { FolderFileBrowser, ImageRightFileBrowser } from './components/file-browser/ImagerightFileBrowser';
 export { FileTreeBrowser, TreeLoadingSkeleton } from './components/file-tree';
 
+// Standalone preview/viewer components (usable independently of the browsers)
+export { default as PdfPreview } from './components/file-browser/PdfPreview';
+// Alias for consumers who prefer a "viewer" naming convention
+export { default as PdfViewer } from './components/file-browser/PdfPreview';
+
 // Task and workflow viewer components
 export {
   TaskWorkflowViewer,

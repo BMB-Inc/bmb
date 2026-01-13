@@ -8,10 +8,8 @@ export const getEmailDocument = async (params: { documentId: number; pageId?: nu
     searchParams.set('pageId', params.pageId.toString());
   }
 
-  const devToken = import.meta.env.VITE_DEV_AUTH_TOKEN;
   const response = await fetch(`${apiUrl}/emails?${searchParams.toString()}`, {
     credentials: 'include', // Include cookies for authentication
-    headers: devToken ? { 'Authorization': `Bearer ${devToken}` } : {},
   });
 
   if (!response.ok) {

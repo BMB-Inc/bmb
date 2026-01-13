@@ -14,10 +14,8 @@ export const getPreview = async (
 			pageIds: params.pageIds.toString(),
 		}).toString();
 	
-	const devToken = import.meta.env.VITE_DEV_AUTH_TOKEN;
 	const response = await fetch(url, {
 		credentials: 'include', // Include cookies for authentication
-		headers: devToken ? { 'Authorization': `Bearer ${devToken}` } : {},
     signal,
 	});
 	if (!response.ok) {

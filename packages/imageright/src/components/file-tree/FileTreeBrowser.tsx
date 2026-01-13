@@ -17,6 +17,7 @@ import { FolderTypes, DocumentTypes, type ImagerightClient } from '@bmb-inc/type
 import { treeStyles } from './styles';
 import classes from '../../modules/file-tree.module.css';
 import { sortFolders } from '../file-browser/utils/folderSorting';
+import { useAutoSelectSingleClient } from '../file-browser/hooks/useAutoSelectSingleClient';
 
 type FileTreeBrowserProps = {
   folderTypes?: FolderTypes[];
@@ -28,7 +29,7 @@ type FileTreeBrowserProps = {
 };
 
 export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions, importedDocumentIds }: FileTreeBrowserProps) {
-  const { data: clients = [], isLoading: clientsLoading } = useClients();
+  const { data: clients = [], isLoading: clientsLoading, error: clientsError } = useClients();
   const [documentSearch, setDocumentSearch] = useState('');
   type ActivePage = {
     documentId: number;
@@ -67,6 +68,14 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
   }, []); // Only run on mount
 
   const hasClients = Array.isArray(clients) && clients.length > 0;
+
+  // Auto-select the client when exactly one search result is found
+  useAutoSelectSingleClient({
+    clients,
+    clientsLoading,
+    expandedClientId: selectedClientId,
+    navigateToClient,
+  });
 
   // Get the selected client info
   const selectedClient = clients.find((c: ImagerightClient) => c.id === selectedClientId);
@@ -134,7 +143,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
   return (
     <Card withBorder>
       <Stack>
-        <ClientSearch isLoading={clientsLoading} error={undefined} />
+        <ClientSearch isLoading={clientsLoading} error={clientsError?.message} />
 
         {/* Breadcrumb navigation */}
         {selectedClientId && (

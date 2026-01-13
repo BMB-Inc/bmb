@@ -11,10 +11,8 @@ export const getImages = async (
   const apiUrl = getBaseUrl(baseUrl);
   const url = `${apiUrl}/images${pageId ? `?pageId=${pageId}` : ''}${imageId ? `${pageId ? '&' : '?'}imageId=${imageId}` : ''}${version ? `&version=${version}` : ''}`;
   
-  const devToken = import.meta.env.VITE_DEV_AUTH_TOKEN;
   const response = await fetch(url, {
     credentials: 'include', // Include cookies for authentication
-    headers: devToken ? { 'Authorization': `Bearer ${devToken}` } : {},
     signal,
   });
   if (!response.ok) {

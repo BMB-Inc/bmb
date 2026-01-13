@@ -5,10 +5,12 @@ import type { ImagerightClient } from '@bmb-inc/types';
 export function ClientList({
   clients,
   isLoading,
+  error,
   onClientClick,
 }: {
   clients: ImagerightClient[];
   isLoading: boolean;
+  error?: string;
   onClientClick: (clientId: number) => void;
 }) {
   const hasClients = Array.isArray(clients) && clients.length > 0;
@@ -19,7 +21,11 @@ export function ClientList({
         <Stack gap={6} align="center">
           <IconSearch size={20} color="var(--mantine-color-gray-6)" />
           <Text c="dimmed" size="sm">
-            {isLoading ? 'Loading clients…' : 'Search for a client by code or name to get started'}
+            {isLoading
+              ? 'Loading clients…'
+              : error
+                ? `Unable to load clients: ${error}`
+                : 'Search for a client by code or name to get started'}
           </Text>
         </Stack>
       </Center>
