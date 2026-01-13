@@ -1,5 +1,16 @@
 import z from 'zod/v4';
 
+const policyCheckUserSummarySchema = z.object({
+  id: z.string().nullable(),
+  name: z.string().nullable(),
+  email: z.email(),
+  role: z.enum(['ADMIN', 'USER']),
+  staffCode: z.string().nullable(),
+  phoneNumber: z.string().nullable(),
+  phoneExt: z.string().nullable(),
+  avatarColor: z.string().nullable(),
+});
+
 const comparisonRowSchema = z.object({
   item: z.string(),
   newPolicy: z.string().nullable(),
@@ -82,6 +93,7 @@ export const policyCheckResponseExportSchema = z.object({
   filename: z.string(),
   errorMessage: z.string().nullable(),
   createdByUserId: z.string(),
+  createdByUser: policyCheckUserSummarySchema.nullable().optional(),
   createdAt: z.coerce.date(),
 });
 
@@ -106,6 +118,7 @@ export const policyCheckRequestSummarySchema = z.object({
   emailTemplateId: z.string().nullable(),
   status: z.enum(['pending', 'sent', 'responded', 'failed']),
   createdByUserId: z.string(),
+  createdByUser: policyCheckUserSummarySchema.nullable().optional(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   documents: z.array(policyCheckDocumentMetadataSchema),
