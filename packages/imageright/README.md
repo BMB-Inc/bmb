@@ -341,6 +341,7 @@ import { FolderTypes } from '@bmb-inc/types';
   folderTypes={[
     FolderTypes.policy,
     FolderTypes.binding,
+    FolderTypes.aiPolicyVerification,
     FolderTypes.submissions,
     FolderTypes.accounting,
   ]}
