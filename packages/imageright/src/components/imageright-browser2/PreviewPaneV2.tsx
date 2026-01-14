@@ -10,9 +10,12 @@ import { usePreview } from './usePreview';
 export function PreviewPaneV2({
   expandedDocumentId,
   activePage,
+  pdfDefaultZoom,
 }: {
   expandedDocumentId: string | null | undefined;
   activePage: ActivePage | null;
+  /** Default zoom level for PDF previews (clamped inside PdfPreview) */
+  pdfDefaultZoom?: number;
 }) {
   const documentId = expandedDocumentId ? Number(expandedDocumentId) : null;
   const { loading, unavailable, extension, kind, data, url } = usePreview(documentId, activePage);
@@ -34,7 +37,7 @@ export function PreviewPaneV2({
             </Center>
           ) : kind === 'pdf' && data ? (
             <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
-              <PdfPreview data={data} />
+              <PdfPreview data={data} defaultZoom={pdfDefaultZoom} />
             </div>
           ) : kind === 'tiff' && data ? (
             <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>

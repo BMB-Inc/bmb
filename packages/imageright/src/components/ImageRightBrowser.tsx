@@ -29,6 +29,8 @@ export type ImageRightBrowserProps = {
    * Documents with matching IDs will be displayed with greyed-out styling.
    */
   importedDocumentIds?: string[];
+  /** Default zoom level for PDF previews (clamped inside PdfPreview) */
+  pdfDefaultZoom?: number;
 };
 
 /**
@@ -45,10 +47,17 @@ export function ImageRightBrowser({
   allowedExtensions,
   baseUrl, // Don't default here - let ImageRightProvider handle it with getBaseUrl()
   importedDocumentIds,
+  pdfDefaultZoom,
 }: ImageRightBrowserProps) {
   return (
     <ImageRightProvider baseUrl={baseUrl}>
-      <FileTreeBrowser folderTypes={folderTypes} documentTypes={documentTypes} allowedExtensions={allowedExtensions} importedDocumentIds={importedDocumentIds} />
+      <FileTreeBrowser
+        folderTypes={folderTypes}
+        documentTypes={documentTypes}
+        allowedExtensions={allowedExtensions}
+        importedDocumentIds={importedDocumentIds}
+        pdfDefaultZoom={pdfDefaultZoom}
+      />
     </ImageRightProvider>
   );
 }

@@ -19,7 +19,20 @@ import { useCurrentItems } from './hooks/useCurrentItems';
 import { useFolderLabelFromDocs, useFolderLabelMap } from './hooks/useFolderLabels';
 import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
  
-export const FolderFileBrowser = ({ folderTypes, documentTypes, allowedExtensions, importedDocumentIds }: { folderTypes?: FolderTypes[], documentTypes?: DocumentTypes[], allowedExtensions?: string[], importedDocumentIds?: string[] }) => {  
+export const FolderFileBrowser = ({
+  folderTypes,
+  documentTypes,
+  allowedExtensions,
+  pdfDefaultZoom,
+  importedDocumentIds,
+}: {
+  folderTypes?: FolderTypes[];
+  documentTypes?: DocumentTypes[];
+  allowedExtensions?: string[];
+  /** Default zoom level for PDF previews (clamped inside PdfPreview) */
+  pdfDefaultZoom?: number;
+  importedDocumentIds?: string[];
+}) => {
   // Real data hooks
   const { data: clients = [], isLoading: clientsLoading, error: clientsError } = useClients();
   const [documentSearch, setDocumentSearch] = useState('');
@@ -177,6 +190,7 @@ export const FolderFileBrowser = ({ folderTypes, documentTypes, allowedExtension
                 navigateToDocument={(id) => navigateToDocument(id.toString())}
                 clearDocumentSelection={clearDocumentSelection}
                 allowedExtensions={allowedExtensions}
+                pdfDefaultZoom={pdfDefaultZoom}
                 importedDocumentIds={importedDocumentIds}
               />
             )}

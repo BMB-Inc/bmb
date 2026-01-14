@@ -18,6 +18,7 @@ export function ImageRightBrowser2({
   documentTypes,
   allowedExtensions,
   baseUrl,
+  pdfDefaultZoom,
   importedDocumentIds,
 }: ImageRightBrowser2Props) {
   const state = useTreeState();
@@ -61,6 +62,7 @@ export function ImageRightBrowser2({
             <PreviewPaneV2
               expandedDocumentId={state.nav.documentId?.toString() ?? null}
               activePage={state.activePage}
+              pdfDefaultZoom={pdfDefaultZoom}
             />
           </div>
         </div>

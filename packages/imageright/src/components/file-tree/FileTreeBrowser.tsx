@@ -24,11 +24,13 @@ type FileTreeBrowserProps = {
   documentTypes?: DocumentTypes[];
   /** File extensions to filter pages by (e.g., ['pdf', 'jpg']) */
   allowedExtensions?: string[];
+  /** Default zoom level for PDF previews (clamped inside PdfPreview) */
+  pdfDefaultZoom?: number;
   /** Document IDs that have already been imported (will be displayed greyed out) */
   importedDocumentIds?: string[];
 };
 
-export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions, importedDocumentIds }: FileTreeBrowserProps) {
+export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions, pdfDefaultZoom, importedDocumentIds }: FileTreeBrowserProps) {
   const { data: clients = [], isLoading: clientsLoading, error: clientsError } = useClients();
   const [documentSearch, setDocumentSearch] = useState('');
   type ActivePage = {
@@ -304,6 +306,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
               expandedDocumentId={selectedDocumentId?.toString() ?? null} 
               folderId={selectedFolderId} 
               allowedExtensions={allowedExtensions}
+              pdfDefaultZoom={pdfDefaultZoom}
               activePage={activePage}
             />
           </div>

@@ -1,5 +1,5 @@
 import { Checkbox, Group, Text, Tooltip, useComputedColorScheme } from "@mantine/core";
-import { IconFile, IconFileTypePdf, IconFileSpreadsheet, IconMail, IconFileTypeDoc, IconPhoto, IconFileTypeTxt } from '@tabler/icons-react';
+import { IconEye, IconFile, IconFileTypePdf, IconFileSpreadsheet, IconMail, IconFileTypeDoc, IconPhoto, IconFileTypeTxt } from '@tabler/icons-react';
 import { useState } from "react";
 
 type PageRowProps = {
@@ -90,9 +90,23 @@ export function PageRow({ label, extension, active, selected, checked, onChecked
       <Checkbox size="xs" checked={!!checked} onChange={(e) => onCheckedChange?.(e.currentTarget.checked)} />
       {getFileIcon(extension)}
       <Tooltip label={label} openDelay={400} position="top-start" multiline maw={400}>
-        <Text style={{ flex: 1, minWidth: 0 }} truncate>
-          {label}
-        </Text>
+        <Group gap={4} wrap="nowrap" style={{ flex: 1, minWidth: 0 }}>
+          <Text style={{ minWidth: 0 }} truncate>
+            {label}
+          </Text>
+          {active ? (
+            <>
+              <IconEye
+                size={14}
+                color="var(--mantine-color-gray-6)"
+                style={{ flexShrink: 0 }}
+              />
+              <Text size="xs" c="dimmed" style={{ flexShrink: 0 }}>
+                Preview
+              </Text>
+            </>
+          ) : null}
+        </Group>
       </Tooltip>
     </Group>
   );

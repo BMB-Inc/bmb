@@ -10,11 +10,20 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 
 type PdfPreviewProps = {
   data: ArrayBuffer | null;
+  /**
+   * Initial zoom level for the PDF preview.
+   * Clamped to [0.5, 3.0].
+   */
+  defaultZoom?: number;
 };
 
-export default function PdfPreview({ data }: PdfPreviewProps) {
+function clampZoom(z: number) {
+  return Math.max(0.5, Math.min(3.0, z));
+}
+
+export default function PdfPreview({ data, defaultZoom }: PdfPreviewProps) {
   const [numPages, setNumPages] = useState<number>(0);
-  const [scale, setScale] = useState<number>(1.0);
+  const [scale, setScale] = useState<number>(() => clampZoom(typeof defaultZoom === 'number' ? defaultZoom : 1.0));
   const [currentPage, setCurrentPage] = useState<number>(1);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
@@ -30,6 +39,13 @@ export default function PdfPreview({ data }: PdfPreviewProps) {
     if (!pdfData) return null;
     return { data: pdfData };
   }, [pdfData]);
+
+  // Reset to the configured default zoom whenever a new PDF is loaded.
+  useEffect(() => {
+    if (!fileObject) return;
+    setScale(clampZoom(typeof defaultZoom === 'number' ? defaultZoom : 1.0));
+    setCurrentPage(1);
+  }, [fileObject, defaultZoom]);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);

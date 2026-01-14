@@ -16,6 +16,8 @@ export type ImageRightBrowser2Props = {
   allowedExtensions?: FileTypes[];
   /** Base URL for the ImageRight API */
   baseUrl?: string;
+  /** Default zoom level for PDF previews (clamped inside PdfPreview) */
+  pdfDefaultZoom?: number;
   /** Document IDs already imported */
   importedDocumentIds?: string[];
 };

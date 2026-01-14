@@ -67,6 +67,7 @@ function App() {
         ImageRight
       </Title>
       <ImageRightBrowser2
+      pdfDefaultZoom={.75}
         // documentTypes={DOCUMENT_TYPES}
         // folderTypes={FOLDER_TYPES}
         // allowedExtensions={[FileTypes.DOC, FileTypes.DOCX]}

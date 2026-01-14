@@ -15,6 +15,8 @@ type PreviewPaneProps = {
   folderId?: number | null;
   /** File extensions to filter pages by (e.g., ['pdf', 'jpg']) */
   allowedExtensions?: string[];
+  /** Default zoom level for PDF previews (clamped inside PdfPreview) */
+  pdfDefaultZoom?: number;
   /** Active page to preview (set by tree click/auto-select) */
   activePage?: { documentId: number; pageId: number; imageId: number | null; extension: string | null } | null;
 };
@@ -88,7 +90,7 @@ function detectKindFromBytes(buffer: ArrayBuffer): DetectedKind {
   return 'other';
 }
 
-export default function PreviewPane({ expandedDocumentId, folderId, allowedExtensions, activePage }: PreviewPaneProps) {
+export default function PreviewPane({ expandedDocumentId, folderId, allowedExtensions, pdfDefaultZoom, activePage }: PreviewPaneProps) {
   void folderId; // reserved for future (page metadata / downloads); keeps prop stable
   void allowedExtensions; // filtering is applied in the tree page list; preview loads active page only
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -228,7 +230,7 @@ export default function PreviewPane({ expandedDocumentId, folderId, allowedExten
               </Center>
             ) : previewType === 'pdf' && previewData ? (
               <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
-                <PdfPreview data={previewData} />
+                <PdfPreview data={previewData} defaultZoom={pdfDefaultZoom} />
               </div>
             ) : previewType === 'tiff' && previewData ? (
               <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>

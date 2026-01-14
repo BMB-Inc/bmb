@@ -12,6 +12,8 @@ type ClientContentAreaProps = {
   clearDocumentSelection: () => void;
   /** File extensions to filter pages by (e.g., ['pdf', 'jpg']) */
   allowedExtensions?: string[];
+  /** Default zoom level for PDF previews */
+  pdfDefaultZoom?: number;
   /** Document IDs that have already been imported (will be displayed greyed out) */
   importedDocumentIds?: string[];
 };
@@ -23,6 +25,7 @@ export default function ClientContentArea({
   navigateIntoFolder,
   navigateToDocument,
   allowedExtensions,
+  pdfDefaultZoom,
   importedDocumentIds,
 }: ClientContentAreaProps) {
   return (
@@ -46,7 +49,12 @@ export default function ClientContentArea({
           importedDocumentIds={importedDocumentIds}
         />
       </div>
-      <PreviewPane expandedDocumentId={expandedDocumentId} folderId={folderId} allowedExtensions={allowedExtensions} />
+      <PreviewPane
+        expandedDocumentId={expandedDocumentId}
+        folderId={folderId}
+        allowedExtensions={allowedExtensions}
+        pdfDefaultZoom={pdfDefaultZoom}
+      />
     </div>
   );
 }
