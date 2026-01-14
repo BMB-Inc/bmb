@@ -5,6 +5,7 @@ export enum PolicyCheckRequestStatus {
   SENT = 'sent',
   RESPONDED = 'responded',
   FAILED = 'failed',
+  EXPORTED = 'exported',
 }
 
 const requestStatusValues: [PolicyCheckRequestStatus, ...PolicyCheckRequestStatus[]] = [
@@ -12,6 +13,7 @@ const requestStatusValues: [PolicyCheckRequestStatus, ...PolicyCheckRequestStatu
   PolicyCheckRequestStatus.SENT,
   PolicyCheckRequestStatus.RESPONDED,
   PolicyCheckRequestStatus.FAILED,
+  PolicyCheckRequestStatus.EXPORTED,
 ];
 
 export const policyCheckRequestSchema = z.object({

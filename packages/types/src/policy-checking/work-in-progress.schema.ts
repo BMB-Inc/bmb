@@ -38,7 +38,7 @@ export const policyCheckWorkInProgressRecentActivitySchema = z.object({
   totalSize: z.number().int(),
   activityType: z.enum(['import', 'request']),
   requestId: z.string().nullable(),
-  requestStatus: z.enum(['pending', 'sent', 'responded', 'failed']).nullable(),
+  requestStatus: z.enum(['pending', 'sent', 'responded', 'failed', 'exported']).nullable(),
   recentImport: z
     .object({
       id: z.string(),
@@ -50,7 +50,7 @@ export const policyCheckWorkInProgressRecentActivitySchema = z.object({
   recentRequest: z
     .object({
       id: z.string(),
-      status: z.enum(['pending', 'sent', 'responded', 'failed']),
+      status: z.enum(['pending', 'sent', 'responded', 'failed', 'exported']),
       updatedAt: z.coerce.date(),
     })
     .nullable(),
