@@ -358,6 +358,7 @@ import { DocumentTypes } from '@bmb-inc/types';
 <ImageRightBrowser
   documentTypes={[
     DocumentTypes.policy,
+    DocumentTypes.aiPolicyVerification,
     DocumentTypes.proposal,
     DocumentTypes.quote,
   ]}

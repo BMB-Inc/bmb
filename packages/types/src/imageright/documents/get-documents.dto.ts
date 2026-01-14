@@ -1,6 +1,7 @@
 import { z } from 'zod/v4';
 
 export enum DocumentTypes {
+  aiPolicyVerification = 'aiPolicyVerification',
   prodCorr = 'prodCorr',
   misc = 'misc',
   financials = 'financials',
