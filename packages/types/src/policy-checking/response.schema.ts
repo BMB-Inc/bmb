@@ -73,7 +73,6 @@ export const policyCheckResponseDetailSchema = z.object({
 
 export const exportPolicyCheckResponseSchema = z.object({
   responseId: z.string(),
-  folderId: z.number().int(),
   filename: z.string().min(1).optional(),
 });
 
