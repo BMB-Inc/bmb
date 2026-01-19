@@ -14,7 +14,6 @@ export function RootFolderChildren({
   folderId,
   folderTypes,
   documentTypes,
-  documentSearch,
   selectedDocumentId,
   onDocumentSelect,
   onPageClick,
@@ -26,7 +25,6 @@ export function RootFolderChildren({
   folderId: number;
   folderTypes?: FolderTypes[];
   documentTypes?: DocumentTypes[];
-  documentSearch?: string;
   selectedDocumentId: number | null;
   onDocumentSelect: (documentId: number, folderId: number) => void;
   onPageClick: (page: ActivePage | null) => void;
@@ -41,7 +39,7 @@ export function RootFolderChildren({
   });
 
   const { data: rawDocuments = [], isLoading: documentsLoading } = useDocuments(
-    { clientId, folderId, description: documentSearch || undefined },
+    { clientId, folderId },
     documentTypes,
   );
 
@@ -90,7 +88,6 @@ export function RootFolderChildren({
                 depth={0}
                 folderTypes={folderTypes}
                 documentTypes={documentTypes}
-                documentSearch={documentSearch}
                 selectedDocumentId={selectedDocumentId}
                 onDocumentSelect={onDocumentSelect}
                 onPageClick={onPageClick}
@@ -138,7 +135,6 @@ function ExpandableFolderNode({
   depth,
   folderTypes,
   documentTypes,
-  documentSearch,
   selectedDocumentId,
   onDocumentSelect,
   onPageClick,
@@ -153,7 +149,6 @@ function ExpandableFolderNode({
   depth: number;
   folderTypes?: FolderTypes[];
   documentTypes?: DocumentTypes[];
-  documentSearch?: string;
   selectedDocumentId: number | null;
   onDocumentSelect: (documentId: number, folderId: number) => void;
   onPageClick: (page: ActivePage | null) => void;
@@ -174,7 +169,6 @@ function ExpandableFolderNode({
       onToggle={() => setIsExpanded((p) => !p)}
       folderTypes={folderTypes}
       documentTypes={documentTypes}
-      documentSearch={documentSearch}
       selectedDocumentId={selectedDocumentId}
       onDocumentSelect={onDocumentSelect}
       onPageClick={onPageClick}

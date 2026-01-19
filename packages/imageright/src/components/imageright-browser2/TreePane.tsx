@@ -1,6 +1,5 @@
 import { Stack } from '@mantine/core';
 import { ClientSearch } from '../client-search/ClientSearch';
-import { DocumentSearch } from '../document-search/DocumentSearch';
 import BreadcrumbNav from '../file-browser/BreadcrumbNav';
 import { useClients } from '@hooks/index';
 import type { DocumentTypes, FolderTypes, ImagerightClient } from '@bmb-inc/types';
@@ -17,8 +16,6 @@ type TreePaneProps = {
   importedDocumentIds?: string[];
 
   // state (minimal)
-  documentSearch: string;
-  onDocumentSearchChange: (v: string) => void;
   activePage: ActivePage | null;
   setActivePage: (p: ActivePage | null) => void;
 
@@ -39,8 +36,6 @@ export function TreePane({
   documentTypes,
   allowedExtensions,
   importedDocumentIds,
-  documentSearch,
-  onDocumentSearchChange,
   activePage,
   setActivePage,
   selectedClientId,
@@ -88,14 +83,6 @@ export function TreePane({
         />
       )}
 
-      {selectedClientId && (
-        <DocumentSearch
-          value={documentSearch}
-          onChange={onDocumentSearchChange}
-          placeholder="Search documents..."
-        />
-      )}
-
       {!selectedClientId && (
         <ClientList clients={clients} isLoading={clientsLoading} error={clientsError?.message} onClientClick={navigateToClient} />
       )}
@@ -108,7 +95,6 @@ export function TreePane({
             toggleRootFolder={toggleRootFolder}
             folderTypes={folderTypes}
             documentTypes={documentTypes}
-            documentSearch={documentSearch}
             selectedDocumentId={selectedDocumentId}
             onDocumentSelect={onDocumentSelect}
             onPageClick={setActivePage}

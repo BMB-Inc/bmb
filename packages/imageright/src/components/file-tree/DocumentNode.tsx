@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Group, Text, Checkbox, Loader } from '@mantine/core';
-import { IconFileText, IconChevronRight, IconChevronDown } from '@tabler/icons-react';
+import { Group, Text, Checkbox, Loader, Tooltip, ActionIcon } from '@mantine/core';
+import { IconFileText, IconChevronRight, IconChevronDown, IconChecks, IconX } from '@tabler/icons-react';
 import { usePages } from '@hooks/usePages';
 import { useSelectedPages } from '@hooks/useSelectedPages';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
@@ -86,10 +86,12 @@ export function DocumentNode({
     handleSelectWithModifiers: handlePageSelectWithModifiers,
     setLastSelectedId: setLastSelectedPageId,
     deselectPagesForDocument,
+    selectedPages,
   } = useSelectedPages();
 
   const isImported = importedDocumentIds?.includes(String(doc.id)) ?? false;
   const isSelected = selectedDocumentId === doc.id;
+  const hasAnySelectedForThisDocument = selectedPages.some(p => p.documentId === doc.id);
 
   // Auto-preview first page when a document is expanded and selected.
   // Deterministic (sorted pages) and no refs: if there is no activePage for this document, set it to the first page.
@@ -223,6 +225,33 @@ export function DocumentNode({
         <Text truncate style={{ minWidth: 0, flex: 1 }}>
           {docDisplayName}
         </Text>
+        {isSelected && (
+          <Tooltip
+            label={hasAnySelectedForThisDocument ? 'Deselect all pages' : 'Select all pages'}
+            openDelay={300}
+          >
+            <ActionIcon
+              size="sm"
+              variant="subtle"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (hasAnySelectedForThisDocument) {
+                  deselectPagesForDocument(doc.id);
+                  toggleDocumentSelected(doc.id, false);
+                } else {
+                  void selectAllPagesForDocument(doc.id, folderId);
+                  toggleDocumentSelected(doc.id, true);
+                }
+              }}
+            >
+              {hasAnySelectedForThisDocument ? (
+                <IconX size={16} color="var(--mantine-color-red-6)" />
+              ) : (
+                <IconChecks size={16} />
+              )}
+            </ActionIcon>
+          </Tooltip>
+        )}
         {isImported && (
           <Text c="dimmed" size="xs" fs="italic" style={{ flexShrink: 0 }}>
             Imported Already

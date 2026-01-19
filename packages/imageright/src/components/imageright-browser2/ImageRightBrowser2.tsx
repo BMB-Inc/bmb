@@ -42,8 +42,6 @@ export function ImageRightBrowser2({
               documentTypes={documentTypes}
               allowedExtensions={allowedExtensions as any}
               importedDocumentIds={importedDocumentIds}
-              documentSearch={state.documentSearch}
-              onDocumentSearchChange={state.onDocumentSearchChange}
               activePage={state.activePage}
               setActivePage={state.setActivePage}
               selectedClientId={state.nav.clientId}

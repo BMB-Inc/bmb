@@ -6,16 +6,10 @@ import type { ActivePage } from './types';
  * V2 state hook: minimal app state for the tree browser.
  * - navigation is URL-persisted via useTreeNavigation
  * - activePage is local state (single source of truth for preview/highlight)
- * - documentSearch is local state
  */
 export function useTreeState() {
   const nav = useTreeNavigation();
-  const [documentSearch, setDocumentSearch] = useState('');
   const [activePage, setActivePage] = useState<ActivePage | null>(null);
-
-  const onDocumentSearchChange = useCallback((value: string) => {
-    setDocumentSearch(value);
-  }, []);
 
   const onBackToClients = useCallback(() => {
     setActivePage(null);
@@ -41,15 +35,13 @@ export function useTreeState() {
   const value = useMemo(
     () => ({
       nav,
-      documentSearch,
-      onDocumentSearchChange,
       activePage,
       setActivePage,
       onBackToClients,
       onClientRoot,
       onDocumentSelect,
     }),
-    [nav, documentSearch, onDocumentSearchChange, activePage, onBackToClients, onClientRoot, onDocumentSelect],
+    [nav, activePage, onBackToClients, onClientRoot, onDocumentSelect],
   );
 
   return value;

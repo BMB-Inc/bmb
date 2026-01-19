@@ -21,7 +21,6 @@ type FolderTreeNodeProps = {
   onToggle: () => void;
   folderTypes?: FolderTypes[];
   documentTypes?: DocumentTypes[];
-  documentSearch?: string;
   selectedDocumentId?: number | null;
   onDocumentSelect?: (documentId: number, folderId: number) => void;
   onPageClick?: (page: { documentId: number; pageId: number; imageId: number | null; extension: string | null } | null) => void;
@@ -42,7 +41,6 @@ export function FolderTreeNode({
   onToggle,
   folderTypes,
   documentTypes,
-  documentSearch,
   selectedDocumentId,
   onDocumentSelect,
   onPageClick,
@@ -59,7 +57,7 @@ export function FolderTreeNode({
   );
 
   const { data: rawDocuments = [], isLoading: documentsLoading } = useDocuments(
-    isExpanded ? { clientId, folderId, description: documentSearch || undefined } : undefined,
+    isExpanded ? { clientId, folderId } : undefined,
     documentTypes
   );
 
@@ -158,7 +156,6 @@ export function FolderTreeNode({
                   depth={depth + 1}
                   folderTypes={folderTypes}
                   documentTypes={documentTypes}
-                  documentSearch={documentSearch}
                   selectedDocumentId={selectedDocumentId}
                   onDocumentSelect={onDocumentSelect}
                   onPageClick={onPageClick}
@@ -208,7 +205,6 @@ function RecursiveFolderNode({
   depth,
   folderTypes,
   documentTypes,
-  documentSearch,
   selectedDocumentId,
   onDocumentSelect,
   onPageClick,
@@ -231,7 +227,6 @@ function RecursiveFolderNode({
       }}
       folderTypes={folderTypes}
       documentTypes={documentTypes}
-      documentSearch={documentSearch}
       selectedDocumentId={selectedDocumentId}
       onDocumentSelect={onDocumentSelect}
       onPageClick={onPageClick}

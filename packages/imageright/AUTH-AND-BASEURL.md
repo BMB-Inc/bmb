@@ -150,7 +150,6 @@ export default function ImageRightPage() {
       baseUrl="/api/Imageright"
       folderTypes={[FolderTypes.policy, FolderTypes.binding]}
       documentTypes={[DocumentTypes.policy]}
-      defaultViewMode="tree"
     />
   );
 }

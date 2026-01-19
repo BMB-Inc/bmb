@@ -129,7 +129,6 @@ function App() {
 }
 ```
 
-<<<<<<< HEAD
 ## Props
 
 ### ImageRightBrowser
@@ -138,8 +137,8 @@ function App() {
 |------|------|---------|-------------|
 | `folderTypes` | `FolderTypes[]` | - | Filter folders by type |
 | `documentTypes` | `DocumentTypes[]` | - | Filter documents by type |
-| `defaultViewMode` | `'tree' \| 'table'` | `'tree'` | Initial view mode |
-| `showViewToggle` | `boolean` | `true` | Show/hide the view mode toggle |
+| `defaultViewMode` | `'tree' \| 'table'` | `'tree'` | **Legacy (v1)**. Ignored by `ImageRightBrowser` (now backed by v2). |
+| `showViewToggle` | `boolean` | `true` | **Legacy (v1)**. Ignored by `ImageRightBrowser` (now backed by v2). |
 | `allowedExtensions` | `FileTypes[]` | - | Filter pages by file extension |
 | `baseUrl` | `string` | `'https://staging.bmbinc.com/api/Imageright'` | API base URL |
 | `importedDocumentIds` | `string[]` | - | IDs of documents to show as greyed-out/imported |
@@ -224,15 +223,18 @@ ImageRight:     staging.bmbinc.com/api/Imageright
 
 ### ImageRightBrowser
 
-Main component with toggle between tree and table views.
+Main component (now backed by `ImageRightBrowser2`).
 
 ```tsx
 <ImageRightBrowser
   folderTypes={[FolderTypes.policy]}
   documentTypes={[DocumentTypes.policy]}
-  defaultViewMode="tree"
 />
 ```
+
+### ImageRightBrowserV1
+
+Legacy browser (v1). Prefer `ImageRightBrowser` unless you have a migration need.
 
 ### FolderFileBrowser
 

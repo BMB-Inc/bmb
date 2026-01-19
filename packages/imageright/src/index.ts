@@ -2,11 +2,12 @@ export * from './api';
 export * from './hooks';
 export * from './context';
 
-// Main unified file browser component (with toggle between tree/table views)
+// Main ImageRight browser component (now backed by v2)
 export { ImageRightBrowser } from './components/ImageRightBrowser';
 export type { ImageRightBrowserProps, ViewMode } from './components/ImageRightBrowser';
-// Legacy alias (keeps imports stable as we migrate to V2)
-export { ImageRightBrowser as ImageRightBrowserV1 } from './components/ImageRightBrowser';
+// Legacy v1 browser (kept for backwards-compat / migration support)
+export { ImageRightBrowserV1 } from './components/ImageRightBrowserV1';
+export type { ImageRightBrowserV1Props } from './components/ImageRightBrowserV1';
 
 // v2 browser (cleaner composition root; incremental refactor target)
 export { ImageRightBrowser2 } from './components/imageright-browser2/ImageRightBrowser2';

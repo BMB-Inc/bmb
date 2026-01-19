@@ -2,7 +2,6 @@ import { useMemo, useState, useCallback, useEffect } from 'react';
 import { Card, Stack, Center, Text, Group, Loader, ScrollArea } from '@mantine/core';
 import { IconSearch, IconFolder, IconFolderOpen, IconChevronRight, IconChevronDown } from '@tabler/icons-react';
 import { ClientSearch } from '../client-search/ClientSearch';
-import { DocumentSearch } from '../document-search/DocumentSearch';
 import BreadcrumbNav from '../file-browser/BreadcrumbNav';
 import PreviewPane from '../file-browser/PreviewPane';
 import { TreeLoadingSkeleton } from './TreeLoadingSkeleton';
@@ -32,7 +31,6 @@ type FileTreeBrowserProps = {
 
 export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions, pdfDefaultZoom, importedDocumentIds }: FileTreeBrowserProps) {
   const { data: clients = [], isLoading: clientsLoading, error: clientsError } = useClients();
-  const [documentSearch, setDocumentSearch] = useState('');
   type ActivePage = {
     documentId: number;
     pageId: number;
@@ -54,11 +52,6 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
     toggleFolder: toggleRootFolder,
     collapseAll,
   } = useTreeNavigation();
-
-  // Memoize the search change handler
-  const handleDocumentSearchChange = useCallback((value: string) => {
-    setDocumentSearch(value);
-  }, []);
 
   // Clear document selection on initial mount (page reload)
   // The document won't be visible since sub-folder expansions aren't persisted
@@ -160,15 +153,6 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
               selectDocument(null);
               setActivePage(null);
             }}
-          />
-        )}
-
-        {/* Document search - below breadcrumb, above folders */}
-        {selectedClientId && (
-          <DocumentSearch 
-            value={documentSearch} 
-            onChange={handleDocumentSearchChange}
-            placeholder="Search documents..."
           />
         )}
 
@@ -277,7 +261,6 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
                             folderId={folder.id}
                             folderTypes={normalizedFolderTypes}
                             documentTypes={normalizedDocumentTypes}
-                            documentSearch={documentSearch}
                             selectedDocumentId={selectedDocumentId}
                             onDocumentSelect={handleDocumentSelect}
                             onPageClick={setActivePage}
@@ -322,7 +305,6 @@ function RootFolderChildren({
   folderId,
   folderTypes,
   documentTypes,
-  documentSearch,
   selectedDocumentId,
   onDocumentSelect,
   onPageClick,
@@ -334,7 +316,6 @@ function RootFolderChildren({
   folderId: number;
   folderTypes?: FolderTypes[];
   documentTypes?: DocumentTypes[];
-  documentSearch?: string;
   selectedDocumentId: number | null;
   onDocumentSelect: (documentId: number, folderId: number) => void;
   onPageClick: (page: { documentId: number; pageId: number; imageId: number | null; extension: string | null } | null) => void;
@@ -349,7 +330,7 @@ function RootFolderChildren({
   });
 
   const { data: rawDocuments = [], isLoading: documentsLoading } = useDocuments(
-    { clientId, folderId, description: documentSearch || undefined },
+    { clientId, folderId },
     documentTypes
   );
 
@@ -433,7 +414,6 @@ function RootFolderChildren({
               onToggle={() => toggleFolder(folder.id)}
               folderTypes={folderTypes}
               documentTypes={documentTypes}
-              documentSearch={documentSearch}
               selectedDocumentId={selectedDocumentId}
               onDocumentSelect={onDocumentSelect}
               onPageClick={onPageClick}

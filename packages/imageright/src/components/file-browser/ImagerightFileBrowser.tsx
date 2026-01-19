@@ -1,7 +1,6 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Card, Stack, Center, Text } from '@mantine/core';
 import { ClientSearch } from '../client-search/ClientSearch';
-import { DocumentSearch } from '../document-search/DocumentSearch';
 import { type ImagerightClient } from '@bmb-inc/types';
 // ClientCard used inside ClientList
 import BreadcrumbNav from './BreadcrumbNav';
@@ -35,11 +34,6 @@ export const FolderFileBrowser = ({
 }) => {
   // Real data hooks
   const { data: clients = [], isLoading: clientsLoading, error: clientsError } = useClients();
-  const [documentSearch, setDocumentSearch] = useState('');
-  
-  const handleDocumentSearchChange = useCallback((value: string) => {
-    setDocumentSearch(value);
-  }, []);
 
   const {
     clientId: expandedClientId,
@@ -86,7 +80,7 @@ export const FolderFileBrowser = ({
   const foldersLoading = wantsOnlyPoliciesAtRoot ? policyFoldersLoading : genericFoldersLoading;
   const { data: documents = [], isLoading: documentsLoading } = useDocuments(
     expandedClientId && currentFolderId
-      ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId), description: documentSearch || undefined }
+      ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId) }
       : undefined,
     normalizedDocumentTypes
   );
@@ -148,15 +142,6 @@ export const FolderFileBrowser = ({
         />
 
         {(expandedClientId || hasClients) && breadcrumbItems}
-
-        {/* Document search - below breadcrumb, above content */}
-        {expandedClientId && currentFolderId && (
-          <DocumentSearch 
-            value={documentSearch} 
-            onChange={handleDocumentSearchChange}
-            placeholder="Search documents..."
-          />
-        )}
 
         {/* Single-pane content area */}
         {!expandedClientId && (

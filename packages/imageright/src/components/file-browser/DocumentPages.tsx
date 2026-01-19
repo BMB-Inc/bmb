@@ -1,5 +1,5 @@
-import { Stack, Divider, Title, Skeleton, Group, ActionIcon, Tooltip } from '@mantine/core';
-import { IconChecks } from '@tabler/icons-react';
+import { Stack, Divider, Title, Skeleton, Group, Button, Tooltip } from '@mantine/core';
+import { IconChecks, IconX } from '@tabler/icons-react';
 import { usePages } from '@hooks/usePages';
 import PageRow from './PageRow';
 import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
@@ -281,6 +281,8 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
     extension: p?.latestImages?.imageMetadata?.[0]?.extension ?? null,
   }));
 
+  const hasAnySelectedForThisDocument = selectedPages.some(p => p.documentId === documentId);
+
   return (
     <Stack gap={6} mt="sm">
       {!hideHeader && (
@@ -289,18 +291,30 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
           label={
             <Group gap="xs">
               <Title order={6}>Pages ({pages.length})</Title>
-              <Tooltip label="Select all pages" openDelay={300}>
-                <ActionIcon
+              <Tooltip
+                label={hasAnySelectedForThisDocument ? 'Deselect all pages' : 'Select all pages'}
+                openDelay={300}
+              >
+                <Button
                   size="xs"
                   variant="subtle"
+                  px={6}
+                  leftSection={hasAnySelectedForThisDocument ? <IconX size={14} /> : <IconChecks size={14} />}
                   onClick={() => {
-                    selectMany(allPagesWithMetadata);
-                    toggleDocumentSelected(documentId, true);
+                    if (hasAnySelectedForThisDocument) {
+                      // Deselect all pages for the current document
+                      deselectPagesForDocument(documentId);
+                      toggleDocumentSelected(documentId, false);
+                    } else {
+                      // Select all pages for the current document (respects allowedExtensions filtering)
+                      selectMany(allPagesWithMetadata);
+                      toggleDocumentSelected(documentId, true);
+                    }
                   }}
                   disabled={pages.length === 0}
                 >
-                  <IconChecks size={14} />
-                </ActionIcon>
+                  {hasAnySelectedForThisDocument ? 'Deselect all' : 'Select all'}
+                </Button>
               </Tooltip>
             </Group>
           }

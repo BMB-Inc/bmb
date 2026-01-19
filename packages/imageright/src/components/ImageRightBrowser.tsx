@@ -1,65 +1,33 @@
-import { FileTreeBrowser } from './file-tree';
-import { FolderTypes, DocumentTypes, FileTypes } from '@bmb-inc/types';
-import { ImageRightProvider } from '../context/ImageRightContext';
+import { ImageRightBrowser2 } from './imageright-browser2/ImageRightBrowser2';
+import type { ImageRightBrowser2Props } from './imageright-browser2/types';
 
 export type ViewMode = 'table' | 'tree';
 
-export type ImageRightBrowserProps = {
-  /** Folder types to filter by */
-  folderTypes?: FolderTypes[];
-  /** Document types to filter by */
-  documentTypes?: DocumentTypes[];
-  /** Default view mode (defaults to 'tree') */
+export type ImageRightBrowserProps = ImageRightBrowser2Props & {
+  /**
+   * Legacy prop (v1). Ignored in v2.
+   * @deprecated `ImageRightBrowser` is now backed by `ImageRightBrowser2`.
+   */
   defaultViewMode?: ViewMode;
-  /** Whether to show the view mode toggle (defaults to true) */
+  /**
+   * Legacy prop (v1). Ignored in v2.
+   * @deprecated `ImageRightBrowser` is now backed by `ImageRightBrowser2`.
+   */
   showViewToggle?: boolean;
-  /** 
-   * File extensions to display (e.g., ['pdf', 'jpg', 'png']).
-   * When provided, only pages with these extensions will be shown.
-   * If not provided or empty, all extensions are shown.
-   */
-  allowedExtensions?: FileTypes[];
-  /**
-   * Base URL for the ImageRight API.
-   * Defaults to 'https://staging.bmbinc.com/api/Imageright'
-   */
-  baseUrl?: string;
-  /**
-   * Array of document IDs that have already been imported.
-   * Documents with matching IDs will be displayed with greyed-out styling.
-   */
-  importedDocumentIds?: string[];
-  /** Default zoom level for PDF previews (clamped inside PdfPreview) */
-  pdfDefaultZoom?: number;
 };
 
 /**
  * Unified ImageRight file browser with toggle between Tree and Table views.
  * Defaults to Tree view.
  *
- * @deprecated Use `ImageRightBrowser2` (exported from `@bmb-inc/imageright`) as the long-term replacement.
+ * **Now backed by `ImageRightBrowser2`**. (Legacy v1 is available as `ImageRightBrowserV1`.)
  */
 export function ImageRightBrowser({
-  folderTypes,
-  documentTypes,
-  defaultViewMode: _defaultViewMode = 'tree',
-  showViewToggle: _showViewToggle = true,
-  allowedExtensions,
-  baseUrl, // Don't default here - let ImageRightProvider handle it with getBaseUrl()
-  importedDocumentIds,
-  pdfDefaultZoom,
+  defaultViewMode: _defaultViewMode,
+  showViewToggle: _showViewToggle,
+  ...props
 }: ImageRightBrowserProps) {
-  return (
-    <ImageRightProvider baseUrl={baseUrl}>
-      <FileTreeBrowser
-        folderTypes={folderTypes}
-        documentTypes={documentTypes}
-        allowedExtensions={allowedExtensions}
-        importedDocumentIds={importedDocumentIds}
-        pdfDefaultZoom={pdfDefaultZoom}
-      />
-    </ImageRightProvider>
-  );
+  return <ImageRightBrowser2 {...props} />;
 }
 
 export default ImageRightBrowser;

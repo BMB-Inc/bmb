@@ -15,7 +15,6 @@ export function RootFolderList({
   toggleRootFolder,
   folderTypes,
   documentTypes,
-  documentSearch,
   selectedDocumentId,
   onDocumentSelect,
   onPageClick,
@@ -28,7 +27,6 @@ export function RootFolderList({
   toggleRootFolder: (folderId: number) => void;
   folderTypes?: FolderTypesType[];
   documentTypes?: DocumentTypes[];
-  documentSearch?: string;
   selectedDocumentId: number | null;
   onDocumentSelect: (documentId: number, folderId: number) => void;
   onPageClick: (page: ActivePage | null) => void;
@@ -111,7 +109,6 @@ export function RootFolderList({
                     folderId={folder.id}
                     folderTypes={normalizedFolderTypes}
                     documentTypes={normalizedDocumentTypes}
-                    documentSearch={documentSearch}
                     selectedDocumentId={selectedDocumentId}
                     onDocumentSelect={onDocumentSelect}
                     onPageClick={onPageClick}
