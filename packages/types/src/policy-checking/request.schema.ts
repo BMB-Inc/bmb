@@ -23,6 +23,7 @@ export const policyCheckRequestSchema = z.object({
   policy_id: z.number().int().nullable(),
   task_id: z.number().int().nullable(),
   email_template_id: z.uuid().nullable(),
+  recipient_email: z.string().email().nullable(),
   status: z.enum(requestStatusValues),
   created_by_user_id: z.uuid(),
   created_at: z.coerce.date(),
@@ -70,6 +71,7 @@ export const renamePolicyCheckDocumentSchema = z.object({
 
 export const createPolicyCheckRequestSchema = z.object({
   importIds: z.array(z.string().uuid()).min(1),
+  recipientEmail: z.string().email(),
   emailTemplateId: z.string().uuid().optional(),
   taskId: z.number().int().optional(),
 });
