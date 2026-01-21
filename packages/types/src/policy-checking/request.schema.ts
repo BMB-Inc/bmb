@@ -76,11 +76,23 @@ export const createPolicyCheckRequestSchema = z.object({
   taskId: z.number().int().optional(),
 });
 
+export const policyCheckRequestListQuerySchema = z.object({
+  all: z.coerce.boolean().optional(),
+});
+
+export const policyCheckRequestsByPolicyParamsSchema = z.object({
+  policyId: z.coerce.number().int(),
+});
+
 export type PolicyCheckRequest = z.infer<typeof policyCheckRequestSchema>;
 export type PolicyCheckImport = z.infer<typeof policyCheckImportSchema>;
 export type PolicyCheckImports = z.infer<typeof policyCheckImportsSchema>;
 export type ImportDocumentInput = z.infer<typeof importDocumentInputSchema>;
 export type CreatePolicyCheckImport = z.infer<typeof createPolicyCheckImportSchema>;
 export type CreatePolicyCheckRequest = z.infer<typeof createPolicyCheckRequestSchema>;
+export type PolicyCheckRequestListQuery = z.infer<typeof policyCheckRequestListQuerySchema>;
+export type PolicyCheckRequestsByPolicyParams = z.infer<
+  typeof policyCheckRequestsByPolicyParamsSchema
+>;
 export type UploadPolicyCheckDocument = z.infer<typeof uploadPolicyCheckDocumentSchema>;
 export type RenamePolicyCheckDocument = z.infer<typeof renamePolicyCheckDocumentSchema>;
