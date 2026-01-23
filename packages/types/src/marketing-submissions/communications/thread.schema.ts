@@ -35,6 +35,7 @@ export const marketingSubmissionsThreadSchema = z.object({
   created_at: z.coerce.date(),
   submission_id: z.number().int(),
   conversation_id: z.string(),
+  mailbox_email: z.string().trim().nullable(),
   updated_at: z.coerce.date().nullable().optional(),
 });
 
