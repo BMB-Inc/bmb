@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ActionIcon, TextInput } from '@mantine/core';
-import { IconX } from '@tabler/icons-react';
+import { IconSearch, IconX } from '@tabler/icons-react';
 
 type NameFilterProps = {
   value?: string;
@@ -30,6 +30,8 @@ export function NameFilter({ value = '', onChange, delay = 500, width = 300, pla
       size="xs"
       value={inputValue}
       onChange={(e) => setInputValue(e.currentTarget.value)}
+      leftSection={<IconSearch size={14} />}
+      leftSectionPointerEvents="none"
       rightSectionPointerEvents="all"
       rightSection={inputValue ? (
         <ActionIcon

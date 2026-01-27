@@ -6,6 +6,7 @@ export type BrowserItem = {
   modified: string;
   folderTypeId?: number;
   documentTypeId?: number;
+  imagerightUrl?: string | null;
 };
 
 

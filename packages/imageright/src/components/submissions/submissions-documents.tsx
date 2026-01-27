@@ -1,5 +1,5 @@
 import { useMemo, useEffect, useState } from 'react';
-import { Card, Stack, Skeleton, Center, Text } from '@mantine/core';
+import { Card, Stack, Skeleton, Center, Text, useComputedColorScheme } from '@mantine/core';
 import { ClientSearch } from '../client-search/ClientSearch';
 import { type ImagerightClient } from '@bmb-inc/types';
 import { DocumentTypes, FolderTypes } from '@bmb-inc/types';
@@ -12,6 +12,9 @@ import { usePolicyFolders, useFolders } from '@hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
 
 export const SubmissionsDocuments = () => {
+  const colorScheme = useComputedColorScheme('light');
+  const isDark = colorScheme === 'dark';
+  const cardBg = isDark ? 'var(--mantine-color-dark-7)' : 'var(--mantine-color-gray-0)';
   const { data: clients = [], isLoading: clientsLoading, error: clientsError } = useClients();
   const {
     clientId: expandedClientId,
@@ -123,6 +126,7 @@ export const SubmissionsDocuments = () => {
         name: d.documentName || d.description || `Document ${d.id}`,
         type: d.documentTypeDescription || 'Document',
         modified: toDateStr(d.dateLastModified || d.dateCreated),
+        imagerightUrl: d?.imagerightUrl ?? null,
       }));
     return [...folderItems, ...documentItems] as import('../file-browser/types').BrowserItem[];
   }, [clients, expandedClientId, folders, documents, currentFolderId]);
@@ -159,7 +163,7 @@ export const SubmissionsDocuments = () => {
   );
 
   return (
-    <Card withBorder>
+    <Card withBorder style={{ backgroundColor: cardBg }}>
       <Stack>
         <ClientSearch
           isLoading={clientsLoading}

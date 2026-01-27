@@ -62,6 +62,7 @@ export function useCurrentItems({
         type: d.documentTypeDescription || 'Document',
         modified: toDateStr(d.dateLastModified || d.dateCreated),
         documentTypeId: (d as any).documentTypeId,
+        imagerightUrl: d?.imagerightUrl ?? null,
       }));
     return [...folderItems, ...documentItems] as import('../types').BrowserItem[];
   }, [clients, expandedClientId, folders, documents, currentFolderId]);

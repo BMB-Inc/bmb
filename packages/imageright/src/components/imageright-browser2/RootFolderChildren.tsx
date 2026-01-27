@@ -61,7 +61,13 @@ export function RootFolderChildren({
   const isLoading = foldersLoading || documentsLoading || isFiltering;
 
   return (
-    <div style={{ marginLeft: 22 }}>
+    <div
+      style={{
+        marginLeft: 22,
+        paddingLeft: 16,
+        borderLeft: '2px solid var(--mantine-color-gray-3)',
+      }}
+    >
       {isLoading && (
         <Group gap="xs" py={4} px={6}>
           <Text size="sm" c="dimmed">

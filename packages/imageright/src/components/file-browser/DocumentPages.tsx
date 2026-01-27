@@ -1,4 +1,4 @@
-import { Stack, Divider, Title, Skeleton, Group, Button, Tooltip } from '@mantine/core';
+import { Stack, Divider, Title, Skeleton, Group, Button, Tooltip, Badge, useComputedColorScheme } from '@mantine/core';
 import { IconChecks, IconX } from '@tabler/icons-react';
 import { usePages } from '@hooks/usePages';
 import PageRow from './PageRow';
@@ -97,6 +97,10 @@ const isTiffType = (ext: string | null): boolean => {
 export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPreviewDataChange, onPreviewUnavailableChange, onPreviewLoadingChange, hideHeader, onPageCountChange, allowedExtensions, activePageId: externalActivePageId }: DocumentPagesProps) {
   const { baseUrl } = useImageRightConfig();
   const { data: rawPages = [], isLoading } = usePages({ documentId });
+  const colorScheme = useComputedColorScheme('light');
+  const isDark = colorScheme === 'dark';
+  const panelBg = isDark ? 'var(--mantine-color-dark-7)' : 'var(--mantine-color-gray-0)';
+  const panelBorder = isDark ? 'var(--mantine-color-dark-4)' : 'var(--mantine-color-gray-2)';
 
   // Filter pages by allowed extensions (client-side filtering after fetch)
   const pages = useMemo(
@@ -107,6 +111,7 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
     isSelected,
     toggleSelected,
     selectMany,
+    deselectPagesForDocument,
     handleSelectWithModifiers,
     setLastSelectedId,
     selectedPages,
@@ -249,7 +254,16 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
 
   if (isLoading) {
     return (
-      <Stack gap={6} mt="sm">
+      <Stack
+        gap={6}
+        mt="sm"
+        style={{
+          backgroundColor: panelBg,
+          border: `1px solid ${panelBorder}`,
+          borderRadius: 'var(--mantine-radius-sm)',
+          padding: 'var(--mantine-spacing-xs)',
+        }}
+      >
         {!hideHeader && <Divider labelPosition="left" label={<Title order={6}>Pages</Title>} />}
         {Array.from({ length: 3 }).map((_, i) => (
           <Skeleton
@@ -265,7 +279,16 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
 
   if (!Array.isArray(pages) || pages.length === 0) {
     return (
-      <Stack gap={6} mt="sm">
+      <Stack
+        gap={6}
+        mt="sm"
+        style={{
+          backgroundColor: panelBg,
+          border: `1px solid ${panelBorder}`,
+          borderRadius: 'var(--mantine-radius-sm)',
+          padding: 'var(--mantine-spacing-xs)',
+        }}
+      >
         {!hideHeader && <Divider labelPosition="left" label={<Title order={6}>Pages</Title>} />}
       </Stack>
     );
@@ -284,20 +307,33 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
   const hasAnySelectedForThisDocument = selectedPages.some(p => p.documentId === documentId);
 
   return (
-    <Stack gap={6} mt="sm">
+    <Stack
+      gap={6}
+      mt="sm"
+      style={{
+        backgroundColor: panelBg,
+        border: `1px solid ${panelBorder}`,
+        borderRadius: 'var(--mantine-radius-sm)',
+        padding: 'var(--mantine-spacing-xs)',
+      }}
+    >
       {!hideHeader && (
         <Divider
           labelPosition="left"
           label={
             <Group gap="xs">
-              <Title order={6}>Pages ({pages.length})</Title>
+              <Title order={6}>Pages</Title>
+              <Badge size="xs" variant="light" color="blue">
+                {pages.length}
+              </Badge>
               <Tooltip
                 label={hasAnySelectedForThisDocument ? 'Deselect all pages' : 'Select all pages'}
                 openDelay={300}
               >
                 <Button
                   size="xs"
-                  variant="subtle"
+                  variant="light"
+                  color={hasAnySelectedForThisDocument ? 'red' : 'blue'}
                   px={6}
                   leftSection={hasAnySelectedForThisDocument ? <IconX size={14} /> : <IconChecks size={14} />}
                   onClick={() => {
@@ -334,6 +370,7 @@ export function DocumentPages({ documentId, folderId, onPreviewUrlChange, onPrev
               key={p.id}
               label={label}
               extension={ext}
+              imagerightUrl={p?.imagerightUrl ?? null}
               active={activePageId === p.id}
               selected={isChecked(p.id)}
               checked={isChecked(p.id)}

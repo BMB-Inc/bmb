@@ -1,4 +1,4 @@
-import { Group, ScrollArea, Stack, Text } from '@mantine/core';
+import { Group, ScrollArea, Stack, Text, useComputedColorScheme } from '@mantine/core';
 import { IconChevronDown, IconChevronRight, IconFolder, IconFolderOpen } from '@tabler/icons-react';
 import { useMemo } from 'react';
 import { useFolders, usePolicyFolders } from '@hooks/useFolders';
@@ -34,6 +34,10 @@ export function RootFolderList({
   importedDocumentIds?: string[];
   allowedExtensions?: string[];
 }) {
+  const colorScheme = useComputedColorScheme('light');
+  const isDark = colorScheme === 'dark';
+  const rowBg = 'transparent';
+  const rowHover = isDark ? 'var(--mantine-color-dark-5)' : 'var(--mantine-color-gray-1)';
   const normalizedFolderTypes = Array.isArray(folderTypes) && folderTypes.length > 0 ? folderTypes : undefined;
   const normalizedDocumentTypes = Array.isArray(documentTypes) && documentTypes.length > 0 ? documentTypes : undefined;
 
@@ -60,7 +64,10 @@ export function RootFolderList({
   }, [wantsOnlyPoliciesAtRoot, policyFolders, genericFolders]);
 
   return (
-    <ScrollArea style={{ height: '100%', minHeight: 0 }}>
+    <ScrollArea
+      style={{ height: '100%', minHeight: 0 }}
+      styles={{ viewport: { paddingBottom: 'var(--mantine-spacing-xs)' } }}
+    >
       {rootFoldersLoading && <TreeLoadingSkeleton />}
       {!rootFoldersLoading && (
         <Stack gap={2}>
@@ -78,7 +85,17 @@ export function RootFolderList({
                   gap="xs"
                   py={6}
                   px={8}
-                  style={{ cursor: 'pointer' }}
+                  style={{
+                    cursor: 'pointer',
+                    borderRadius: 'var(--mantine-radius-sm)',
+                    backgroundColor: rowBg,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = rowHover;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = rowBg;
+                  }}
                   onClick={() => toggleRootFolder(folder.id)}
                 >
                   {isExpanded ? (

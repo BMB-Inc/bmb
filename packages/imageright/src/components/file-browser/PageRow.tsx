@@ -1,10 +1,12 @@
-import { Checkbox, Group, Text, Tooltip, useComputedColorScheme } from "@mantine/core";
-import { IconEye, IconFile, IconFileTypePdf, IconFileSpreadsheet, IconMail, IconFileTypeDoc, IconPhoto, IconFileTypeTxt } from '@tabler/icons-react';
+import { ActionIcon, Badge, Checkbox, Group, Text, Tooltip, useComputedColorScheme } from "@mantine/core";
+import { IconEye, IconExternalLink, IconFile, IconFileTypePdf, IconFileSpreadsheet, IconMail, IconFileTypeDoc, IconPhoto, IconFileTypeTxt } from '@tabler/icons-react';
 import { useState } from "react";
+import { getImagerightOpenUrl } from "../../utils/imagerightLink";
 
 type PageRowProps = {
   label: string;
   extension?: string | null;
+  imagerightUrl?: string | null;
   /** True when this row corresponds to the currently previewed page */
   active?: boolean;
   /** True when this page is selected for import (checkbox/double-click) */
@@ -52,12 +54,36 @@ function getFileIcon(extension: string | null | undefined) {
   return <IconFile size={14} color="var(--mantine-color-gray-6)" />;
 }
 
-export function PageRow({ label, extension, active, selected, checked, onCheckedChange, onSelect, onDoubleClick }: PageRowProps) {
+function getExtensionColor(extension: string) {
+  const ext = String(extension).toLowerCase();
+  if (ext === 'pdf') return 'red';
+  if (['xlsx', 'xls', 'csv'].includes(ext)) return 'green';
+  if (['eml', 'msg'].includes(ext)) return 'blue';
+  if (['doc', 'docx', 'rtf'].includes(ext)) return 'blue';
+  if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'tif', 'webp'].includes(ext)) return 'grape';
+  if (['txt', 'text'].includes(ext)) return 'gray';
+  return 'gray';
+}
+
+function getExtensionBadge(extension: string | null | undefined) {
+  const raw = String(extension ?? '').trim();
+  if (!raw) return null;
+  const label = raw.toUpperCase();
+  const color = getExtensionColor(raw);
+  return (
+    <Badge size="xs" variant="light" color={color} style={{ flexShrink: 0 }}>
+      {label}
+    </Badge>
+  );
+}
+
+export function PageRow({ label, extension, imagerightUrl, active, selected, checked, onCheckedChange, onSelect, onDoubleClick }: PageRowProps) {
   const [hovered, setHovered] = useState(false);
   const colorScheme = useComputedColorScheme('light');
   const isDark = colorScheme === 'dark';
+  const imagerightOpenUrl = getImagerightOpenUrl(imagerightUrl);
 
-  // Default background should be transparent; gray only on hover; subtle when active; stronger when selected
+  // Default background should be transparent; tint on hover/active/selected
   const baseBg = 'transparent';
   const hoverBg = isDark ? 'var(--mantine-color-dark-5)' : 'var(--mantine-color-gray-1)';
   // Active is "previewed" (not necessarily selected); make it clearly visible but not as strong as selected
@@ -79,7 +105,7 @@ export function PageRow({ label, extension, active, selected, checked, onChecked
         transition: 'background-color 120ms ease',
         whiteSpace: 'nowrap',
         overflow: 'hidden',
-        flexWrap: 'nowrap'
+        flexWrap: 'nowrap',
       }}
       wrap="nowrap"
       onClick={(e) => onSelect?.(e)}
@@ -94,6 +120,7 @@ export function PageRow({ label, extension, active, selected, checked, onChecked
           <Text style={{ minWidth: 0 }} truncate>
             {label}
           </Text>
+          {getExtensionBadge(extension)}
           {active ? (
             <>
               <IconEye
@@ -108,6 +135,21 @@ export function PageRow({ label, extension, active, selected, checked, onChecked
           ) : null}
         </Group>
       </Tooltip>
+      {imagerightOpenUrl ? (
+        <Tooltip label="Open in ImageRight" openDelay={400}>
+          <ActionIcon
+            size="xs"
+            variant="subtle"
+            component="a"
+            href={imagerightOpenUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <IconExternalLink size={14} />
+          </ActionIcon>
+        </Tooltip>
+      ) : null}
     </Group>
   );
 }

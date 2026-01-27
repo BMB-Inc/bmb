@@ -10,13 +10,15 @@ type SortableHeaderProps = {
   direction: SortDirection;
   onToggle: () => void;
 	rightSection?: ReactNode;
+  icon?: ReactNode;
 };
 
-export function SortableHeader({ title, active, direction, onToggle, rightSection }: SortableHeaderProps) {
+export function SortableHeader({ title, active, direction, onToggle, rightSection, icon }: SortableHeaderProps) {
   return (
 		<Table.Th>
 			<div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
 				<div onClick={onToggle} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', userSelect: 'none' }}>
+          {icon}
 					<span>{title}</span>
 					{active
 						? (direction === 'asc'

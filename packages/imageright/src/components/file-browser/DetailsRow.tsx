@@ -1,8 +1,9 @@
-import { Checkbox, Table, Text } from '@mantine/core';
-import { IconFolder, IconFileText, IconBuilding } from '@tabler/icons-react';
+import { ActionIcon, Badge, Checkbox, Table, Text, Tooltip } from '@mantine/core';
+import { IconFolder, IconFileText, IconBuilding, IconExternalLink } from '@tabler/icons-react';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
 import { useSelectAllPagesForDocument } from '@hooks/useSelectAllPagesForDocument';
 import type { BrowserItem } from './types';
+import { getImagerightOpenUrl } from '../../utils/imagerightLink';
 
 type DetailsRowProps = {
   item: BrowserItem;
@@ -28,17 +29,20 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
 
   // Check if this document has been imported
   const isImported = item.kind === 'document' && (importedDocumentIds?.includes(String(item.id)) ?? false);
+  const isSelected = item.kind === 'document' && selectedDocumentId === item.id;
+  const imagerightOpenUrl = item.kind === 'document' ? getImagerightOpenUrl(item.imagerightUrl ?? null) : null;
 
   // Determine row background color based on state
   const getRowBackgroundColor = () => {
     if (item.kind !== 'document') return undefined;
     
-    const isSelected = selectedDocumentId === item.id;
     if (isImported) {
       return isSelected ? 'var(--mantine-color-blue-light)' : 'var(--mantine-color-gray-1)';
     }
     return isSelected ? 'var(--mantine-color-blue-light)' : undefined;
   };
+
+  const typeColor = item.kind === 'folder' ? 'yellow' : item.kind === 'client' ? 'indigo' : 'blue';
 
   return (
     <Table.Tr
@@ -105,7 +109,22 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
           {item.kind === 'folder' && <IconFolder size={16} color="var(--mantine-color-yellow-7)" />}
           {item.kind === 'client' && <IconBuilding size={16} color="var(--mantine-color-blue-5)" />}
           {item.kind === 'document' && <IconFileText size={16} color={selectedDocumentId === item.id ? 'var(--mantine-color-blue-9)' : 'var(--mantine-color-blue-7)'} />}
-          {item.name}
+          <Text fw={isSelected ? 600 : 500}>{item.name}</Text>
+          {imagerightOpenUrl ? (
+            <Tooltip label="Open in ImageRight" openDelay={300}>
+              <ActionIcon
+                size="sm"
+                variant="subtle"
+                component="a"
+                href={imagerightOpenUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(event) => event.stopPropagation()}
+              >
+                <IconExternalLink size={16} />
+              </ActionIcon>
+            </Tooltip>
+          ) : null}
           {isImported && (
             <Text c="dimmed" size="xs" fs="italic" style={{ flexShrink: 0, marginLeft: 'auto' }}>
               Imported Already
@@ -113,8 +132,16 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
           )}
         </div>
       </Table.Td>
-      <Table.Td>{item.type}</Table.Td>
-      <Table.Td>{item.modified}</Table.Td>
+      <Table.Td>
+        <Badge size="xs" variant="light" color={typeColor}>
+          {item.type}
+        </Badge>
+      </Table.Td>
+      <Table.Td>
+        <Text size="sm" c="dimmed">
+          {item.modified}
+        </Text>
+      </Table.Td>
     </Table.Tr>
   );
 }

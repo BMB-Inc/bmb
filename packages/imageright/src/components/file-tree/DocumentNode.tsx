@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Group, Text, Checkbox, Loader, Tooltip, ActionIcon } from '@mantine/core';
-import { IconFileText, IconChevronRight, IconChevronDown, IconChecks, IconX } from '@tabler/icons-react';
+import { IconFileText, IconChevronRight, IconChevronDown, IconChecks, IconX, IconExternalLink } from '@tabler/icons-react';
 import { usePages } from '@hooks/usePages';
 import { useSelectedPages } from '@hooks/useSelectedPages';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
@@ -8,6 +8,7 @@ import { useSelectAllPagesForDocument } from '@hooks/useSelectAllPagesForDocumen
 import PageRow from '../file-browser/PageRow';
 import classes from '../../modules/file-tree.module.css';
 import dayjs from 'dayjs';
+import { getImagerightOpenUrl } from '../../utils/imagerightLink';
 
 type DocumentNodeProps = {
   doc: any;
@@ -92,6 +93,7 @@ export function DocumentNode({
   const isImported = importedDocumentIds?.includes(String(doc.id)) ?? false;
   const isSelected = selectedDocumentId === doc.id;
   const hasAnySelectedForThisDocument = selectedPages.some(p => p.documentId === doc.id);
+  const imagerightOpenUrl = getImagerightOpenUrl(doc?.imagerightUrl ?? null);
 
   // Auto-preview first page when a document is expanded and selected.
   // Deterministic (sorted pages) and no refs: if there is no activePage for this document, set it to the first page.
@@ -225,6 +227,21 @@ export function DocumentNode({
         <Text truncate style={{ minWidth: 0, flex: 1 }}>
           {docDisplayName}
         </Text>
+        {imagerightOpenUrl ? (
+          <Tooltip label="Open in ImageRight" openDelay={300}>
+            <ActionIcon
+              size="sm"
+              variant="subtle"
+              component="a"
+              href={imagerightOpenUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <IconExternalLink size={16} />
+            </ActionIcon>
+          </Tooltip>
+        ) : null}
         {isSelected && (
           <Tooltip
             label={hasAnySelectedForThisDocument ? 'Deselect all pages' : 'Select all pages'}
@@ -261,7 +278,7 @@ export function DocumentNode({
 
       {/* Pages (expanded) */}
       {isExpanded && (
-        <div style={{ paddingLeft: 32 }}>
+        <div className={classes.pages} style={{ paddingLeft: 32 }}>
           {pagesLoading ? (
             <Group gap="xs" py={3} px={6}>
               <Loader size="xs" />
@@ -284,6 +301,7 @@ export function DocumentNode({
                   key={pageId}
                   label={label}
                   extension={ext}
+                  imagerightUrl={page?.imagerightUrl ?? null}
                   active={activePage?.documentId === doc.id && activePage?.pageId === pageId}
                   selected={isPageSelected(pageId)}
                   checked={isPageSelected(pageId)}

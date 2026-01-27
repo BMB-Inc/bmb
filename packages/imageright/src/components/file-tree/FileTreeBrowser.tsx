@@ -1,5 +1,5 @@
-import { useMemo, useState, useCallback, useEffect } from 'react';
-import { Card, Stack, Center, Text, Group, Loader, ScrollArea } from '@mantine/core';
+import { useMemo, useState, useEffect } from 'react';
+import { Card, Stack, Center, Text, Group, Loader, ScrollArea, useComputedColorScheme } from '@mantine/core';
 import { IconSearch, IconFolder, IconFolderOpen, IconChevronRight, IconChevronDown } from '@tabler/icons-react';
 import { ClientSearch } from '../client-search/ClientSearch';
 import BreadcrumbNav from '../file-browser/BreadcrumbNav';
@@ -31,6 +31,11 @@ type FileTreeBrowserProps = {
 
 export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions, pdfDefaultZoom, importedDocumentIds }: FileTreeBrowserProps) {
   const { data: clients = [], isLoading: clientsLoading, error: clientsError } = useClients();
+  const colorScheme = useComputedColorScheme('light');
+  const isDark = colorScheme === 'dark';
+  const cardBg = isDark ? 'var(--mantine-color-dark-7)' : 'var(--mantine-color-gray-0)';
+  const panelBg = 'transparent';
+  const panelBorder = isDark ? 'var(--mantine-color-dark-4)' : 'var(--mantine-color-gray-2)';
   type ActivePage = {
     documentId: number;
     pageId: number;
@@ -69,7 +74,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
     clients,
     clientsLoading,
     expandedClientId: selectedClientId,
-    navigateToClient,
+    navigateToClient: (id) => navigateToClient(Number(id)),
   });
 
   // Get the selected client info
@@ -136,7 +141,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
     : undefined;
 
   return (
-    <Card withBorder>
+    <Card withBorder style={{ backgroundColor: cardBg }}>
       <Stack>
         <ClientSearch isLoading={clientsLoading} error={clientsError?.message} />
 
@@ -208,7 +213,9 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
             }}
           >
             {/* Tree pane */}
-            <ScrollArea style={{ height: '100%' }}>
+            <ScrollArea
+              style={{ height: '100%', backgroundColor: panelBg, border: `1px solid ${panelBorder}`, borderRadius: 'var(--mantine-radius-sm)' }}
+            >
               {rootFoldersLoading && <TreeLoadingSkeleton />}
 
               {!rootFoldersLoading && (

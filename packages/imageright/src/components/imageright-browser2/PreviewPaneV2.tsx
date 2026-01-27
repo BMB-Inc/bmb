@@ -21,11 +21,19 @@ export function PreviewPaneV2({
   const { loading, unavailable, extension, kind, data, url } = usePreview(documentId, activePage);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, minWidth: 0 }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        minHeight: 0,
+        minWidth: 0,
+      }}
+    >
       <Stack gap={6} style={{ flex: 1, minHeight: 0, minWidth: 0 }}>
         <Divider labelPosition="left" label={<Title order={6}>Preview</Title>} />
 
-        <div style={{ flex: 1, minHeight: 0, minWidth: 0, overflow: 'hidden', position: 'relative' }}>
+        <div style={{ flex: 1, minHeight: 0, minWidth: 0, overflow: 'hidden', position: 'relative', borderRadius: 'var(--mantine-radius-sm)' }}>
           {loading ? (
             <Center style={{ height: '100%', width: '100%', position: 'absolute', inset: 0 }}>
               <Stack align="center" gap="sm">

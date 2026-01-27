@@ -1,10 +1,10 @@
-import { ActionIcon, Button, Checkbox, Group, Menu, ScrollArea, Table, Text } from '@mantine/core';
+import { ActionIcon, Button, Checkbox, Group, Menu, ScrollArea, Table, Text, useComputedColorScheme } from '@mantine/core';
 import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import type { BrowserItem } from './types';
 import { SortableHeader } from './SortableHeader';
 import { NameFilter } from './NameFilter';
 import { DetailsRow } from './DetailsRow';
-import { IconChecks, IconFilter } from '@tabler/icons-react';
+import { IconChecks, IconFilter, IconFile, IconTag, IconClock } from '@tabler/icons-react';
 import { useSelectedDocuments } from '@hooks/useSelectedDocuments';
 
 type DetailsTableProps = {
@@ -25,6 +25,13 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
   const [sort, setSort] = useState<{ key: SortKey; direction: SortDirection } | null>(null);
   const [folderNameQuery, setFolderNameQuery] = useState('');
   const { selectMany } = useSelectedDocuments();
+  const colorScheme = useComputedColorScheme('light');
+  const isDark = colorScheme === 'dark';
+  const headerBg = isDark ? 'var(--mantine-color-dark-7)' : 'var(--mantine-color-gray-0)';
+  const headerBorder = isDark ? 'var(--mantine-color-dark-4)' : 'var(--mantine-color-gray-2)';
+  const headerText = isDark ? 'var(--mantine-color-gray-2)' : 'var(--mantine-color-gray-7)';
+  const tableBg = isDark ? 'var(--mantine-color-dark-7)' : 'var(--mantine-color-gray-0)';
+  const stripeColor = isDark ? 'var(--mantine-color-dark-6)' : 'var(--mantine-color-gray-1)';
   const availableTypeEntries = useMemo(() => {
     // key: type name (used for filtering), label: displayed text (type only)
     const labelMap = new Map<string, string>();
@@ -137,7 +144,29 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
     });
   };
   return (
-    <Table withRowBorders={false} verticalSpacing="xs" highlightOnHover>
+    <Table
+      withRowBorders={false}
+      verticalSpacing="xs"
+      highlightOnHover
+      striped
+      stripedColor={stripeColor}
+      styles={{
+        table: {
+          backgroundColor: tableBg,
+          borderRadius: 'var(--mantine-radius-sm)',
+        },
+        thead: {
+          backgroundColor: headerBg,
+        },
+        th: {
+          color: headerText,
+          borderBottom: `1px solid ${headerBorder}`,
+        },
+        td: {
+          verticalAlign: 'middle',
+        },
+      }}
+    >
       <Table.Thead>
         <Table.Tr>
           <SortableHeader
@@ -145,12 +174,14 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
             active={sort?.key === 'name'}
             direction={sort?.key === 'name' ? sort.direction : null}
             onToggle={() => toggleSort('name')}
+            icon={<IconFile size={14} color="var(--mantine-color-blue-6)" />}
           />
           <SortableHeader
             title="Type"
             active={sort?.key === 'type'}
             direction={sort?.key === 'type' ? sort.direction : null}
             onToggle={() => toggleSort('type')}
+            icon={<IconTag size={14} color="var(--mantine-color-violet-6)" />}
             rightSection={
               <Menu withinPortal position="bottom-start" shadow="md">
                 <Menu.Target>
@@ -220,6 +251,7 @@ export function DetailsTable({ items, onFolderOpen, onClientOpen, onDocumentOpen
             active={sort?.key === 'modified'}
             direction={sort?.key === 'modified' ? sort.direction : null}
             onToggle={() => toggleSort('modified')}
+            icon={<IconClock size={14} color="var(--mantine-color-cyan-6)" />}
           />
         </Table.Tr>
         <Table.Tr>
