@@ -215,9 +215,9 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
                 <Stack gap={2}>
                   {rootFolders.map((folder: any) => {
                     const isExpanded = expandedRootFolders.has(folder.id);
-                    const folderName = folder.description ?? folder.folderTypeName ?? 'Folder';
-                    const folderDisplayName = folder.folderTypeDescription && folder.folderTypeDescription !== folderName
-                      ? `${folderName} (${folder.folderTypeDescription})`
+                    const folderName = folder.folderTypeName
+                    const folderDisplayName = folder.folderTypeName && folder.folderTypeDescription !== folderName
+                      ? `${folder.folderTypeDescription} (${folder.folderTypeDescription})`
                       : folderName;
 
                     return (

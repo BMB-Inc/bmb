@@ -26,7 +26,7 @@ type TreePaneProps = {
   toggleRootFolder: (folderId: number) => void;
   collapseAll: () => void;
   navigateToClients: () => void;
-  navigateToClient: (clientId: number) => void;
+  navigateToClient: (clientId: number | string) => void;
   selectDocument: (documentId: number | null, folderId?: number) => void;
   onDocumentSelect: (docId: number, parentFolderId: number) => void;
 };
@@ -84,7 +84,9 @@ export function TreePane({
       )}
 
       {!selectedClientId && (
-        <ClientList clients={clients} isLoading={clientsLoading} error={clientsError?.message} onClientClick={navigateToClient} />
+        <div style={{ flex: 1, minHeight: 0 }}>
+          <ClientList clients={clients} isLoading={clientsLoading} error={clientsError?.message} onClientClick={navigateToClient} />
+        </div>
       )}
 
       {selectedClientId && (

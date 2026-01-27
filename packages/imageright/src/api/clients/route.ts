@@ -7,7 +7,8 @@ export const getClients = async (params?: GetClientsDto, baseUrl?: string) => {
   }
   
   const searchParams = new URLSearchParams();
-  if (params.clientId) {
+  const hasClientLookup = Boolean(params.clientCode || params.clientName);
+  if (hasClientLookup && params.clientId) {
     searchParams.append('clientId', params.clientId.toString());
   }
   if (params.clientCode) {

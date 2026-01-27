@@ -33,7 +33,7 @@ export function ClientList({
   }
 
   return (
-    <ScrollArea h={400}>
+    <ScrollArea h="100%" style={{ flex: 1, minHeight: 0 }}>
       <Stack gap="xs">
         {clients.map((client) => (
           <Group

@@ -1,8 +1,8 @@
 import { ActionIcon, Group, Loader, TextInput } from "@mantine/core";
 import { IconSearch, IconX } from '@tabler/icons-react';
-import { useDebouncedValue } from "@mantine/hooks";
-import { useState, useEffect } from "react";
-import { useQueryState, parseAsString } from "nuqs";
+import { useEffect, useState } from "react";
+import { useDebouncedCallback } from "@mantine/hooks";
+import { useQueryState, useQueryStates, parseAsInteger, parseAsString } from "nuqs";
 
 interface ClientSearchProps {
   isLoading: boolean;
@@ -10,46 +10,49 @@ interface ClientSearchProps {
 }
 
 export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
-  const [clientCode, setClientCode] = useQueryState('clientCode', parseAsString);
-  const [clientName, setClientName] = useQueryState('clientName', parseAsString);
-
-  // Local state for each input
-  const [codeQuery, setCodeQuery] = useState(() => clientCode ?? '');
-  const [nameQuery, setNameQuery] = useState(() => clientName ?? '');
-
-  // Debounce each input separately
-  const [debouncedCodeQuery] = useDebouncedValue(codeQuery, 500);
-  const [debouncedNameQuery] = useDebouncedValue(nameQuery, 500);
-
-  // Update URL parameters for client code
-  useEffect(() => {
-    const trimmed = debouncedCodeQuery.trim();
-    setClientCode(trimmed || null);
-  }, [debouncedCodeQuery, setClientCode]);
-
-  // Update URL parameters for client name
-  useEffect(() => {
-    const trimmed = debouncedNameQuery.trim();
-    setClientName(trimmed || null);
-  }, [debouncedNameQuery, setClientName]);
-
-  // Sync local inputs when URL changes externally
-  useEffect(() => {
-    if ((clientCode ?? '') !== codeQuery) setCodeQuery(clientCode ?? '');
-  }, [clientCode]);
+  const [clientCodeParam, setClientCodeParam] = useQueryState('clientCode', parseAsString);
+  const [clientNameParam, setClientNameParam] = useQueryState('clientName', parseAsString);
+  const [, setNavParams] = useQueryStates({
+    clientId: parseAsInteger,
+    folderId: parseAsInteger,
+    documentId: parseAsInteger,
+    expanded: parseAsString,
+  });
+  const [clientCode, setClientCode] = useState(clientCodeParam ?? '');
+  const [clientName, setClientName] = useState(clientNameParam ?? '');
+  const updateClientCodeParam = useDebouncedCallback((value: string) => {
+    setClientCodeParam(value.trim() ? value : null);
+  }, 300);
+  const updateClientNameParam = useDebouncedCallback((value: string) => {
+    setClientNameParam(value.trim() ? value : null);
+  }, 300);
 
   useEffect(() => {
-    if ((clientName ?? '') !== nameQuery) setNameQuery(clientName ?? '');
-  }, [clientName]);
+    setClientCode(clientCodeParam ?? '');
+  }, [clientCodeParam]);
+
+  useEffect(() => {
+    setClientName(clientNameParam ?? '');
+  }, [clientNameParam]);
+
+  // Clear navigation params when no search input is present
+  useEffect(() => {
+    const hasQuery = clientCode.trim() || clientName.trim();
+    if (!hasQuery) {
+      setNavParams({ clientId: null, folderId: null, documentId: null, expanded: null }, { history: 'push' });
+    }
+  }, [clientCode, clientName, setNavParams]);
 
   const handleClearCode = () => {
-    setCodeQuery('');
-    setClientCode(null);
+    setClientCode('');
+    setClientCodeParam(null);
+    updateClientCodeParam.cancel();
   };
 
   const handleClearName = () => {
-    setNameQuery('');
-    setClientName(null);
+    setClientName('');
+    setClientNameParam(null);
+    updateClientNameParam.cancel();
   };
 
   return (
@@ -60,16 +63,25 @@ export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
         error={error}
         leftSection={<IconSearch />}
         rightSection={
-          isLoading && codeQuery ? (
+          isLoading && clientCode ? (
             <Loader size="xs" color="blue" />
-          ) : codeQuery ? (
+          ) : clientCode ? (
             <ActionIcon size="xs" color="dimmed" variant="subtle" onClick={handleClearCode}>
               <IconX />
             </ActionIcon>
           ) : undefined
         }
-        value={codeQuery}
-        onChange={(e) => setCodeQuery(e.target.value)}
+        value={clientCode}
+        onChange={(e) => {
+          const nextValue = e.target.value;
+          setClientCode(nextValue);
+          if (!nextValue.trim()) {
+            updateClientCodeParam.cancel();
+            setClientCodeParam(null);
+            return;
+          }
+          updateClientCodeParam(nextValue);
+        }}
       />
       <TextInput
         flex={1}
@@ -77,16 +89,25 @@ export const ClientSearch = ({ isLoading, error }: ClientSearchProps) => {
         error={error}
         leftSection={<IconSearch />}
         rightSection={
-          isLoading && nameQuery ? (
+          isLoading && clientName ? (
             <Loader size="xs" color="blue" />
-          ) : nameQuery ? (
+          ) : clientName ? (
             <ActionIcon size="xs" color="dimmed" variant="subtle" onClick={handleClearName}>
               <IconX />
             </ActionIcon>
           ) : undefined
         }
-        value={nameQuery}
-        onChange={(e) => setNameQuery(e.target.value)}
+        value={clientName}
+        onChange={(e) => {
+          const nextValue = e.target.value;
+          setClientName(nextValue);
+          if (!nextValue.trim()) {
+            updateClientNameParam.cancel();
+            setClientNameParam(null);
+            return;
+          }
+          updateClientNameParam(nextValue);
+        }}
       />
     </Group>
   );
