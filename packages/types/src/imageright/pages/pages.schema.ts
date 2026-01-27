@@ -41,6 +41,7 @@ export const imagerightPageSchema = z.object({
   firstVersionCreated: z.string(), // ISO date string
   latestVersionCreated: z.string(), // ISO date string
   pageSize: z.number(),
+  imagerightUrl: z.string(),
 });
 
 export const imagerightPagesSchema = z.array(imagerightPageSchema);

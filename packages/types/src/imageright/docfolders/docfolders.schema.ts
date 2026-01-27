@@ -28,6 +28,7 @@ export type ImagerightDocFolders = z.infer<typeof imagerightDocFoldersSchema>;
 export const imagerightDocFolderWithRelationsSchema = imagerightDocFolderSchema.extend({
   file: imagerightClientSchema.nullable(),
   folder: z.array(imagerightFolderSchema),
+  imagerightUrl: z.string(),
 });
 
 export const imagerightDocFoldersWithRelationsSchema = z.array(

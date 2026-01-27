@@ -22,6 +22,7 @@ export const imagerightDocumentSchema = z.object({
   documentName: z.string(),
   file: imagerightClientSchema,
   folder: z.array(imagerightFolderSchema),
+  imagerightUrl: z.string(),
 });
 
 export const imagerightDocumentsSchema = z.array(imagerightDocumentSchema);

@@ -6,6 +6,7 @@ export * from './documents';
 export * from './drawers';
 export * from './integration';
 export * from './folders';
+export * from './urls';
 export * from './images';
 export * from './pages';
 export * from './tasks';
