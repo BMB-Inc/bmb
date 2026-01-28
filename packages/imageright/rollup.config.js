@@ -27,6 +27,10 @@ const externalDeps = [
 
 // Regex pattern for matching imports
 const externalPattern = new RegExp(`^(${externalDeps.join('|')})($|/)`);
+const isCssImport = (id) => id.endsWith('.css');
+const suppressUseClientWarning = (warning) =>
+  typeof warning?.message === 'string'
+  && warning.message.includes('Module level directives cause errors when bundled');
 
 export default [
   // Main bundle
@@ -45,6 +49,10 @@ export default [
         sourcemap: true,
       },
     ],
+    onwarn: (warning, warn) => {
+      if (suppressUseClientWarning(warning)) return;
+      warn(warning);
+    },
     plugins: [
       alias({
         entries: [
@@ -94,7 +102,7 @@ export default [
         exclude: ["**/*.test.*", "**/*.spec.*", "**/*.stories.*"]
       })
     ],
-    external: (id) => externalPattern.test(id)
+    external: (id) => externalPattern.test(id) || isCssImport(id)
   },
   // Type definitions
   {
@@ -104,7 +112,11 @@ export default [
       format: "es",
     },
     plugins: [dts()],
-    external: (id) => externalPattern.test(id)
+    onwarn: (warning, warn) => {
+      if (suppressUseClientWarning(warning)) return;
+      warn(warning);
+    },
+    external: (id) => externalPattern.test(id) || isCssImport(id)
   },
 ];
 

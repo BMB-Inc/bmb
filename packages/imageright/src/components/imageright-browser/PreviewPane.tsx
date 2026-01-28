@@ -5,7 +5,7 @@ import SpreadsheetPreview from '../file-browser/SpreadsheetPreview';
 import TiffPreview from '../file-browser/TiffPreview';
 import WordDocPreview from '../file-browser/WordDocPreview';
 import { usePreview } from '@hooks/usePreview';
-import type { ActivePage } from './types.ts';
+import type { ActivePage } from './types';
 
 export function PreviewPane({
   expandedDocumentId,

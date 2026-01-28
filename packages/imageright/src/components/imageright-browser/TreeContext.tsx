@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 import type { DocumentTypes, FolderTypes } from '@bmb-inc/types';
-import type { ActivePage } from './types.ts';
+import type { ActivePage } from './types';
 
 type TreeContextValue = {
   folderTypes?: FolderTypes[];

@@ -1,10 +1,11 @@
+/// <reference path="./vite-env.d.ts" />
+
 export * from './api';
 export * from './hooks';
 export * from './context';
 
-// Main ImageRight browser component (now backed by v2)
+// Main ImageRight browser component
 export { ImageRightBrowser } from './components/ImageRightBrowser';
-export type { ImageRightBrowserProps, ViewMode } from './components/ImageRightBrowser';
 // Browser types
 export type { ImageRightBrowserProps, ActivePage } from './components/imageright-browser/types';
 

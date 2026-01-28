@@ -3,7 +3,7 @@ import { ClientSearch } from '../client-search/ClientSearch';
 import BreadcrumbNav from '../file-browser/BreadcrumbNav';
 import { useClients, useClientLabel } from '@hooks/index';
 import type { DocumentTypes, FolderTypes } from '@bmb-inc/types';
-import type { ActivePage } from './types.ts';
+import type { ActivePage } from './types';
 import { ClientList } from './ClientList';
 import { RootFolderList } from './RootFolderList';
 import { useAutoSelectSingleClient } from '../file-browser/hooks/useAutoSelectSingleClient';

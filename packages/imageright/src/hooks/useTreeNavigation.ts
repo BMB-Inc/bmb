@@ -1,4 +1,4 @@
-import { useQueryStates, parseAsString, parseAsArrayOf, parseAsInteger } from 'nuqs';
+import { useQueryStates, parseAsString, parseAsInteger } from 'nuqs';
 import { useCallback } from 'react';
 
 /**
