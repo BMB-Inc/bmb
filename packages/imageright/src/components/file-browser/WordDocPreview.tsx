@@ -5,10 +5,9 @@ import * as mammoth from 'mammoth/mammoth.browser';
 
 type WordDocPreviewProps = {
   data: ArrayBuffer;
-  extension: string;
 };
 
-export function WordDocPreview({ data, extension }: WordDocPreviewProps) {
+export function WordDocPreview({ data}: WordDocPreviewProps) {
   const [html, setHtml] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);

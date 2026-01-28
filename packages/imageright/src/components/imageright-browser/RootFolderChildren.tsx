@@ -1,64 +1,37 @@
 import { Group, Text } from '@mantine/core';
-import { useMemo, useState } from 'react';
-import { useFolders } from '@hooks/useFolders';
-import { useDocuments } from '@hooks/useDocuments';
-import { useFilteredDocumentsByExtension } from '@hooks/useFilteredDocumentsByExtension';
-import { sortFolders } from '../file-browser/utils/folderSorting';
+import { useState } from 'react';
+import { useFolderChildren } from '@hooks/useFolderChildren';
 import { FolderTreeNode } from '../file-tree/FolderTreeNode';
 import { DocumentNode } from '../file-tree/DocumentNode';
 import type { DocumentTypes, FolderTypes } from '@bmb-inc/types';
-import type { ActivePage } from './types';
+import { useTreeContext } from './TreeContext';
 
 export function RootFolderChildren({
   clientId,
   folderId,
   folderTypes,
   documentTypes,
-  selectedDocumentId,
-  onDocumentSelect,
-  onPageClick,
-  activePage,
-  importedDocumentIds,
-  allowedExtensions,
 }: {
   clientId: number;
   folderId: number;
   folderTypes?: FolderTypes[];
   documentTypes?: DocumentTypes[];
-  selectedDocumentId: number | null;
-  onDocumentSelect: (documentId: number, folderId: number) => void;
-  onPageClick: (page: ActivePage | null) => void;
-  activePage: ActivePage | null;
-  importedDocumentIds?: string[];
-  allowedExtensions?: string[];
 }) {
-  const { data: rawChildFolders = [], isLoading: foldersLoading } = useFolders({
+  const {
+    selectedDocumentId,
+    onDocumentSelect,
+    activePage,
+    setActivePage,
+    importedDocumentIds,
+    allowedExtensions,
+  } = useTreeContext();
+  const { childFolders, documents: filteredDocuments, visibleDocumentIds, isLoading } = useFolderChildren({
     clientId,
     folderId,
-    folderTypes: folderTypes ?? null,
-  });
-
-  const { data: rawDocuments = [], isLoading: documentsLoading } = useDocuments(
-    { clientId, folderId },
+    folderTypes,
     documentTypes,
-  );
-
-  const childFolders = useMemo(() => sortFolders(rawChildFolders || []), [rawChildFolders]);
-
-  // newest first
-  const sortedDocuments = useMemo(() => {
-    if (!rawDocuments || rawDocuments.length === 0) return [];
-    return [...rawDocuments].sort((a: any, b: any) => {
-      const aDate = a.dateLastModified || a.dateCreated ? new Date(a.dateLastModified || a.dateCreated).getTime() : 0;
-      const bDate = b.dateLastModified || b.dateCreated ? new Date(b.dateLastModified || b.dateCreated).getTime() : 0;
-      return bDate - aDate;
-    });
-  }, [rawDocuments]);
-
-  const { filteredDocuments: filteredDocuments, isFiltering } = useFilteredDocumentsByExtension(sortedDocuments, allowedExtensions);
-  const visibleDocumentIds = useMemo(() => filteredDocuments.map((d: any) => d.id), [filteredDocuments]);
-
-  const isLoading = foldersLoading || documentsLoading || isFiltering;
+    allowedExtensions,
+  });
 
   return (
     <div
@@ -94,12 +67,6 @@ export function RootFolderChildren({
                 depth={0}
                 folderTypes={folderTypes}
                 documentTypes={documentTypes}
-                selectedDocumentId={selectedDocumentId}
-                onDocumentSelect={onDocumentSelect}
-                onPageClick={onPageClick}
-                activePage={activePage}
-                importedDocumentIds={importedDocumentIds}
-                allowedExtensions={allowedExtensions}
               />
             );
           })}
@@ -113,7 +80,7 @@ export function RootFolderChildren({
               selectedDocumentId={selectedDocumentId}
               visibleDocumentIds={visibleDocumentIds}
               onDocumentSelect={onDocumentSelect}
-              onPageClick={onPageClick}
+              onPageClick={setActivePage}
               activePage={activePage}
               importedDocumentIds={importedDocumentIds}
               allowedExtensions={allowedExtensions}
@@ -141,12 +108,6 @@ function ExpandableFolderNode({
   depth,
   folderTypes,
   documentTypes,
-  selectedDocumentId,
-  onDocumentSelect,
-  onPageClick,
-  activePage,
-  importedDocumentIds,
-  allowedExtensions,
 }: {
   clientId: number;
   folderId: number;
@@ -155,13 +116,15 @@ function ExpandableFolderNode({
   depth: number;
   folderTypes?: FolderTypes[];
   documentTypes?: DocumentTypes[];
-  selectedDocumentId: number | null;
-  onDocumentSelect: (documentId: number, folderId: number) => void;
-  onPageClick: (page: ActivePage | null) => void;
-  activePage: ActivePage | null;
-  importedDocumentIds?: string[];
-  allowedExtensions?: string[];
 }) {
+  const {
+    selectedDocumentId,
+    onDocumentSelect,
+    activePage,
+    setActivePage,
+    importedDocumentIds,
+    allowedExtensions,
+  } = useTreeContext();
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -177,12 +140,13 @@ function ExpandableFolderNode({
       documentTypes={documentTypes}
       selectedDocumentId={selectedDocumentId}
       onDocumentSelect={onDocumentSelect}
-      onPageClick={onPageClick}
+      onPageClick={setActivePage}
       activePage={activePage}
       importedDocumentIds={importedDocumentIds}
       allowedExtensions={allowedExtensions}
     />
   );
 }
+
 
 

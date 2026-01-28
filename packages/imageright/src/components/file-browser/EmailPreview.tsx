@@ -2,7 +2,6 @@ import { Stack, Text, Paper, Group, Badge, Divider, ScrollArea } from '@mantine/
 import { IconUser, IconUsers, IconCalendar, IconPaperclip } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { parseEml } from 'eml-parse-js';
-// @ts-expect-error - msgreader is a CommonJS module without proper ES module exports
 import * as MsgReaderModule from 'msgreader';
 
 // Handle both ESM default import and CommonJS module.exports

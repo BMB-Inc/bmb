@@ -4,10 +4,10 @@ import PdfPreview from '../file-browser/PdfPreview';
 import SpreadsheetPreview from '../file-browser/SpreadsheetPreview';
 import TiffPreview from '../file-browser/TiffPreview';
 import WordDocPreview from '../file-browser/WordDocPreview';
-import type { ActivePage } from './types';
-import { usePreview } from './usePreview';
+import { usePreview } from '@hooks/usePreview';
+import type { ActivePage } from './types.ts';
 
-export function PreviewPaneV2({
+export function PreviewPane({
   expandedDocumentId,
   activePage,
   pdfDefaultZoom,
@@ -61,7 +61,7 @@ export function PreviewPaneV2({
             </div>
           ) : kind === 'word' && data ? (
             <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
-              <WordDocPreview data={data} extension={extension || 'docx'} />
+              <WordDocPreview data={data} />
             </div>
           ) : url ? (
             kind === 'image' ? (
@@ -113,7 +113,7 @@ export function PreviewPaneV2({
   );
 }
 
-export default PreviewPaneV2;
+export default PreviewPane;
 
 
 

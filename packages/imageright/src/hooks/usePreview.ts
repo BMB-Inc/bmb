@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getImages } from '@api/images/route';
 import { getPreview } from '@api/preview/route';
-import { useImageRightConfig } from '../../context/ImageRightContext';
-import type { ActivePage } from './types';
+import { useImageRightConfig } from '../context/ImageRightContext';
+import type { ActivePage } from '../components/imageright-browser/types';
 
 type DetectedKind = 'pdf' | 'tiff' | 'image' | 'other';
 
@@ -176,5 +176,4 @@ export function usePreview(documentId: number | null, activePage: ActivePage | n
 }
 
 export default usePreview;
-
 

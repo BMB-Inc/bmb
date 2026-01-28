@@ -8,7 +8,6 @@ import { NameFilter } from '../file-browser/NameFilter';
 import { TreeLoadingSkeleton } from './TreeLoadingSkeleton';
 import { FolderTreeNode } from './FolderTreeNode';
 import { DocumentNode } from './DocumentNode';
-import { FolderItemCount } from './FolderItemCount';
 import { useClients, useFilteredDocumentsByExtension, useDocumentsByName, useDocumentSearchParam } from '@hooks/index';
 import { useFolders, usePolicyFolders } from '@hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
@@ -353,13 +352,6 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
                               <Text truncate style={{ minWidth: 0, flex: 1 }}>
                                 {folderDisplayName}
                               </Text>
-                              <FolderItemCount
-                                clientId={selectedClientId}
-                                folderId={folder.id}
-                                folderTypes={normalizedFolderTypes}
-                                documentTypes={normalizedDocumentTypes}
-                                allowedExtensions={allowedExtensions}
-                              />
                             </Group>
 
                             {/* Expanded children */}
@@ -397,8 +389,6 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
             {/* Preview pane */}
             <PreviewPane 
               expandedDocumentId={selectedDocumentId?.toString() ?? null} 
-              folderId={selectedFolderId} 
-              allowedExtensions={allowedExtensions}
               pdfDefaultZoom={pdfDefaultZoom}
               activePage={activePage}
             />

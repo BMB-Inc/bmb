@@ -8,7 +8,6 @@ type Document = {
 };
 
 // Module-level cache to track which documents have been checked across all hook instances
-// Shared with useFolderItemCount to avoid duplicate page requests
 export const checkedDocsCache = new Map<number, boolean>();
 
 /**

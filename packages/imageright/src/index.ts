@@ -5,16 +5,10 @@ export * from './context';
 // Main ImageRight browser component (now backed by v2)
 export { ImageRightBrowser } from './components/ImageRightBrowser';
 export type { ImageRightBrowserProps, ViewMode } from './components/ImageRightBrowser';
-// Legacy v1 browser (kept for backwards-compat / migration support)
-export { ImageRightBrowserV1 } from './components/ImageRightBrowserV1';
-export type { ImageRightBrowserV1Props } from './components/ImageRightBrowserV1';
+// Browser types
+export type { ImageRightBrowserProps, ActivePage } from './components/imageright-browser/types';
 
-// v2 browser (cleaner composition root; incremental refactor target)
-export { ImageRightBrowser2 } from './components/imageright-browser2/ImageRightBrowser2';
-export type { ImageRightBrowser2Props, ActivePage } from './components/imageright-browser2/types';
-
-// Individual view components (table-only or tree-only, without toggle)
-export { FolderFileBrowser, ImageRightFileBrowser } from './components/file-browser/ImagerightFileBrowser';
+// Individual view components (tree-only, without toggle)
 export { FileTreeBrowser, TreeLoadingSkeleton } from './components/file-tree';
 
 // Standalone preview/viewer components (usable independently of the browsers)

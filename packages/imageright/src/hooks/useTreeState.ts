@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTreeNavigation } from '@hooks/useTreeNavigation';
-import type { ActivePage } from './types';
+import type { ActivePage } from '../components/imageright-browser/types';
 
 /**
  * V2 state hook: minimal app state for the tree browser.
@@ -46,6 +46,4 @@ export function useTreeState() {
 
   return value;
 }
-
-
 

@@ -11,10 +11,6 @@ import { useImageRightConfig } from '../../context/ImageRightContext';
 
 type PreviewPaneProps = {
   expandedDocumentId: string | null | undefined;
-  /** Parent folder ID for tracking which folder the pages belong to */
-  folderId?: number | null;
-  /** File extensions to filter pages by (e.g., ['pdf', 'jpg']) */
-  allowedExtensions?: string[];
   /** Default zoom level for PDF previews (clamped inside PdfPreview) */
   pdfDefaultZoom?: number;
   /** Active page to preview (set by tree click/auto-select) */
@@ -90,9 +86,7 @@ function detectKindFromBytes(buffer: ArrayBuffer): DetectedKind {
   return 'other';
 }
 
-export default function PreviewPane({ expandedDocumentId, folderId, allowedExtensions, pdfDefaultZoom, activePage }: PreviewPaneProps) {
-  void folderId; // reserved for future (page metadata / downloads); keeps prop stable
-  void allowedExtensions; // filtering is applied in the tree page list; preview loads active page only
+export default function PreviewPane({ expandedDocumentId, pdfDefaultZoom, activePage }: PreviewPaneProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewData, setPreviewData] = useState<ArrayBuffer | null>(null);
   const [previewExtension, setPreviewExtension] = useState<string | null>(null);
@@ -103,6 +97,9 @@ export default function PreviewPane({ expandedDocumentId, folderId, allowedExten
   const { baseUrl } = useImageRightConfig();
 
   const documentId = expandedDocumentId ? Number(expandedDocumentId) : null;
+  const disablePreview =
+    typeof window !== 'undefined' &&
+    new URLSearchParams(window.location.search).has('disablePreview');
 
   // Revoke object URLs automatically when they change/unmount (no refs).
   useEffect(() => {
@@ -206,6 +203,26 @@ export default function PreviewPane({ expandedDocumentId, folderId, allowedExten
     if (previewUrl) return 'image';
     return getPreviewType(previewExtension);
   })();
+
+  if (disablePreview) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'flex-start',
+          height: '100%',
+          minHeight: 0,
+          minWidth: 0,
+          padding: 'var(--mantine-spacing-xs)',
+        }}
+      >
+        <Text c="dimmed" size="sm" ta="left">
+          Preview disabled. Remove `disablePreview=1` from the URL to enable.
+        </Text>
+      </div>
+    );
+  }
   return (
     <div
       style={{
@@ -246,7 +263,7 @@ export default function PreviewPane({ expandedDocumentId, folderId, allowedExten
               </div>
             ) : previewType === 'word' && previewData ? (
               <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
-                <WordDocPreview data={previewData} extension={previewExtension || 'docx'} />
+                <WordDocPreview data={previewData} />
               </div>
             ) : previewUrl ? (
               previewType === 'image' ? (

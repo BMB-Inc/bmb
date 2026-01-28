@@ -26,7 +26,6 @@ export const SubmissionsDocuments = () => {
     navigateToClientRoot: goToClientRoot,
     navigateIntoFolder,
     navigateToDocument,
-    clearDocumentSelection,
   } = useBrowserNavigation();
 
   // Track the first-level selected folder under a client (policy folder level)
@@ -68,7 +67,7 @@ export const SubmissionsDocuments = () => {
     atInnerFolderLevel
       ? { clientId: Number(expandedClientId), folderId: Number(currentFolderId) }
       : undefined,
-    DocumentTypes.applications,
+    [DocumentTypes.applications],
   );
   const currentLoading = foldersLoading || documentsLoading;
 
@@ -202,7 +201,6 @@ export const SubmissionsDocuments = () => {
                 onFolderOpen={(id) => navigateIntoFolder(id.toString())}
                 onDocumentOpen={(id) => navigateToDocument(id.toString())}
                 selectedDocumentId={expandedDocumentId ? Number(expandedDocumentId) : null}
-                onDocumentClear={clearDocumentSelection}
               />
             )}
           </Stack>

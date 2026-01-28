@@ -1,13 +1,13 @@
 import { Stack } from '@mantine/core';
 import { ClientSearch } from '../client-search/ClientSearch';
 import BreadcrumbNav from '../file-browser/BreadcrumbNav';
-import { useClients } from '@hooks/index';
-import type { DocumentTypes, FolderTypes, ImagerightClient } from '@bmb-inc/types';
-
-import type { ActivePage } from './types';
+import { useClients, useClientLabel } from '@hooks/index';
+import type { DocumentTypes, FolderTypes } from '@bmb-inc/types';
+import type { ActivePage } from './types.ts';
 import { ClientList } from './ClientList';
 import { RootFolderList } from './RootFolderList';
 import { useAutoSelectSingleClient } from '../file-browser/hooks/useAutoSelectSingleClient';
+import { TreeProvider } from './TreeContext';
 
 type TreePaneProps = {
   folderTypes?: FolderTypes[];
@@ -58,11 +58,7 @@ export function TreePane({
     navigateToClient,
   });
 
-  const selectedClient = clients.find((c: ImagerightClient) => c.id === selectedClientId);
-
-  const clientLabel = selectedClient
-    ? `${selectedClient.description} - ${selectedClient.fileNumberPart1} ${selectedClient.drawerName ? `(${selectedClient.drawerName})` : ''}`
-    : undefined;
+  const clientLabel = useClientLabel(clients, selectedClientId);
 
   return (
     <Stack style={{ height: '100%', minHeight: 0 }}>
@@ -91,19 +87,22 @@ export function TreePane({
 
       {selectedClientId && (
         <div style={{ flex: 1, minHeight: 0 }}>
-          <RootFolderList
-            clientId={selectedClientId}
-            expandedRootFolders={expandedRootFolders}
-            toggleRootFolder={toggleRootFolder}
-            folderTypes={folderTypes}
-            documentTypes={documentTypes}
-            selectedDocumentId={selectedDocumentId}
-            onDocumentSelect={onDocumentSelect}
-            onPageClick={setActivePage}
-            activePage={activePage}
-            importedDocumentIds={importedDocumentIds}
-            allowedExtensions={allowedExtensions}
-          />
+          <TreeProvider
+            value={{
+              folderTypes,
+              documentTypes,
+              allowedExtensions,
+              importedDocumentIds,
+              selectedDocumentId,
+              activePage,
+              setActivePage,
+              onDocumentSelect,
+              expandedRootFolders,
+              toggleRootFolder,
+            }}
+          >
+            <RootFolderList clientId={selectedClientId} />
+          </TreeProvider>
         </div>
       )}
     </Stack>
@@ -111,3 +110,6 @@ export function TreePane({
 }
 
 export default TreePane;
+
+
+

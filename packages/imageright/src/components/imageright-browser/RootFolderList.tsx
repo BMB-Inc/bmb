@@ -1,67 +1,30 @@
 import { Group, ScrollArea, Stack, Text, useComputedColorScheme } from '@mantine/core';
 import { IconChevronDown, IconChevronRight, IconFolder, IconFolderOpen } from '@tabler/icons-react';
-import { useMemo } from 'react';
-import { useFolders, usePolicyFolders } from '@hooks/useFolders';
-import { FolderItemCount } from '../file-tree/FolderItemCount';
+import { useRootFolders } from '@hooks/useRootFolders';
 import { TreeLoadingSkeleton } from '../file-tree/TreeLoadingSkeleton';
-import { sortFolders } from '../file-browser/utils/folderSorting';
-import { FolderTypes, type DocumentTypes, type FolderTypes as FolderTypesType } from '@bmb-inc/types';
-import type { ActivePage } from './types';
 import { RootFolderChildren } from './RootFolderChildren';
+import { useTreeContext } from './TreeContext';
 
 export function RootFolderList({
   clientId,
-  expandedRootFolders,
-  toggleRootFolder,
-  folderTypes,
-  documentTypes,
-  selectedDocumentId,
-  onDocumentSelect,
-  onPageClick,
-  activePage,
-  importedDocumentIds,
-  allowedExtensions,
 }: {
   clientId: number;
-  expandedRootFolders: Set<number>;
-  toggleRootFolder: (folderId: number) => void;
-  folderTypes?: FolderTypesType[];
-  documentTypes?: DocumentTypes[];
-  selectedDocumentId: number | null;
-  onDocumentSelect: (documentId: number, folderId: number) => void;
-  onPageClick: (page: ActivePage | null) => void;
-  activePage: ActivePage | null;
-  importedDocumentIds?: string[];
-  allowedExtensions?: string[];
 }) {
+  const {
+    folderTypes,
+    documentTypes,
+    expandedRootFolders,
+    toggleRootFolder,
+  } = useTreeContext();
   const colorScheme = useComputedColorScheme('light');
   const isDark = colorScheme === 'dark';
   const rowBg = 'transparent';
   const rowHover = isDark ? 'var(--mantine-color-dark-5)' : 'var(--mantine-color-gray-1)';
-  const normalizedFolderTypes = Array.isArray(folderTypes) && folderTypes.length > 0 ? folderTypes : undefined;
   const normalizedDocumentTypes = Array.isArray(documentTypes) && documentTypes.length > 0 ? documentTypes : undefined;
-
-  // Prefer server policy-root endpoint when only policies are requested at root
-  const wantsOnlyPoliciesAtRoot =
-    Array.isArray(normalizedFolderTypes) &&
-    normalizedFolderTypes.length === 1 &&
-    normalizedFolderTypes[0] === FolderTypes.policies;
-
-  const { data: policyFolders = [], isLoading: policyFoldersLoading } = usePolicyFolders(
-    wantsOnlyPoliciesAtRoot ? { clientId } : undefined
-  );
-
-  const { data: genericFolders = [], isLoading: genericFoldersLoading } = useFolders(
-    wantsOnlyPoliciesAtRoot ? undefined : { clientId, folderId: null, folderTypes: normalizedFolderTypes }
-  );
-
-  const rootFoldersLoading = wantsOnlyPoliciesAtRoot ? policyFoldersLoading : genericFoldersLoading;
-
-  const rootFolders = useMemo(() => {
-    const folders = wantsOnlyPoliciesAtRoot ? policyFolders : genericFolders;
-    if (!folders || folders.length === 0) return [];
-    return sortFolders(folders);
-  }, [wantsOnlyPoliciesAtRoot, policyFolders, genericFolders]);
+  const { rootFolders, isLoading: rootFoldersLoading, normalizedFolderTypes } = useRootFolders({
+    clientId,
+    folderTypes,
+  });
 
   return (
     <Stack gap="xs" style={{ height: '100%', minHeight: 0 }}>
@@ -112,13 +75,6 @@ export function RootFolderList({
                     <Text truncate style={{ minWidth: 0, flex: 1 }}>
                       {folderDisplayName}
                     </Text>
-                    <FolderItemCount
-                      clientId={clientId}
-                      folderId={folder.id}
-                      folderTypes={normalizedFolderTypes}
-                      documentTypes={normalizedDocumentTypes}
-                      allowedExtensions={allowedExtensions}
-                    />
                   </Group>
 
                   {isExpanded && (
@@ -127,12 +83,6 @@ export function RootFolderList({
                       folderId={folder.id}
                       folderTypes={normalizedFolderTypes}
                       documentTypes={normalizedDocumentTypes}
-                      selectedDocumentId={selectedDocumentId}
-                      onDocumentSelect={onDocumentSelect}
-                      onPageClick={onPageClick}
-                      activePage={activePage}
-                      importedDocumentIds={importedDocumentIds}
-                      allowedExtensions={allowedExtensions}
                     />
                   )}
                 </div>
@@ -146,5 +96,6 @@ export function RootFolderList({
 }
 
 export default RootFolderList;
+
 
 

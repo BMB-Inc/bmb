@@ -6,7 +6,6 @@ import { useDocuments } from '@hooks/useDocuments';
 import { useFilteredDocumentsByExtension } from '@hooks/useFilteredDocumentsByExtension';
 import { FolderTypes, DocumentTypes } from '@bmb-inc/types';
 import { DocumentNode } from './DocumentNode';
-import { FolderItemCount } from './FolderItemCount';
 import { treeStyles } from './styles';
 import classes from '../../modules/file-tree.module.css';
 import { sortFolders } from '../file-browser/utils/folderSorting';
@@ -78,7 +77,7 @@ export function FolderTreeNode({
   }, [rawDocuments]);
 
   // Filter documents by allowed extensions (only show docs with pages matching extensions)
-  const { filteredDocuments: documents, isFiltering, filteredCount } = useFilteredDocumentsByExtension(
+  const { filteredDocuments: documents, isFiltering } = useFilteredDocumentsByExtension(
     sortedDocuments,
     allowedExtensions
   );
@@ -116,16 +115,6 @@ export function FolderTreeNode({
         <Text truncate style={{ minWidth: 0, flex: 1 }}>
           {folderName}
         </Text>
-        <FolderItemCount
-          clientId={clientId}
-          folderId={folderId}
-          folderTypes={folderTypes}
-          documentTypes={documentTypes}
-          allowedExtensions={allowedExtensions}
-          folders={isExpanded ? rawChildFolders : undefined}
-          documents={isExpanded ? sortedDocuments : undefined}
-          filteredDocumentCount={isExpanded && allowedExtensions ? filteredCount : undefined}
-        />
       </Group>
 
       {/* Children (folders + documents) */}

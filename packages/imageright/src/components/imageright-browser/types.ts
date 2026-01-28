@@ -1,3 +1,5 @@
+import { DocumentTypes, FileTypes, FolderTypes } from '@bmb-inc/types';
+
 export type ActivePage = {
   documentId: number;
   pageId: number;
@@ -5,9 +7,7 @@ export type ActivePage = {
   extension: string | null;
 };
 
-import { DocumentTypes, FileTypes, FolderTypes } from '@bmb-inc/types';
-
-export type ImageRightBrowser2Props = {
+export type ImageRightBrowserProps = {
   /** Folder types to filter by */
   folderTypes?: FolderTypes[];
   /** Document types to filter by */
@@ -21,5 +21,6 @@ export type ImageRightBrowser2Props = {
   /** Document IDs already imported */
   importedDocumentIds?: string[];
 };
+
 
 
