@@ -1,6 +1,7 @@
 export * from "./communications/";
 export * from "./files/";
 export * from "./exports/imageright-export.schema";
+export * from "./exports/imageright-export-preview.schema";
 export * from "./rolodex/";
 export * from "./submissions/";
 export * from "./conversations/";
