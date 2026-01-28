@@ -1,15 +1,17 @@
 import { z } from "zod/v4";
 
-const drawerSchema = z.object({
-  id: z.number(),
-  drawerTypeId: z.number(),
-  parentId: z.number(),
-  name: z.string(),
-  description: z.string(),
-  created: z.string(),
-  lastModified: z.string(),
-  effectivePermissions: z.number(),
+export const imagerightDrawerSchema = z.object({
+  Id: z.number(),
+  DrawerTypeId: z.number(),
+  ParentId: z.number(),
+  Name: z.string(),
+  Description: z.string(),
+  Created: z.string(),
+  LastModified: z.string(),
+  EffectivePermissions: z.number(),
 });
 
-export type ImagerightDrawer = z.infer<typeof drawerSchema>;
+export const imagerightDrawersSchema = z.array(imagerightDrawerSchema);
 
+export type ImagerightDrawer = z.infer<typeof imagerightDrawerSchema>;
+export type ImagerightDrawers = z.infer<typeof imagerightDrawersSchema>;
