@@ -45,11 +45,9 @@ export function ImageRightBrowser2({
               activePage={state.activePage}
               setActivePage={state.setActivePage}
               selectedClientId={state.nav.clientId}
-              selectedFolderId={state.nav.folderId}
               selectedDocumentId={state.nav.documentId}
               expandedRootFolders={state.nav.expandedFolders}
               toggleRootFolder={state.nav.toggleFolder}
-              expandFolder={state.nav.expandFolder}
               collapseAll={state.nav.collapseAll}
               navigateToClients={state.onBackToClients}
               navigateToClient={(id) => state.nav.navigateToClient(Number(id))}

@@ -83,8 +83,10 @@ export function FolderTreeNode({
     allowedExtensions
   );
 
+  const filteredDocuments = documents;
+
   // Get list of visible document IDs for shift-select range
-  const visibleDocumentIds = useMemo(() => documents.map((d: any) => d.id), [documents]);
+  const visibleDocumentIds = useMemo(() => filteredDocuments.map((d: any) => d.id), [filteredDocuments]);
 
   const isLoading = foldersLoading || documentsLoading || isFiltering;
 
@@ -166,7 +168,7 @@ export function FolderTreeNode({
               )})}
 
               {/* Documents */}
-              {documents.map((doc: any) => (
+              {filteredDocuments.map((doc: any) => (
                 <DocumentNode
                   key={doc.id}
                   doc={doc}
@@ -183,7 +185,7 @@ export function FolderTreeNode({
               ))}
 
               {/* Empty state */}
-              {childFolders.length === 0 && documents.length === 0 && (
+              {childFolders.length === 0 && filteredDocuments.length === 0 && (
                 <Text size="sm" c="dimmed" py={4} px={6}>
                   No items
                 </Text>

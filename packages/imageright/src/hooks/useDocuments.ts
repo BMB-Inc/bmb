@@ -41,14 +41,8 @@ export const useDocuments = (params?: GetDocumentsDto, documentTypes?: DocumentT
   return { data, isLoading, error } as const;
 }
 
-type FindDocFoldersSearchParams = FindDocFoldersDto & {
-  drawerId?: number;
-  fileId?: number;
-  parentId?: number;
-  offset?: number;
-};
 
-export const useDocumentsByName = (params?: FindDocFoldersSearchParams) => {
+export const useDocumentsByName = (params?: FindDocFoldersDto) => {
   const { baseUrl } = useImageRightConfig();
   const [data, setData] = useState<Awaited<ReturnType<typeof searchDocumentsByName>> | undefined>(undefined);
   const [isLoading, setLoading] = useState(false);

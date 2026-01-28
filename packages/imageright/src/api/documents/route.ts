@@ -1,13 +1,6 @@
 import { fetcher } from "@api/fetcher";
 import { DocumentTypes, FindDocFoldersDto, GetDocumentsDto, ImagerightDocFolderWithRelations } from "@bmb-inc/types";
 
-type FindDocFoldersSearchParams = FindDocFoldersDto & {
-  drawerId?: number;
-  fileId?: number;
-  parentId?: number;
-  offset?: number;
-};
-
 export const getDocuments = async (params?: GetDocumentsDto, documentTypes?: DocumentTypes[], baseUrl?: string) => {
   if (!params) {
     return [];
@@ -40,7 +33,7 @@ export const getDocumentById = async (id: number, baseUrl?: string) => {
   return response;
 }
 
-export const searchDocumentsByName = async (params: FindDocFoldersSearchParams, baseUrl?: string) => {
+export const searchDocumentsByName = async (params: FindDocFoldersDto, baseUrl?: string) => {
   const searchParams = new URLSearchParams();
   if (params.description) {
     searchParams.append('description', params.description);

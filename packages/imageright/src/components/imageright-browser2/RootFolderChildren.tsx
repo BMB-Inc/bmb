@@ -55,8 +55,8 @@ export function RootFolderChildren({
     });
   }, [rawDocuments]);
 
-  const { filteredDocuments: documents, isFiltering } = useFilteredDocumentsByExtension(sortedDocuments, allowedExtensions);
-  const visibleDocumentIds = useMemo(() => documents.map((d: any) => d.id), [documents]);
+  const { filteredDocuments: filteredDocuments, isFiltering } = useFilteredDocumentsByExtension(sortedDocuments, allowedExtensions);
+  const visibleDocumentIds = useMemo(() => filteredDocuments.map((d: any) => d.id), [filteredDocuments]);
 
   const isLoading = foldersLoading || documentsLoading || isFiltering;
 
@@ -104,7 +104,7 @@ export function RootFolderChildren({
             );
           })}
 
-          {documents.map((doc: any) => (
+          {filteredDocuments.map((doc: any) => (
             <DocumentNode
               key={doc.id}
               doc={doc}
@@ -120,7 +120,7 @@ export function RootFolderChildren({
             />
           ))}
 
-          {childFolders.length === 0 && documents.length === 0 && (
+          {childFolders.length === 0 && filteredDocuments.length === 0 && (
             <Text size="sm" c="dimmed" py={4} px={6}>
               No items
             </Text>

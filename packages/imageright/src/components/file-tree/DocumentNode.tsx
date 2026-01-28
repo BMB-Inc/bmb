@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { Group, Text, Checkbox, Loader, Tooltip, ActionIcon } from '@mantine/core';
 import { IconFileText, IconChevronRight, IconChevronDown, IconChecks, IconX, IconExternalLink } from '@tabler/icons-react';
 import { usePages } from '@hooks/usePages';
@@ -54,6 +54,7 @@ export function DocumentNode({
   allowedExtensions,
 }: DocumentNodeProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const prevSelectedIdRef = useRef<number | null | undefined>(undefined);
   
   const { data: rawPages = [], isLoading: pagesLoading } = usePages(
     isExpanded ? { documentId: doc.id } : undefined
@@ -112,6 +113,14 @@ export function DocumentNode({
     const firstImageId = first?.imageId ?? first?.latestImages?.imageMetadata?.[0]?.id ?? null;
     onPageClick?.({ documentId: doc.id, pageId: firstPageId, imageId: firstImageId, extension: firstExt });
   }, [isExpanded, isSelected, pagesLoading, pages, activePage, doc.id, onPageClick]);
+
+  useEffect(() => {
+    const prevSelectedId = prevSelectedIdRef.current;
+    if (selectedDocumentId === doc.id && prevSelectedId !== doc.id && !isExpanded) {
+      setIsExpanded(true);
+    }
+    prevSelectedIdRef.current = selectedDocumentId;
+  }, [selectedDocumentId, doc.id, isExpanded]);
   
   // NOTE: PreviewPane owns "auto-select first page" now (single source of truth).
   
