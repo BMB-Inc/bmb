@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Card, Stack, Center, Text } from '@mantine/core';
 import { ClientSearch } from '../client-search/ClientSearch';
 import { type ImagerightClient } from '@bmb-inc/types';
@@ -10,7 +10,8 @@ import { useBrowserNavigation } from '../../hooks/useBrowserNavigation';
 import { useClients } from '@hooks/index';
 import { usePolicyFolders } from '@hooks/useFolders';
 import { useFolders } from '../../hooks/useFolders';
-import { useDocuments, useAllDocumentTypes } from '@hooks/useDocuments';
+import { useDocuments, useAllDocumentTypes, useDocumentsByName } from '@hooks/useDocuments';
+import { useDocumentSearchParam } from '@hooks/useDocumentSearchParam';
 import LoadingSkeletons from './LoadingSkeletons';
 import ClientContentArea from './ClientContentArea';
 import { useAutoSelectSingleClient } from './hooks/useAutoSelectSingleClient';
@@ -45,8 +46,12 @@ export const FolderFileBrowser = ({
     navigateToClientRoot: goToClientRoot,
     navigateIntoFolder,
     navigateToDocument,
+    navigateToDocumentInFolder,
     clearDocumentSelection,
   } = useBrowserNavigation();
+
+  const { value: documentSearchInput, onChange: setDocumentSearchInput, searchParam: documentSearchParam } =
+    useDocumentSearchParam(500);
 
   // Debug: Log all unique document types for the selected client
   useAllDocumentTypes(expandedClientId ? Number(expandedClientId) : undefined);
@@ -84,7 +89,21 @@ export const FolderFileBrowser = ({
       : undefined,
     normalizedDocumentTypes
   );
-  const currentLoading = foldersLoading || documentsLoading;
+  const selectedClient = (clients || []).find((c: ImagerightClient) => c.id.toString() === expandedClientId);
+  const selectedDrawerId = selectedClient?.drawerId ?? null;
+  const searchActive = !!expandedClientId && (documentSearchParam ?? '').trim().length > 0;
+  const { data: searchedDocFolders = [], isLoading: searchLoading } = useDocumentsByName(
+    searchActive
+      ? {
+          description: documentSearchParam ?? '',
+          limit: 200,
+          drawerId: selectedDrawerId ?? undefined,
+          fileId: expandedClientId ? Number(expandedClientId) : undefined,
+          parentId: currentFolderId ? Number(currentFolderId) : undefined,
+        }
+      : undefined
+  );
+  const currentLoading = foldersLoading || documentsLoading || (searchActive && searchLoading);
 
   // Prefer folder name from the first document's folder info when available
   const folderLabelFromDocs = useFolderLabelFromDocs(documents);
@@ -98,6 +117,38 @@ export const FolderFileBrowser = ({
     currentFolderId,
   });
 
+  const searchItems = useMemo(() => {
+    if (!searchActive || !expandedClientId) return [];
+    const toDateStr = (iso?: string | null) => {
+      if (!iso) return '';
+      const dt = new Date(iso);
+      return isNaN(dt.getTime()) ? '' : dt.toLocaleDateString();
+    };
+    const targetClientId = Number(expandedClientId);
+    return (searchedDocFolders || [])
+      .filter((doc: any) => {
+        const fileId = doc?.file?.id ?? doc?.fileId ?? doc?.fileid;
+        return typeof fileId === 'number' ? fileId === targetClientId : true;
+      })
+      .map((doc: any) => {
+        const folder = Array.isArray(doc?.folder) ? doc.folder[0] : undefined;
+        const folderId = folder?.id ?? folder?.folderId ?? doc?.parentid ?? doc?.parentId ?? null;
+        const fileId = doc?.file?.id ?? doc?.fileId ?? doc?.fileid ?? targetClientId;
+        return {
+          kind: 'document' as const,
+          id: doc?.docfolderid ?? doc?.id,
+          name: doc?.description ?? doc?.documentName ?? 'Document',
+          type: doc?.documentTypeDescription ?? 'Document',
+          modified: toDateStr(doc?.lastmodified || doc?.dateLastModified || doc?.created || doc?.dateCreated),
+          documentTypeId: doc?.documentTypeId,
+          imagerightUrl: doc?.imagerightUrl ?? null,
+          folderId: folderId != null ? Number(folderId) : null,
+          clientId: fileId != null ? Number(fileId) : null,
+        };
+      })
+      .filter((item: any) => typeof item.id === 'number');
+  }, [searchActive, searchedDocFolders, expandedClientId]);
+
   const hasClients = Array.isArray(clients) && clients.length > 0;
 
   // Auto-select the client when exactly one search result is found
@@ -105,7 +156,9 @@ export const FolderFileBrowser = ({
     clients,
     clientsLoading,
     expandedClientId,
-    navigateToClient,
+    navigateToClient: (id) => {
+      void navigateToClient(id.toString());
+    },
   });
 
   const folderLabelMap = useFolderLabelMap(folders);
@@ -117,15 +170,14 @@ export const FolderFileBrowser = ({
     }
   }, [expandedDocumentId, currentFolderId, clearDocumentSelection]);
 
+  const clientLabel = selectedClient
+    ? `${selectedClient.description} - ${selectedClient.fileNumberPart1} ${selectedClient.drawerName ? `(${selectedClient.drawerName})` : ''}`
+    : undefined;
+
   const breadcrumbItems = (
     <BreadcrumbNav
       expandedClientId={expandedClientId}
-      clientLabel={(() => {
-          const found = (clients || []).find((c: ImagerightClient) => c.id.toString() === expandedClientId);
-          return found
-            ? `${found.description} - ${found.fileNumberPart1} ${found.drawerName ? `(${found.drawerName})` : ''}`
-            : undefined;
-        })()}
+      clientLabel={clientLabel}
       folderId={expandedFolderId}
       folderLabel={expandedFolderId ? (folderLabelFromDocs ?? folderLabelMap[expandedFolderId]) : undefined}
       onClientsClick={clearToClients}
@@ -166,17 +218,26 @@ export const FolderFileBrowser = ({
             {currentLoading && <LoadingSkeletons />}
             {!currentLoading && (
               <ClientContentArea
-                currentItems={currentItems}
+                currentItems={searchActive ? searchItems : currentItems}
                 expandedDocumentId={expandedDocumentId}
                 folderId={expandedFolderId ? Number(expandedFolderId) : null}
                 navigateIntoFolder={(id, name) => {
                   navigateIntoFolder(id.toString(), name);
                 }}
-                navigateToDocument={(id) => navigateToDocument(id.toString())}
+                navigateToDocument={(id, nextFolderId, nextClientId) => {
+                  const resolvedClientId = nextClientId ?? (expandedClientId ? Number(expandedClientId) : null);
+                  if (resolvedClientId && nextFolderId) {
+                    navigateToDocumentInFolder(resolvedClientId.toString(), nextFolderId.toString(), id.toString());
+                    return;
+                  }
+                  navigateToDocument(id.toString());
+                }}
                 clearDocumentSelection={clearDocumentSelection}
                 allowedExtensions={allowedExtensions}
                 pdfDefaultZoom={pdfDefaultZoom}
                 importedDocumentIds={importedDocumentIds}
+                searchQuery={documentSearchInput}
+                onSearchQueryChange={setDocumentSearchInput}
               />
             )}
           </Stack>

@@ -1,5 +1,12 @@
 import { fetcher } from "@api/fetcher";
-import { DocumentTypes, GetDocumentsDto } from "@bmb-inc/types";
+import { DocumentTypes, FindDocFoldersDto, GetDocumentsDto, ImagerightDocFolderWithRelations } from "@bmb-inc/types";
+
+type FindDocFoldersSearchParams = FindDocFoldersDto & {
+  drawerId?: number;
+  fileId?: number;
+  parentId?: number;
+  offset?: number;
+};
 
 export const getDocuments = async (params?: GetDocumentsDto, documentTypes?: DocumentTypes[], baseUrl?: string) => {
   if (!params) {
@@ -30,5 +37,31 @@ export const getDocuments = async (params?: GetDocumentsDto, documentTypes?: Doc
 
 export const getDocumentById = async (id: number, baseUrl?: string) => {
   const response = await fetcher(`/documents/${id}`, baseUrl);
+  return response;
+}
+
+export const searchDocumentsByName = async (params: FindDocFoldersSearchParams, baseUrl?: string) => {
+  const searchParams = new URLSearchParams();
+  if (params.description) {
+    searchParams.append('description', params.description);
+  }
+  if (params.limit) {
+    searchParams.append('limit', params.limit.toString());
+  }
+  if (params.offset) {
+    searchParams.append('offset', params.offset.toString());
+  }
+  if (params.drawerId) {
+    searchParams.append('drawerId', params.drawerId.toString());
+  }
+  if (params.fileId) {
+    searchParams.append('fileId', params.fileId.toString());
+  }
+  if (params.parentId) {
+    searchParams.append('parentId', params.parentId.toString());
+  }
+  const queryString = searchParams.toString();
+  const url = queryString ? `/docfolders/search?${queryString}` : '/docfolders/search';
+  const response: ImagerightDocFolderWithRelations[] = await fetcher(url, baseUrl);
   return response;
 }

@@ -24,6 +24,9 @@ export function useBrowserNavigation() {
   const navigateToDocument = (id: string) =>
     setQs({ clientId: clientId ?? null, folderId: folderId ?? null, documentId: id, pageId: null }, { history: 'push' });
 
+  const navigateToDocumentInFolder = (nextClientId: string, nextFolderId: string, nextDocumentId: string) =>
+    setQs({ clientId: nextClientId, folderId: nextFolderId, documentId: nextDocumentId, pageId: null }, { history: 'push' });
+
   const navigateToPage = (id: string) =>
     setQs({ clientId: clientId ?? null, folderId: folderId ?? null, documentId: documentId ?? null, pageId: id }, { history: 'push' });
 
@@ -41,6 +44,7 @@ export function useBrowserNavigation() {
     navigateToClientRoot,
     navigateIntoFolder,
     navigateToDocument,
+    navigateToDocumentInFolder,
     navigateToPage,
     clearDocumentSelection,
   } as const;

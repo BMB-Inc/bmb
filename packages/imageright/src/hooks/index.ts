@@ -12,3 +12,4 @@ export * from './useFolderItemCount';
 export * from './useTasks';
 export * from './useWorkflows';
 export * from './useFilteredDocumentsByExtension';
+export * from './useDocumentSearchParam';

@@ -1,14 +1,15 @@
 import { useMemo, useState, useEffect } from 'react';
 import { Card, Stack, Center, Text, Group, Loader, ScrollArea, useComputedColorScheme } from '@mantine/core';
-import { IconSearch, IconFolder, IconFolderOpen, IconChevronRight, IconChevronDown } from '@tabler/icons-react';
+import { IconSearch, IconFolder, IconFolderOpen, IconChevronRight, IconChevronDown, IconFileText } from '@tabler/icons-react';
 import { ClientSearch } from '../client-search/ClientSearch';
 import BreadcrumbNav from '../file-browser/BreadcrumbNav';
 import PreviewPane from '../file-browser/PreviewPane';
+import { NameFilter } from '../file-browser/NameFilter';
 import { TreeLoadingSkeleton } from './TreeLoadingSkeleton';
 import { FolderTreeNode } from './FolderTreeNode';
 import { DocumentNode } from './DocumentNode';
 import { FolderItemCount } from './FolderItemCount';
-import { useClients, useFilteredDocumentsByExtension } from '@hooks/index';
+import { useClients, useFilteredDocumentsByExtension, useDocumentsByName, useDocumentSearchParam } from '@hooks/index';
 import { useFolders, usePolicyFolders } from '@hooks/useFolders';
 import { useDocuments } from '@hooks/useDocuments';
 import { useTreeNavigation } from '@hooks/useTreeNavigation';
@@ -56,7 +57,11 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
     selectDocument,
     toggleFolder: toggleRootFolder,
     collapseAll,
+    expandFolder,
   } = useTreeNavigation();
+
+  const { value: documentSearchInput, onChange: setDocumentSearchInput, searchParam: documentSearchParam } =
+    useDocumentSearchParam(500);
 
   // Clear document selection on initial mount (page reload)
   // The document won't be visible since sub-folder expansions aren't persisted
@@ -79,6 +84,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
 
   // Get the selected client info
   const selectedClient = clients.find((c: ImagerightClient) => c.id === selectedClientId);
+  const selectedDrawerId = selectedClient?.drawerId ?? null;
 
   // Determine if we should use policy folders endpoint
   const normalizedFolderTypes = Array.isArray(folderTypes) && folderTypes.length > 0 ? folderTypes : undefined;
@@ -112,6 +118,44 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
     
     return sortFolders(folders);
   }, [wantsOnlyPoliciesAtRoot, policyFolders, genericFolders]);
+
+  const searchActive = !!selectedClientId && (documentSearchParam ?? '').trim().length > 0;
+  const { data: searchedDocFolders = [], isLoading: searchLoading } = useDocumentsByName(
+    searchActive
+      ? {
+          description: documentSearchParam ?? '',
+          limit: 200,
+          drawerId: selectedDrawerId ?? undefined,
+          fileId: selectedClientId ?? undefined,
+          parentId: selectedFolderId ?? undefined,
+        }
+      : undefined
+  );
+  const searchResults = useMemo(() => {
+    if (!searchActive || !selectedClientId) return [];
+    const toDateStr = (iso?: string | null) => {
+      if (!iso) return '';
+      const dt = new Date(iso);
+      return isNaN(dt.getTime()) ? '' : dt.toLocaleDateString();
+    };
+    return (searchedDocFolders || [])
+      .filter((doc: any) => {
+        const fileId = doc?.file?.id ?? doc?.fileId ?? doc?.fileid;
+        return typeof fileId === 'number' ? fileId === selectedClientId : true;
+      })
+      .map((doc: any) => {
+        const folder = Array.isArray(doc?.folder) ? doc.folder[0] : undefined;
+        const folderId = folder?.id ?? folder?.folderId ?? doc?.parentid ?? doc?.parentId ?? null;
+        return {
+          id: doc?.docfolderid ?? doc?.id,
+          name: doc?.description ?? doc?.documentName ?? 'Document',
+          modified: toDateStr(doc?.lastmodified || doc?.dateLastModified || doc?.created || doc?.dateCreated),
+          folderId: folderId != null ? Number(folderId) : null,
+          folderName: folder?.description ?? folder?.folderTypeDescription ?? folder?.folderTypeName ?? null,
+        };
+      })
+      .filter((item: any) => typeof item.id === 'number');
+  }, [searchActive, searchedDocFolders, selectedClientId]);
 
   // Handlers
   const handleClientSelect = (clientId: number) => {
@@ -213,83 +257,142 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
             }}
           >
             {/* Tree pane */}
-            <ScrollArea
-              style={{ height: '100%', backgroundColor: panelBg, border: `1px solid ${panelBorder}`, borderRadius: 'var(--mantine-radius-sm)' }}
-            >
-              {rootFoldersLoading && <TreeLoadingSkeleton />}
-
-              {!rootFoldersLoading && (
-                <Stack gap={2}>
-                  {rootFolders.map((folder: any) => {
-                    const isExpanded = expandedRootFolders.has(folder.id);
-                    const folderName = folder.folderTypeName
-                    const folderDisplayName = folder.folderTypeName && folder.folderTypeDescription !== folderName
-                      ? `${folder.folderTypeDescription} (${folder.folderTypeDescription})`
-                      : folderName;
-
-                    return (
-                      <div key={folder.id}>
-                        {/* Root folder row */}
+            <Stack gap="xs" style={{ minHeight: 0, height: '100%' }}>
+              <NameFilter
+                value={documentSearchInput}
+                onChange={setDocumentSearchInput}
+                delay={0}
+                width={360}
+                placeholder="Search documents by name"
+              />
+              <ScrollArea
+                style={{ height: '100%', backgroundColor: panelBg, border: `1px solid ${panelBorder}`, borderRadius: 'var(--mantine-radius-sm)' }}
+              >
+                <Stack gap={2} p="xs">
+                  {searchActive && (
+                    <Stack gap={2}>
+                      {searchLoading && (
+                        <Group gap="xs" py={4} px={6}>
+                          <Loader size="xs" />
+                          <Text size="sm" c="dimmed">
+                            Searching...
+                          </Text>
+                        </Group>
+                      )}
+                      {!searchLoading && searchResults.length === 0 && (
+                        <Text size="sm" c="dimmed" py={4} px={6}>
+                          No documents found
+                        </Text>
+                      )}
+                      {!searchLoading && searchResults.map((doc: any) => (
                         <Group
+                          key={`search-doc-${doc.id}`}
                           gap="xs"
-                          py={6}
-                          px={8}
-                          className={classes.folderRow}
+                          py={4}
+                          px={6}
+                          className={classes.documentItem}
                           onClick={() => {
-                            toggleRootFolder(folder.id);
+                            if (doc.folderId != null) {
+                              expandFolder(doc.folderId);
+                            }
+                            handleDocumentSelect(doc.id, doc.folderId ?? null);
                           }}
                         >
-                          {isExpanded ? (
-                            <IconChevronDown size={16} style={{ flexShrink: 0 }} />
-                          ) : (
-                            <IconChevronRight size={16} style={{ flexShrink: 0 }} />
-                          )}
-                          {isExpanded ? (
-                            <IconFolderOpen size={16} color="var(--mantine-color-yellow-6)" style={{ flexShrink: 0 }} />
-                          ) : (
-                            <IconFolder size={16} color="var(--mantine-color-yellow-7)" style={{ flexShrink: 0 }} />
-                          )}
+                          <IconFileText size={14} color="var(--mantine-color-blue-7)" />
                           <Text truncate style={{ minWidth: 0, flex: 1 }}>
-                            {folderDisplayName}
+                            {doc.name}
                           </Text>
-                          <FolderItemCount
-                            clientId={selectedClientId}
-                            folderId={folder.id}
-                            folderTypes={normalizedFolderTypes}
-                            documentTypes={normalizedDocumentTypes}
-                            allowedExtensions={allowedExtensions}
-                          />
+                          {doc.folderName && (
+                            <Text size="xs" c="dimmed" truncate style={{ maxWidth: 140 }}>
+                              {doc.folderName}
+                            </Text>
+                          )}
+                          {doc.modified && (
+                            <Text size="xs" c="dimmed">
+                              {doc.modified}
+                            </Text>
+                          )}
                         </Group>
+                      ))}
+                    </Stack>
+                  )}
 
-                        {/* Expanded children */}
-                        {isExpanded && (
-                          <RootFolderChildren
-                            clientId={selectedClientId}
-                            folderId={folder.id}
-                            folderTypes={normalizedFolderTypes}
-                            documentTypes={normalizedDocumentTypes}
-                            selectedDocumentId={selectedDocumentId}
-                            onDocumentSelect={handleDocumentSelect}
-                            onPageClick={setActivePage}
-                            activePage={activePage}
-                            importedDocumentIds={importedDocumentIds}
-                            allowedExtensions={allowedExtensions}
-                          />
-                        )}
-                      </div>
-                    );
-                  })}
+                  {rootFoldersLoading && <TreeLoadingSkeleton />}
 
-                  {rootFolders.length === 0 && (
-                    <Center mih={100}>
-                      <Text c="dimmed" size="sm">
-                        No folders found
-                      </Text>
-                    </Center>
+                  {!rootFoldersLoading && (
+                    <Stack gap={2}>
+                      {rootFolders.map((folder: any) => {
+                        const isExpanded = expandedRootFolders.has(folder.id);
+                        const folderName = folder.folderTypeName
+                        const folderDisplayName = folder.folderTypeName && folder.folderTypeDescription !== folderName
+                          ? `${folder.folderTypeDescription} (${folder.folderTypeDescription})`
+                          : folderName;
+
+                        return (
+                          <div key={folder.id}>
+                            {/* Root folder row */}
+                            <Group
+                              gap="xs"
+                              py={6}
+                              px={8}
+                              className={classes.folderRow}
+                              onClick={() => {
+                                toggleRootFolder(folder.id);
+                              }}
+                            >
+                              {isExpanded ? (
+                                <IconChevronDown size={16} style={{ flexShrink: 0 }} />
+                              ) : (
+                                <IconChevronRight size={16} style={{ flexShrink: 0 }} />
+                              )}
+                              {isExpanded ? (
+                                <IconFolderOpen size={16} color="var(--mantine-color-yellow-6)" style={{ flexShrink: 0 }} />
+                              ) : (
+                                <IconFolder size={16} color="var(--mantine-color-yellow-7)" style={{ flexShrink: 0 }} />
+                              )}
+                              <Text truncate style={{ minWidth: 0, flex: 1 }}>
+                                {folderDisplayName}
+                              </Text>
+                              <FolderItemCount
+                                clientId={selectedClientId}
+                                folderId={folder.id}
+                                folderTypes={normalizedFolderTypes}
+                                documentTypes={normalizedDocumentTypes}
+                                allowedExtensions={allowedExtensions}
+                              />
+                            </Group>
+
+                            {/* Expanded children */}
+                            {isExpanded && (
+                              <RootFolderChildren
+                                clientId={selectedClientId}
+                                folderId={folder.id}
+                                folderTypes={normalizedFolderTypes}
+                                documentTypes={normalizedDocumentTypes}
+                                selectedDocumentId={selectedDocumentId}
+                                onDocumentSelect={handleDocumentSelect}
+                                onPageClick={setActivePage}
+                                activePage={activePage}
+                                importedDocumentIds={importedDocumentIds}
+                                allowedExtensions={allowedExtensions}
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
+
+                      {rootFolders.length === 0 && (
+                        <Center mih={100}>
+                          <Text c="dimmed" size="sm">
+                            No folders found
+                          </Text>
+                        </Center>
+                      )}
+                    </Stack>
                   )}
                 </Stack>
-              )}
-            </ScrollArea>
+              </ScrollArea>
+            </Stack>
 
             {/* Preview pane */}
             <PreviewPane 

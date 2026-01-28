@@ -21,9 +21,11 @@ type TreePaneProps = {
 
   // navigation
   selectedClientId: number | null;
+  selectedFolderId: number | null;
   selectedDocumentId: number | null;
   expandedRootFolders: Set<number>;
   toggleRootFolder: (folderId: number) => void;
+  expandFolder: (folderId: number) => void;
   collapseAll: () => void;
   navigateToClients: () => void;
   navigateToClient: (clientId: number | string) => void;
@@ -39,9 +41,11 @@ export function TreePane({
   activePage,
   setActivePage,
   selectedClientId,
+  selectedFolderId,
   selectedDocumentId,
   expandedRootFolders,
   toggleRootFolder,
+  expandFolder,
   collapseAll,
   navigateToClients,
   navigateToClient,
@@ -59,6 +63,7 @@ export function TreePane({
   });
 
   const selectedClient = clients.find((c: ImagerightClient) => c.id === selectedClientId);
+  const selectedDrawerId = selectedClient?.drawerId ?? null;
 
   const clientLabel = selectedClient
     ? `${selectedClient.description} - ${selectedClient.fileNumberPart1} ${selectedClient.drawerName ? `(${selectedClient.drawerName})` : ''}`
@@ -93,8 +98,11 @@ export function TreePane({
         <div style={{ flex: 1, minHeight: 0 }}>
           <RootFolderList
             clientId={selectedClientId}
+            drawerId={selectedDrawerId}
+            selectedFolderId={selectedFolderId}
             expandedRootFolders={expandedRootFolders}
             toggleRootFolder={toggleRootFolder}
+            expandFolder={expandFolder}
             folderTypes={folderTypes}
             documentTypes={documentTypes}
             selectedDocumentId={selectedDocumentId}

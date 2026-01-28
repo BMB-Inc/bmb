@@ -11,7 +11,7 @@ type DetailsTableProps = {
   items: BrowserItem[];
   onFolderOpen: (id: number, name: string) => void;
   onClientOpen?: (id: number) => void;
-  onDocumentOpen?: (id: number) => void;
+  onDocumentOpen?: (id: number, folderId?: number | null, clientId?: number | null) => void;
   selectedDocumentId?: number | null;
   /** Parent folder ID for tracking which folder the pages belong to */
   folderId?: number | null;

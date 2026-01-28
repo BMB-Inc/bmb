@@ -10,7 +10,7 @@ type DetailsRowProps = {
   selectedDocumentId?: number | null;
   onFolderOpen: (id: number, name: string) => void;
   onClientOpen?: (id: number) => void;
-  onDocumentOpen?: (id: number) => void;
+  onDocumentOpen?: (id: number, folderId?: number | null, clientId?: number | null) => void;
   visibleDocumentIds?: number[];
   /** Parent folder ID for tracking which folder the pages belong to */
   folderId?: number | null;
@@ -26,6 +26,7 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
     setLastSelectedId,
   } = useSelectedDocuments();
   const { selectAllPagesForDocument } = useSelectAllPagesForDocument();
+  const resolvedFolderId = item.folderId ?? folderId ?? null;
 
   // Check if this document has been imported
   const isImported = item.kind === 'document' && (importedDocumentIds?.includes(String(item.id)) ?? false);
@@ -60,7 +61,7 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
           // Always set anchor for shift+click range selection
           setLastSelectedId(item.id);
           // Single click - just preview the document (no selection)
-          onDocumentOpen?.(item.id);
+          onDocumentOpen?.(item.id, resolvedFolderId, item.clientId ?? null);
           return;
         }
         if (item.kind === 'folder') onFolderOpen(item.id, item.name);
@@ -73,9 +74,9 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
           toggleDocumentSelected(item.id, willBeSelected);
           setLastSelectedId(item.id);
           // Open document to show pages
-          onDocumentOpen?.(item.id);
+          onDocumentOpen?.(item.id, resolvedFolderId, item.clientId ?? null);
           if (willBeSelected) {
-            selectAllPagesForDocument(item.id, folderId);
+            selectAllPagesForDocument(item.id, resolvedFolderId);
           }
         }
       }}
@@ -98,9 +99,9 @@ export function DetailsRow({ item, selectedDocumentId, onFolderOpen, onClientOpe
                 toggleDocumentSelected(item.id, isChecked);
                 setLastSelectedId(item.id);
                 // Open document to show pages
-                onDocumentOpen?.(item.id);
+                onDocumentOpen?.(item.id, resolvedFolderId, item.clientId ?? null);
                 if (isChecked) {
-                  selectAllPagesForDocument(item.id, folderId);
+                  selectAllPagesForDocument(item.id, resolvedFolderId);
                 }
               }}
               onClick={(e) => e.stopPropagation()}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getDocumentById, getDocuments } from "@api/index";
-import { type GetDocumentsDto, DocumentTypes } from "@bmb-inc/types";
+import { getDocumentById, getDocuments, searchDocumentsByName } from "@api/index";
+import { type GetDocumentsDto, DocumentTypes, type FindDocFoldersDto } from "@bmb-inc/types";
 import { useImageRightConfig } from "../context/ImageRightContext";
 
 export const useDocuments = (params?: GetDocumentsDto, documentTypes?: DocumentTypes[]) => {
@@ -37,6 +37,52 @@ export const useDocuments = (params?: GetDocumentsDto, documentTypes?: DocumentT
       cancelled = true;
     };
   }, [params?.clientId, params?.folderId, params?.description, JSON.stringify(documentTypes ?? null), baseUrl]);
+
+  return { data, isLoading, error } as const;
+}
+
+type FindDocFoldersSearchParams = FindDocFoldersDto & {
+  drawerId?: number;
+  fileId?: number;
+  parentId?: number;
+  offset?: number;
+};
+
+export const useDocumentsByName = (params?: FindDocFoldersSearchParams) => {
+  const { baseUrl } = useImageRightConfig();
+  const [data, setData] = useState<Awaited<ReturnType<typeof searchDocumentsByName>> | undefined>(undefined);
+  const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const description = params?.description?.trim();
+  const enabled = !!description;
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!enabled) {
+      setData(undefined);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    searchDocumentsByName({ ...params, description }, baseUrl)
+      .then((res) => {
+        if (!cancelled) {
+          setData(res);
+        }
+      })
+      .catch((err: unknown) => {
+        if (!cancelled) setError(err as Error);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [description, params?.limit, params?.drawerId, params?.fileId, params?.parentId, params?.offset, baseUrl]);
 
   return { data, isLoading, error } as const;
 }
