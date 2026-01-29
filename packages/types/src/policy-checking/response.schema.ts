@@ -1,6 +1,6 @@
 import z from 'zod/v4';
 
-const policyCheckUserSummarySchema = z.object({
+export const policyCheckUserSummarySchema = z.object({
   id: z.string().nullable(),
   name: z.string().nullable(),
   email: z.email(),
@@ -166,6 +166,7 @@ export const policyCheckRequestWithDetailsSchema = z.object({
 export type PolicyCheckResponse = z.infer<typeof policyCheckResponseSchema>;
 export type PolicyCheckParsedResult = z.infer<typeof policyCheckParsedResultSchema>;
 export type PolicyCheckComparisonRow = z.infer<typeof comparisonRowSchema>;
+export type PolicyCheckUserSummary = z.infer<typeof policyCheckUserSummarySchema>;
 export type CheckResponseResult = z.infer<typeof checkResponseResultSchema>;
 export type ExportPolicyCheckResponse = z.infer<typeof exportPolicyCheckResponseSchema>;
 export type ExportPolicyCheckResponsePreview = z.infer<

@@ -1,5 +1,7 @@
 import z from 'zod/v4';
 
+import { policyCheckUserSummarySchema } from './response.schema';
+
 export const policyCheckWorkInProgressImportSchema = z.object({
   id: z.string(),
   policyId: z.number().int(),
@@ -11,6 +13,8 @@ export const policyCheckWorkInProgressImportSchema = z.object({
   size: z.number().int(),
   pageIds: z.array(z.number().int()).optional(),
   createdAt: z.coerce.date(),
+  createdByUserId: z.string(),
+  createdByUser: policyCheckUserSummarySchema.nullable().optional(),
 });
 
 export const policyCheckWorkInProgressGroupSchema = z.object({
@@ -37,6 +41,8 @@ export const policyCheckWorkInProgressRecentActivitySchema = z.object({
   documentCount: z.number().int(),
   totalSize: z.number().int(),
   activityType: z.enum(['import', 'request']),
+  createdByUserId: z.string(),
+  createdByUser: policyCheckUserSummarySchema.nullable().optional(),
   requestId: z.string().nullable(),
   requestStatus: z.enum(['pending', 'sent', 'responded', 'failed', 'exported']).nullable(),
   recentImport: z
