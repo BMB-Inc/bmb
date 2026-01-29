@@ -27,7 +27,7 @@ const externalDeps = [
 
 // Regex pattern for matching imports
 const externalPattern = new RegExp(`^(${externalDeps.join('|')})($|/)`);
-const isCssImport = (id) => id.endsWith('.css');
+const isReactPdfCss = (id) => id.includes('react-pdf/dist/') && id.endsWith('.css');
 const suppressUseClientWarning = (warning) =>
   typeof warning?.message === 'string'
   && warning.message.includes('Module level directives cause errors when bundled');
@@ -102,7 +102,7 @@ export default [
         exclude: ["**/*.test.*", "**/*.spec.*", "**/*.stories.*"]
       })
     ],
-    external: (id) => externalPattern.test(id) || isCssImport(id)
+    external: (id) => externalPattern.test(id) || isReactPdfCss(id)
   },
   // Type definitions
   {
@@ -116,7 +116,7 @@ export default [
       if (suppressUseClientWarning(warning)) return;
       warn(warning);
     },
-    external: (id) => externalPattern.test(id) || isCssImport(id)
+    external: (id) => externalPattern.test(id) || isReactPdfCss(id)
   },
 ];
 

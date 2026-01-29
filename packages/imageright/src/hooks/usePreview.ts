@@ -87,6 +87,15 @@ export function usePreview(documentId: number | null, activePage: ActivePage | n
   const [data, setData] = useState<ArrayBuffer | null>(null);
   const [url, setUrl] = useState<string | null>(null);
   const [extension, setExtension] = useState<string | null>(null);
+  const activePageKey = useMemo(() => {
+    if (!activePage) return null;
+    return [
+      activePage.documentId ?? '',
+      activePage.pageId ?? '',
+      activePage.imageId ?? '',
+      activePage.extension ?? '',
+    ].join(':');
+  }, [activePage?.documentId, activePage?.pageId, activePage?.imageId, activePage?.extension]);
 
   // revoke URLs on change/unmount
   useEffect(() => {
@@ -157,7 +166,7 @@ export function usePreview(documentId: number | null, activePage: ActivePage | n
 
     run();
     return () => controller.abort();
-  }, [documentId, activePage, baseUrl]);
+  }, [documentId, activePageKey, baseUrl]);
 
   const kind = useMemo(() => {
     if (data) {

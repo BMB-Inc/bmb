@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Group, Text, Loader } from '@mantine/core';
 import { IconFolder, IconFolderOpen, IconChevronRight, IconChevronDown } from '@tabler/icons-react';
 import { useFolders } from '@hooks/useFolders';
@@ -16,8 +16,8 @@ type FolderTreeNodeProps = {
   folderName: string;
   folderType: string;
   depth: number;
-  isExpanded: boolean;
-  onToggle: () => void;
+  expandedFolders: Set<number>;
+  onToggleFolder: (folderId: number) => void;
   folderTypes?: FolderTypes[];
   documentTypes?: DocumentTypes[];
   selectedDocumentId?: number | null;
@@ -36,8 +36,8 @@ export function FolderTreeNode({
   folderName,
   folderType,
   depth,
-  isExpanded,
-  onToggle,
+  expandedFolders,
+  onToggleFolder,
   folderTypes,
   documentTypes,
   selectedDocumentId,
@@ -47,6 +47,7 @@ export function FolderTreeNode({
   importedDocumentIds,
   allowedExtensions,
 }: FolderTreeNodeProps) {
+  const isExpanded = expandedFolders.has(folderId);
   void folderType; // kept for API consistency / future UI (folder type badges)
   // Only fetch children when expanded
   const { data: rawChildFolders = [], isLoading: foldersLoading } = useFolders(
@@ -99,7 +100,7 @@ export function FolderTreeNode({
         className={classes.folderRow}
         style={{ paddingLeft: depth * 20 + 6 }}
         onClick={() => {
-          onToggle();
+          onToggleFolder(folderId);
         }}
       >
         {isExpanded ? (
@@ -145,6 +146,8 @@ export function FolderTreeNode({
                   folderName={childFolderDisplayName}
                   folderType={folder.folderTypeName || folder.folderTypeDescription || 'Folder'}
                   depth={depth + 1}
+                  expandedFolders={expandedFolders}
+                  onToggleFolder={onToggleFolder}
                   folderTypes={folderTypes}
                   documentTypes={documentTypes}
                   selectedDocumentId={selectedDocumentId}
@@ -188,43 +191,9 @@ export function FolderTreeNode({
 }
 
 // Recursive wrapper that manages its own expanded state
-function RecursiveFolderNode({
-  clientId,
-  folderId,
-  folderName,
-  folderType,
-  depth,
-  folderTypes,
-  documentTypes,
-  selectedDocumentId,
-  onDocumentSelect,
-  onPageClick,
-  activePage,
-  importedDocumentIds,
-  allowedExtensions,
-}: Omit<FolderTreeNodeProps, 'isExpanded' | 'onToggle'>) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
+function RecursiveFolderNode(props: FolderTreeNodeProps) {
   return (
-    <FolderTreeNode
-      clientId={clientId}
-      folderId={folderId}
-      folderName={folderName}
-      folderType={folderType}
-      depth={depth}
-      isExpanded={isExpanded}
-      onToggle={() => {
-        setIsExpanded((prev) => !prev);
-      }}
-      folderTypes={folderTypes}
-      documentTypes={documentTypes}
-      selectedDocumentId={selectedDocumentId}
-      onDocumentSelect={onDocumentSelect}
-      onPageClick={onPageClick}
-      activePage={activePage}
-      importedDocumentIds={importedDocumentIds}
-      allowedExtensions={allowedExtensions}
-    />
+    <FolderTreeNode {...props} />
   );
 }
 

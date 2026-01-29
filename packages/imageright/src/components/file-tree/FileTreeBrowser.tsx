@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { Card, Stack, Center, Text, Group, Loader, ScrollArea, useComputedColorScheme } from '@mantine/core';
 import { IconSearch, IconFolder, IconFolderOpen, IconChevronRight, IconChevronDown, IconFileText } from '@tabler/icons-react';
 import { ClientSearch } from '../client-search/ClientSearch';
@@ -50,7 +50,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
     clientId: selectedClientId,
     documentId: selectedDocumentId,
     folderId: selectedFolderId,
-    expandedFolders: expandedRootFolders,
+    expandedFolders,
     navigateToClients,
     navigateToClient,
     selectDocument,
@@ -61,15 +61,6 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
 
   const { value: documentSearchInput, onChange: setDocumentSearchInput, searchParam: documentSearchParam } =
     useDocumentSearchParam(500);
-
-  // Clear document selection on initial mount (page reload)
-  // The document won't be visible since sub-folder expansions aren't persisted
-  useEffect(() => {
-    if (selectedDocumentId) {
-      selectDocument(null);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run on mount
 
   const hasClients = Array.isArray(clients) && clients.length > 0;
 
@@ -321,7 +312,7 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
                   {!rootFoldersLoading && (
                     <Stack gap={2}>
                       {rootFolders.map((folder: any) => {
-                        const isExpanded = expandedRootFolders.has(folder.id);
+                        const isExpanded = expandedFolders.has(folder.id);
                         const folderName = folder.folderTypeName
                         const folderDisplayName = folder.folderTypeName && folder.folderTypeDescription !== folderName
                           ? `${folder.folderTypeDescription} (${folder.folderTypeDescription})`
@@ -359,6 +350,8 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
                               <RootFolderChildren
                                 clientId={selectedClientId}
                                 folderId={folder.id}
+                                expandedFolders={expandedFolders}
+                                onToggleFolder={toggleRootFolder}
                                 folderTypes={normalizedFolderTypes}
                                 documentTypes={normalizedDocumentTypes}
                                 selectedDocumentId={selectedDocumentId}
@@ -403,6 +396,8 @@ export function FileTreeBrowser({ folderTypes, documentTypes, allowedExtensions,
 function RootFolderChildren({
   clientId,
   folderId,
+  expandedFolders,
+  onToggleFolder,
   folderTypes,
   documentTypes,
   selectedDocumentId,
@@ -414,6 +409,8 @@ function RootFolderChildren({
 }: {
   clientId: number;
   folderId: number;
+  expandedFolders: Set<number>;
+  onToggleFolder: (folderId: number) => void;
   folderTypes?: FolderTypes[];
   documentTypes?: DocumentTypes[];
   selectedDocumentId: number | null;
@@ -456,26 +453,10 @@ function RootFolderChildren({
     allowedExtensions
   );
 
-  const [expandedFolders, setExpandedFolders] = useState<Set<number>>(new Set());
-
   const isLoading = foldersLoading || documentsLoading || isFiltering;
 
   // Get list of visible document IDs for shift-select range
   const visibleDocumentIds = useMemo(() => documents.map((d: any) => d.id), [documents]);
-
-  const toggleFolder = (id: number) => {
-    setExpandedFolders((prev) => {
-      const next = new Set(prev);
-      const isCurrentlyExpanded = next.has(id);
-      if (!isCurrentlyExpanded) {
-        void childFolders.find((f: any) => f.id === id);
-        next.add(id);
-      } else {
-        next.delete(id);
-      }
-      return next;
-    });
-  };
 
   const orderedDocuments = useMemo(() => {
     return [...documents].sort((a: any, b: any) => {
@@ -510,8 +491,8 @@ function RootFolderChildren({
               folderName={childFolderDisplayName}
               folderType={folder.folderTypeName || folder.folderTypeDescription || 'Folder'}
               depth={0}
-              isExpanded={expandedFolders.has(folder.id)}
-              onToggle={() => toggleFolder(folder.id)}
+              expandedFolders={expandedFolders}
+              onToggleFolder={onToggleFolder}
               folderTypes={folderTypes}
               documentTypes={documentTypes}
               selectedDocumentId={selectedDocumentId}

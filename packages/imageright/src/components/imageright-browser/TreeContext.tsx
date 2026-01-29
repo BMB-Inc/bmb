@@ -11,8 +11,8 @@ type TreeContextValue = {
   activePage: ActivePage | null;
   setActivePage: (page: ActivePage | null) => void;
   onDocumentSelect: (docId: number, parentFolderId: number) => void;
-  expandedRootFolders: Set<number>;
-  toggleRootFolder: (folderId: number) => void;
+  expandedFolders: Set<number>;
+  toggleFolder: (folderId: number) => void;
 };
 
 const TreeContext = createContext<TreeContextValue | null>(null);

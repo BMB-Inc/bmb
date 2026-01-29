@@ -1,5 +1,4 @@
 import { Group, Text } from '@mantine/core';
-import { useState } from 'react';
 import { useFolderChildren } from '@hooks/useFolderChildren';
 import { FolderTreeNode } from '../file-tree/FolderTreeNode';
 import { DocumentNode } from '../file-tree/DocumentNode';
@@ -24,6 +23,8 @@ export function RootFolderChildren({
     setActivePage,
     importedDocumentIds,
     allowedExtensions,
+    expandedFolders,
+    toggleFolder,
   } = useTreeContext();
   const { childFolders, documents: filteredDocuments, visibleDocumentIds, isLoading } = useFolderChildren({
     clientId,
@@ -65,6 +66,8 @@ export function RootFolderChildren({
                 folderName={childFolderDisplayName}
                 folderType={folder.folderTypeName || folder.folderTypeDescription || 'Folder'}
                 depth={0}
+                expandedFolders={expandedFolders}
+                onToggleFolder={toggleFolder}
                 folderTypes={folderTypes}
                 documentTypes={documentTypes}
               />
@@ -106,6 +109,8 @@ function ExpandableFolderNode({
   folderName,
   folderType,
   depth,
+  expandedFolders,
+  onToggleFolder,
   folderTypes,
   documentTypes,
 }: {
@@ -114,6 +119,8 @@ function ExpandableFolderNode({
   folderName: string;
   folderType: string;
   depth: number;
+  expandedFolders: Set<number>;
+  onToggleFolder: (folderId: number) => void;
   folderTypes?: FolderTypes[];
   documentTypes?: DocumentTypes[];
 }) {
@@ -125,7 +132,6 @@ function ExpandableFolderNode({
     importedDocumentIds,
     allowedExtensions,
   } = useTreeContext();
-  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <FolderTreeNode
@@ -134,8 +140,8 @@ function ExpandableFolderNode({
       folderName={folderName}
       folderType={folderType}
       depth={depth}
-      isExpanded={isExpanded}
-      onToggle={() => setIsExpanded((p) => !p)}
+      expandedFolders={expandedFolders}
+      onToggleFolder={onToggleFolder}
       folderTypes={folderTypes}
       documentTypes={documentTypes}
       selectedDocumentId={selectedDocumentId}

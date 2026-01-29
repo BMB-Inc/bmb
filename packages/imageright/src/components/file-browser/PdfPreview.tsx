@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
+import { memo, useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { Center, Loader, Stack, Text, Group, ActionIcon, NumberInput } from '@mantine/core';
 import { IconZoomIn, IconZoomOut, IconZoomReset } from '@tabler/icons-react';
@@ -21,11 +21,20 @@ function clampZoom(z: number) {
   return Math.max(0.5, Math.min(3.0, z));
 }
 
-export default function PdfPreview({ data, defaultZoom }: PdfPreviewProps) {
+function getDataKey(data: ArrayBuffer | null): string | null {
+  if (!data) return null;
+  const bytes = new Uint8Array(data);
+  const first = bytes[0] ?? 0;
+  const second = bytes[1] ?? 0;
+  const last = bytes[bytes.length - 1] ?? 0;
+  return `${bytes.length}:${first}:${second}:${last}`;
+}
+
+function PdfPreview({ data, defaultZoom }: PdfPreviewProps) {
   const [numPages, setNumPages] = useState<number>(0);
   const [scale, setScale] = useState<number>(() => clampZoom(typeof defaultZoom === 'number' ? defaultZoom : 1.0));
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastDataKeyRef = useRef<string | null>(null);
 
   // Create a stable Uint8Array copy from the ArrayBuffer to prevent detachment issues
   const pdfData = useMemo(() => {
@@ -40,15 +49,23 @@ export default function PdfPreview({ data, defaultZoom }: PdfPreviewProps) {
     return { data: pdfData };
   }, [pdfData]);
 
+  const dataKey = useMemo(() => getDataKey(data), [data]);
+
   // Reset to the configured default zoom whenever a new PDF is loaded.
   useEffect(() => {
     if (!fileObject) return;
-    setScale(clampZoom(typeof defaultZoom === 'number' ? defaultZoom : 1.0));
-    setCurrentPage(1);
+    if (dataKey && dataKey === lastDataKeyRef.current) {
+      return;
+    }
+    lastDataKeyRef.current = dataKey;
+    const nextScale = clampZoom(typeof defaultZoom === 'number' ? defaultZoom : 1.0);
+    setScale((prev) => (prev === nextScale ? prev : nextScale));
+    setCurrentPage((prev) => (prev === 1 ? prev : 1));
+    pageRefs.current = [];
   }, [fileObject, defaultZoom]);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    setNumPages(numPages);
+    setNumPages((prev) => (prev === numPages ? prev : numPages));
   };
 
   const onDocumentLoadError = (error: Error) => {
@@ -75,65 +92,17 @@ export default function PdfPreview({ data, defaultZoom }: PdfPreviewProps) {
       if (pageElement) {
         pageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
+      setCurrentPage((prev) => (prev === pageNum ? prev : pageNum));
     }
   };
 
-  // Set up intersection observer for tracking visible pages
+  // Track page elements so the page input can scroll to them
   const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
   
-  const setupObserver = useCallback(() => {
-    if (observerRef.current) {
-      observerRef.current.disconnect();
-    }
-
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        // Find the most visible page
-        let maxVisibility = 0;
-        let mostVisiblePage = 1;
-
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio > maxVisibility) {
-            maxVisibility = entry.intersectionRatio;
-            const pageNum = parseInt(entry.target.getAttribute('data-page-number') || '1');
-            mostVisiblePage = pageNum;
-          }
-        });
-
-        if (maxVisibility > 0) {
-          setCurrentPage(mostVisiblePage);
-        }
-      },
-      {
-        threshold: [0, 0.25, 0.5, 0.75, 1.0],
-        rootMargin: '-10% 0px -10% 0px'
-      }
-    );
-
-    // Observe all page elements
-    pageRefs.current.forEach((ref) => {
-      if (ref && observerRef.current) {
-        observerRef.current.observe(ref);
-      }
-    });
-  }, []);
-
   const setPageRef = useCallback((pageNumber: number) => (el: HTMLDivElement | null) => {
     pageRefs.current[pageNumber - 1] = el;
-    if (el && pageNumber === numPages) {
-      // All pages are rendered, set up observer
-      setupObserver();
-    }
-  }, [numPages, setupObserver]);
-
-  // Cleanup observer on unmount
-  useEffect(() => {
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
   }, []);
+
 
   if (!fileObject) {
     return (
@@ -265,3 +234,9 @@ export default function PdfPreview({ data, defaultZoom }: PdfPreviewProps) {
   );
 }
 
+export default memo(PdfPreview, (prev, next) => {
+  if (prev.defaultZoom !== next.defaultZoom) return false;
+  const prevKey = getDataKey(prev.data);
+  const nextKey = getDataKey(next.data);
+  return prevKey === nextKey;
+});

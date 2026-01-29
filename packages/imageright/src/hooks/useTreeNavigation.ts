@@ -13,7 +13,6 @@ export function useTreeNavigation() {
     // Store expanded folder IDs as comma-separated string
     expanded: parseAsString,
   });
-
   // Parse expanded folders from URL
   const expandedFolders = new Set<number>(
     expanded
@@ -21,17 +20,28 @@ export function useTreeNavigation() {
       : []
   );
 
+  const setQsIfChanged = useCallback((next: { clientId?: number | null; documentId?: number | null; folderId?: number | null; expanded?: string | null }, options: { history: 'push' | 'replace' }) => {
+    let changed = false;
+    if ('clientId' in next && next.clientId !== clientId) changed = true;
+    if ('documentId' in next && next.documentId !== documentId) changed = true;
+    if ('folderId' in next && next.folderId !== folderId) changed = true;
+    if ('expanded' in next && next.expanded !== expanded) changed = true;
+    if (changed) {
+      setQs(next, options);
+    }
+  }, [clientId, documentId, folderId, expanded, setQs]);
+
   const navigateToClients = useCallback(() => {
-    setQs({ clientId: null, documentId: null, expanded: null }, { history: 'push' });
-  }, [setQs]);
+    setQsIfChanged({ clientId: null, documentId: null, expanded: null }, { history: 'push' });
+  }, [setQsIfChanged]);
 
   const navigateToClient = useCallback((id: number) => {
-    setQs({ clientId: id, documentId: null, expanded: null }, { history: 'push' });
-  }, [setQs]);
+    setQsIfChanged({ clientId: id, documentId: null, expanded: null }, { history: 'push' });
+  }, [setQsIfChanged]);
 
   const selectDocument = useCallback((id: number | null, parentFolderId?: number | null) => {
-    setQs({ documentId: id, folderId: parentFolderId ?? null }, { history: 'replace' });
-  }, [setQs]);
+    setQsIfChanged({ documentId: id, folderId: parentFolderId ?? null }, { history: 'replace' });
+  }, [setQsIfChanged]);
 
   const toggleFolder = useCallback((folderId: number) => {
     const newExpanded = new Set(expandedFolders);
@@ -43,20 +53,20 @@ export function useTreeNavigation() {
     const expandedStr = newExpanded.size > 0 
       ? Array.from(newExpanded).join(',') 
       : null;
-    setQs({ expanded: expandedStr }, { history: 'replace' });
-  }, [expandedFolders, setQs]);
+    setQsIfChanged({ expanded: expandedStr }, { history: 'replace' });
+  }, [expandedFolders, setQsIfChanged]);
 
   const expandFolder = useCallback((folderId: number) => {
     if (expandedFolders.has(folderId)) return;
     const newExpanded = new Set(expandedFolders);
     newExpanded.add(folderId);
     const expandedStr = Array.from(newExpanded).join(',');
-    setQs({ expanded: expandedStr }, { history: 'replace' });
-  }, [expandedFolders, setQs]);
+    setQsIfChanged({ expanded: expandedStr }, { history: 'replace' });
+  }, [expandedFolders, setQsIfChanged]);
 
   const collapseAll = useCallback(() => {
-    setQs({ expanded: null }, { history: 'replace' });
-  }, [setQs]);
+    setQsIfChanged({ expanded: null }, { history: 'replace' });
+  }, [setQsIfChanged]);
 
   return {
     clientId,

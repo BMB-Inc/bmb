@@ -13,8 +13,8 @@ export function RootFolderList({
   const {
     folderTypes,
     documentTypes,
-    expandedRootFolders,
-    toggleRootFolder,
+    expandedFolders,
+    toggleFolder,
   } = useTreeContext();
   const colorScheme = useComputedColorScheme('light');
   const isDark = colorScheme === 'dark';
@@ -36,7 +36,7 @@ export function RootFolderList({
         {!rootFoldersLoading && (
           <Stack gap={2}>
             {rootFolders.map((folder: any) => {
-              const isExpanded = expandedRootFolders.has(folder.id);
+              const isExpanded = expandedFolders.has(folder.id);
               const folderName = folder.description ?? folder.folderTypeName ?? 'Folder';
               const folderDisplayName =
                 folder.folderTypeDescription && folder.folderTypeDescription !== folderName
@@ -60,7 +60,7 @@ export function RootFolderList({
                     onMouseLeave={(e) => {
                       e.currentTarget.style.backgroundColor = rowBg;
                     }}
-                    onClick={() => toggleRootFolder(folder.id)}
+                    onClick={() => toggleFolder(folder.id)}
                   >
                     {isExpanded ? (
                       <IconChevronDown size={16} style={{ flexShrink: 0 }} />

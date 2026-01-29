@@ -1,5 +1,5 @@
 import { Stack, Divider, Title, Text, Loader, Center } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import EmailPreview from './EmailPreview';
 import SpreadsheetPreview from './SpreadsheetPreview';
 import WordDocPreview from './WordDocPreview';
@@ -95,11 +95,21 @@ export default function PreviewPane({ expandedDocumentId, pdfDefaultZoom, active
   const [previewUnavailable, setPreviewUnavailable] = useState<boolean>(false);
   const [previewLoading, setPreviewLoading] = useState<boolean>(false);
   const { baseUrl } = useImageRightConfig();
+  const lastLoadedKeyRef = useRef<string | null>(null);
 
   const documentId = expandedDocumentId ? Number(expandedDocumentId) : null;
   const disablePreview =
     typeof window !== 'undefined' &&
     new URLSearchParams(window.location.search).has('disablePreview');
+  const activePageKey = useMemo(() => {
+    if (!activePage) return null;
+    return [
+      activePage.documentId ?? '',
+      activePage.pageId ?? '',
+      activePage.imageId ?? '',
+      activePage.extension ?? '',
+    ].join(':');
+  }, [activePage?.documentId, activePage?.pageId, activePage?.imageId, activePage?.extension]);
 
   // Revoke object URLs automatically when they change/unmount (no refs).
   useEffect(() => {
@@ -116,6 +126,7 @@ export default function PreviewPane({ expandedDocumentId, pdfDefaultZoom, active
     setPreviewContentType(null);
     setPreviewUnavailable(false);
     setPreviewLoading(false);
+    lastLoadedKeyRef.current = null;
   }, [documentId]);
 
   // Load preview bytes/url when active page changes.
@@ -126,6 +137,14 @@ export default function PreviewPane({ expandedDocumentId, pdfDefaultZoom, active
       if (!documentId) return;
       if (!activePage) return;
       if (activePage.documentId !== documentId) return;
+      if (
+        activePageKey
+        && activePageKey === lastLoadedKeyRef.current
+        && (previewData || previewUrl)
+        && !previewLoading
+      ) {
+        return;
+      }
 
       const ext = activePage.extension ?? null;
       const imageId = activePage.imageId ?? null;
@@ -178,6 +197,9 @@ export default function PreviewPane({ expandedDocumentId, pdfDefaultZoom, active
         }
 
         setPreviewUnavailable(false);
+        if (activePageKey) {
+          lastLoadedKeyRef.current = activePageKey;
+        }
       } catch (e) {
         if ((e as any)?.name === 'AbortError') return;
         console.error('Failed to fetch preview:', e);
@@ -191,7 +213,7 @@ export default function PreviewPane({ expandedDocumentId, pdfDefaultZoom, active
     return () => {
       controller.abort();
     };
-  }, [documentId, activePage, baseUrl]);
+  }, [documentId, activePageKey, baseUrl]);
 
   const previewType = (() => {
     // If bytes are present, prefer signature-based detection over headers/extension.

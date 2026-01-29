@@ -22,8 +22,8 @@ type TreePaneProps = {
   // navigation
   selectedClientId: number | null;
   selectedDocumentId: number | null;
-  expandedRootFolders: Set<number>;
-  toggleRootFolder: (folderId: number) => void;
+  expandedFolders: Set<number>;
+  toggleFolder: (folderId: number) => void;
   collapseAll: () => void;
   navigateToClients: () => void;
   navigateToClient: (clientId: number | string) => void;
@@ -40,8 +40,8 @@ export function TreePane({
   setActivePage,
   selectedClientId,
   selectedDocumentId,
-  expandedRootFolders,
-  toggleRootFolder,
+  expandedFolders,
+  toggleFolder,
   collapseAll,
   navigateToClients,
   navigateToClient,
@@ -97,8 +97,8 @@ export function TreePane({
               activePage,
               setActivePage,
               onDocumentSelect,
-              expandedRootFolders,
-              toggleRootFolder,
+              expandedFolders,
+              toggleFolder,
             }}
           >
             <RootFolderList clientId={selectedClientId} />
