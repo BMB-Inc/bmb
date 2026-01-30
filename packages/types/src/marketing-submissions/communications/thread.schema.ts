@@ -4,8 +4,7 @@ export enum MarketingSubmissionsBindingStatus {
   DECLINED = 'DECLINED',
   BOUND = 'BOUND',
   ACTIVE = 'ACTIVE',
-  CLOSED = 'CLOSED',
-  QUOTED = 'QUOTED',
+  INACTIVE = 'INACTIVE',
 }
 
 const bindingStatusValues: [
@@ -15,8 +14,7 @@ const bindingStatusValues: [
   MarketingSubmissionsBindingStatus.DECLINED,
   MarketingSubmissionsBindingStatus.BOUND,
   MarketingSubmissionsBindingStatus.ACTIVE,
-  MarketingSubmissionsBindingStatus.CLOSED,
-  MarketingSubmissionsBindingStatus.QUOTED,
+  MarketingSubmissionsBindingStatus.INACTIVE,
 ];
 
 const bindingStatusEnum = z.enum(bindingStatusValues);
